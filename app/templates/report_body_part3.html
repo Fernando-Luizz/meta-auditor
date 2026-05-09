@@ -1,0 +1,187 @@
+
+{# ═══ BARREIRAS ═══ #}
+<div class="section">
+  <div class="sec-row"><h2>Barreiras Automáticas</h2><span class="cbadge">{{ bars|length }}</span></div>
+  {% for b in bars %}
+  {% set prio_raw=(b.get('prioridade') or 'media')|lower %}
+  {% set stripe_pri = 'media' %}
+  {% if prio_raw=='alta' %}
+    {% set stripe_pri='alta' %}
+  {% elif prio_raw=='baixa' %}
+    {% set stripe_pri='baixa' %}
+  {% elif prio_raw=='revisao_manual' %}
+    {% set stripe_pri='revisao_manual' %}
+  {% endif %}
+
+  {% if prio_raw=='alta' %}
+    {% set ib_cls='ib-alta' %}
+  {% elif prio_raw=='media' %}
+    {% set ib_cls='ib-media' %}
+  {% elif prio_raw=='baixa' or prio_raw=='revisao_manual' %}
+    {% set ib_cls='ib-baixa' %}
+  {% else %}
+    {% set ib_cls='ib-media' %}
+  {% endif %}
+
+  <div class="bc">
+    <div class="bstripe s-{{ stripe_pri }}"></div>
+    <div class="bbody">
+      <div class="btop">
+        {% if prio_raw=='alta' %}<span class="badge b-alta">● ALTA</span>
+        {% elif prio_raw=='baixa' %}<span class="badge b-baixa">● BAIXA</span>
+        {% elif prio_raw=='revisao_manual' %}<span class="badge b-man">● REVISÃO MANUAL</span>
+        {% else %}<span class="badge b-media">● MÉDIA</span>{% endif %}
+        {% if b.get('status_deteccao')=='automatico_convergente' %}<span class="badge b-conv">✓ Confirmado por LH + WAVE</span>{% endif %}
+        {% for t in b.get('confirmado_por') or [] %}
+          {% if t|lower=='lighthouse' %}<span class="badge b-lh">Lighthouse</span>{% endif %}
+          {% if t|lower=='wave' %}<span class="badge b-wave">WAVE</span>{% endif %}
+        {% endfor %}
+        <span class="btitle">{{ termo(b.get('titulo_tecnico', b.get('issue_tipo_normalizado','—'))) }}</span>
+      </div>
+      {% if b.get('issue_id_original') %}<div class="btech">{{ b.get('issue_id_original') }}</div>{% endif %}
+      {% if b.get('descricao_tecnica') %}<div class="bhuman">{{ b.get('descricao_tecnica','')|truncate(600) }}</div>{% endif %}
+      <div class="chips">
+        {% if b.get('wcag_criterio') %}<span class="chip">📋 <strong>WCAG {{ b.get('wcag_criterio') }}</strong></span>{% endif %}
+        <span class="chip">🔢 <strong>{{ b.get('ocorrencias_count',0) }}</strong> ocorrência{{ 's' if (b.get('ocorrencias_count') or 0)!=1 }}</span>
+        {% if b.get('onde_esta') %}<span class="chip">📍 {{ b.get('onde_esta') }}</span>{% endif %}
+        {% if b.get('wave_categoria') %}<span class="chip">📂 {{ b.get('wave_categoria') }}</span>{% endif %}
+      </div>
+      {% if b.get('publico_afetado') %}
+      <div class="pub-inline">
+        <div class="pi-ic">{{ pub_icon(b.get('publico_afetado')) }}</div>
+        <div><div class="pi-nm">Afeta: {{ b.get('publico_afetado') }}</div><div class="pi-desc">{{ pub_desc(b.get('publico_afetado')) }}</div></div>
+      </div>
+      {% endif %}
+
+      {# Evidência ALTA inline; demais em details #}
+      {% if prio_raw=='alta' %}
+        {% if b.get('onde_esta') %}<div class="ev-loc"><span aria-hidden="true">📍</span><span><strong>Localização na página:</strong> {{ b.get('onde_esta') }}</span></div>{% endif %}
+        <div style="margin-top:12px">
+          <a href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0" target="_blank" rel="noopener">
+            <img class="ev-img" src="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=1" alt="Evidência visual da barreira {{ loop.index }}" loading="lazy">
+          </a>
+          <div class="ev-cap">Clique para ampliar — elemento destacado quando disponível.</div>
+        </div>
+      {% else %}
+        <details style="margin-top:10px">
+          <summary>Ver evidência visual do problema</summary>
+          {% if b.get('onde_esta') %}<div class="ev-loc" style="margin-top:8px"><span aria-hidden="true">📍</span><span><strong>Localização:</strong> {{ b.get('onde_esta') }}</span></div>{% endif %}
+          <div style="margin-top:8px">
+            <a href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0" target="_blank" rel="noopener">
+              <img class="ev-img" src="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=1" alt="" loading="lazy">
+            </a>
+            <div class="ev-cap">Clique para ampliar — elemento destacado quando disponível.</div>
+          </div>
+        </details>
+      {% endif %}
+
+      <div class="if-grid">
+        <div class="ibox {{ ib_cls }}"><strong>Impacto</strong>
+          {% if prio_raw=='alta' %}Crítico — bloqueia o acesso. Correção urgente recomendada.
+          {% elif prio_raw=='media' %}Significativo — agrava a experiência de grupos específicos.
+          {% elif prio_raw=='revisao_manual' %}Requer revisão manual com leitor de tela ou teclado.
+          {% else %}Pontual — planejar correção em próximo ciclo.{% endif %}
+        </div>
+        {% if b.get('correcao_sugerida') %}
+        <div class="ibox ib-fix"><strong>Como corrigir</strong>{{ b.get('correcao_sugerida') }}</div>
+        {% endif %}
+      </div>
+
+      {% set ev=b.get('evidencia_localizacao') or [] %}
+      {% if ev %}
+      <details style="margin-top:8px">
+        <summary>Localização técnica no código ({{ [ev|length,evmax]|min }} de {{ ev|length }})</summary>
+        <div class="ev-codes">{% for line in ev[:evmax] %}<code>{{ line }}</code>{% endfor %}{% if ev|length>evmax %}<code style="color:var(--ink4)">… e mais {{ ev|length-evmax }}</code>{% endif %}</div>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p class="empty">Nenhuma barreira automática detectada.</p>
+  {% endfor %}
+</div>
+
+{# ═══ DIVERGÊNCIAS ═══ #}
+<div class="section">
+  <div class="sec-row"><h2>Divergências Lighthouse ↔ WAVE</h2><span class="cbadge" style="background:var(--purple)">{{ divs|length }}</span></div>
+  <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Quando Lighthouse passou mas WAVE registrou barreira, adota-se o cenário mais restritivo.</p>
+  {% for d in divs %}
+  <div class="div-card">
+    <div class="div-top"><span class="badge b-div">⚠ DIVERGÊNCIA</span><span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} ocorrência(s)</span><span class="div-ttl">{{ termo(d.get('titulo_tecnico', d.get('issue_tipo_normalizado','—'))) }}</span></div>
+    <div class="chips">
+      {% if d.get('wcag_criterio') %}<span class="chip">📋 <strong>WCAG {{ d.get('wcag_criterio') }}</strong></span>{% endif %}
+      {% if d.get('publico_afetado') %}<span class="chip">{{ pub_icon(d.get('publico_afetado')) }} {{ d.get('publico_afetado') }}</span>{% endif %}
+      <span class="chip">LH: passou</span>
+      <span class="chip">WAVE: {{ d.get('wave_categoria','—') }}</span>
+    </div>
+    {% if d.get('nota') %}<div class="div-note">{{ d.get('nota') }}</div>{% endif %}
+    {% if d.get('decisao') %}<div class="div-dec">Decisão: {{ d.get('decisao','')|replace('_',' ') }}</div>{% endif %}
+  </div>
+  {% else %}
+  <p class="empty">Nenhuma divergência registada.</p>
+  {% endfor %}
+</div>
+
+{# ═══ LH DECOMP ═══ #}
+{% if sb and sb.get('total_weight',0)>0 %}
+<details class="sc section">
+  <summary><div class="sec-row"><h2>Decomposição do Score Lighthouse</h2><span class="cbadge" style="background:var(--lh)">técnico</span></div></summary>
+  <div class="lhd">
+    {% set tw=sb.get('total_weight',0) %}{% set sc2=sb.get('score_calculated',0) %}{% set ws=(sc2/100.0)*tw %}
+    <div style="font-size:12px;color:var(--ink3);padding:10px 16px;background:var(--paper);border-bottom:1px solid var(--border)">Score = Σ(peso × resultado) ÷ Σ pesos × 100 → <strong>{{ "%.0f"|format(ws) }} ÷ {{ tw }} × 100 = {{ sc2 }}%</strong>{% if sb.get('scored_audits_count') %} · {{ sb.get('passed_audits_count',0) }}/{{ sb.get('scored_audits_count',0) }} audits binários avaliados{% endif %}</div>
+    <table class="bd-t"><thead><tr><th>Audit que falhou</th><th>Grupo</th><th>Peso</th><th>Impacto</th></tr></thead><tbody>
+    {% for fa in sb.get('failed_audits') or [] %}<tr>
+      <td><code style="font-size:11px">{{ fa.get('id','—') }}</code><br><span style="font-size:11px;color:var(--ink3)">{{ fa.get('title','') }}</span></td>
+      <td>{{ fa.get('group','—') }}</td>
+      <td style="text-align:center">{{ fa.get('weight','—') }}</td>
+      <td class="ipts" style="text-align:center">−{{ fa.get('impact_pts','—') }} pts</td>
+    </tr>{% endfor %}
+    </tbody></table>
+  </div>
+</details>
+{% endif %}
+
+<details class="sc section">
+  <summary><div class="sec-row"><h2>Glossário de Termos</h2></div></summary>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;box-shadow:var(--shsm)">
+    <div class="gl-grid">
+      <div><div class="gl-t">WCAG</div><div class="gl-d">Diretrizes do W3C para acessibilidade web — base frequentemente citada em leis.</div></div>
+      <div><div class="gl-t">ARIA</div><div class="gl-d">Atributos que expõem função e estado para tecnologias assistivas.</div></div>
+      <div><div class="gl-t">Lighthouse</div><div class="gl-d">Motor Google — audita HTML e pontuações 0–100.</div></div>
+      <div><div class="gl-t">WAVE</div><div class="gl-d">Análise sobre a página renderizada; AIMscore 0–10.</div></div>
+    </div>
+  </div>
+</details>
+
+{% if alerts %}
+<details class="sc section" open>
+  <summary><div class="sec-row"><h2>Alertas para revisão</h2><span class="cbadge" style="background:#78909C">{{ alerts|length }}</span></div></summary>
+  {% for a in alerts %}
+  <div class="ac"><div class="at"><span class="badge b-man">ALERTA</span><span class="badge b-wave">WAVE</span><span class="attl">{{ a.get('titulo_tecnico','—') }}</span></div>
+  <div class="chips">{% if a.get('wcag_criterio') %}<span class="chip">WCAG {{ a.get('wcag_criterio') }}</span>{% endif %}<span class="chip">{{ a.get('ocorrencias_count',0) }} ocorr.</span></div>
+  {% set aev=a.get('evidencia_localizacao') or [] %}
+  {% if aev %}<details><summary>Localização técnica</summary><div class="ev-codes">{% for e in aev[:evmax] %}<code>{{ e }}</code>{% endfor %}</div></details>{% endif %}
+  </div>
+  {% endfor %}
+</details>
+{% endif %}
+
+{% if manuals %}
+<details class="sc section" open>
+  <summary><div class="sec-row"><h2>Verificações manuais</h2><span class="cbadge" style="background:var(--ink3)">{{ manuals|length }}</span></div></summary>
+  <div class="bc"><div class="bbody"><p style="font-size:13px;color:var(--ink3);margin-bottom:12px;">Itens só validáveis manualmente ou com ATS.</p>
+  <ul class="ml">
+    {% for m in manuals %}<li><span class="m-ic">🔍</span><div><span class="m-lbl">{{ termo(m.get('titulo_tecnico','—')) }}</span><span class="m-desc">{{ m.get('descricao_tecnica','')|truncate(300) }}</span></div></li>{% endfor %}
+  </ul></div></div>
+</details>
+{% endif %}
+
+{% if infos %}
+<details class="sc section">
+  <summary><div class="sec-row"><h2>Informativos WAVE</h2><span class="cbadge" style="background:#78909C">{{ infos|length }}</span></div></summary>
+  {% for a in infos %}<div class="ac"><div class="at"><span class="badge b-man">INFO</span><span class="attl">{{ a.get('titulo_tecnico','—') }}</span></div>
+  <p style="font-size:12px;color:var(--ink3)">{{ (a.get('descricao_tecnica') or '')|truncate(400) }}</p></div>{% endfor %}
+</details>
+{% endif %}
+
+<div class="footer">Meta-Auditor de Acessibilidade Web{% if report_footer_org %} · {{ report_footer_org }}{% endif %}{% if report_footer_author %} · {{ report_footer_author }}{% endif %} · {{ now_year }}</div>

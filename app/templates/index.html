@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta-Auditor de Acessibilidade</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:     #0F1923;
+  --ink-2:   #374151;
+  --ink-3:   #6B7280;
+  --paper:   #F8F7F4;
+  --surface: #FFFFFF;
+  --border:  #E5E2DC;
+  --green:   #1A6B3C;
+  --green-l: #EBF5EF;
+  --green-m: #D1EAD9;
+  --teal:    #0F6E56;
+  --teal-l:  #E5F4F0;
+  --red:     #C0392B;
+  --red-l:   #FDECEA;
+  --orange:  #D84315;
+  --orange-l:#FBE9E7;
+  --amber:   #B45309;
+  --amber-l: #FEF3C7;
+  --purple:  #5B21B6;
+  --purple-l:#EDE9FE;
+  --gray:    #4B5563;
+  --gray-l:  #F3F4F6;
+  --radius:  10px;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── NAV ─────────────────────────────────────────────────────────── */
+nav {
+  background: var(--ink);
+  padding: 0 32px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -.2px;
+}
+.nav-brand .dot {
+  width: 8px; height: 8px;
+  background: #4ADE80;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+.nav-links a {
+  color: #9CA3AF;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color .15s;
+}
+.nav-links a:hover { color: #fff; }
+
+/* ── HERO / FORM ─────────────────────────────────────────────────── */
+.hero {
+  background: var(--ink);
+  padding: 52px 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #4ADE80;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-size: 36px;
+  font-weight: 300;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: -.5px;
+  max-width: 560px;
+}
+.hero h1 strong { font-weight: 600; }
+.hero-sub {
+  color: #6B7280;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.audit-form {
+  margin-top: 36px;
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  padding: 6px 6px 6px 16px;
+  align-items: center;
+}
+#url-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 13px;
+  min-width: 0;
+}
+#url-input::placeholder { color: #4B5563; }
+#audit-btn {
+  flex-shrink: 0;
+  background: #4ADE80;
+  color: var(--ink);
+  border: none;
+  border-radius: 9px;
+  padding: 10px 22px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  white-space: nowrap;
+}
+#audit-btn:hover { background: #22C55E; }
+#audit-btn:active { transform: scale(.97); }
+#audit-btn:disabled { background: #374151; color: #6B7280; cursor: not-allowed; transform: none; }
+
+/* Wave decoration at bottom of hero */
+.hero-wave {
+  width: 100%;
+  max-width: 680px;
+  margin-top: 28px;
+  height: 28px;
+  overflow: hidden;
+}
+
+/* ── MAIN LAYOUT ──────────────────────────────────────────────────── */
+.main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ── PROGRESS ─────────────────────────────────────────────────────── */
+#progress-panel {
+  margin-bottom: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+}
+#progress-panel[hidden] { display: none; }
+.progress-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid var(--green-m);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#progress-msg {
+  font-size: 13px;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.progress-track {
+  height: 4px;
+  background: var(--green-m);
+  border-radius: 2px;
+  overflow: hidden;
+}
+#progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  width: 0%;
+  transition: width .5s ease-out;
+}
+#progress-steps {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.progress-step {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .3s, transform .3s;
+}
+.progress-step.active { opacity: 1; transform: none; color: var(--green); }
+.progress-step.done   { opacity: .5; }
+.step-icon { width: 12px; text-align: center; font-size: 10px; }
+
+/* ── ERROR ────────────────────────────────────────────────────────── */
+#error-panel {
+  margin-bottom: 24px;
+  background: var(--red-l);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+#error-panel[hidden] { display: none; }
+.error-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+#error-msg { font-size: 13px; color: var(--red); line-height: 1.5; }
+
+/* ── RESULT ───────────────────────────────────────────────────────── */
+#result-panel[hidden] { display: none; }
+
+.result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.result-url {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  word-break: break-all;
+}
+.result-url a { color: var(--green); text-decoration: none; }
+.result-url a:hover { text-decoration: underline; }
+.result-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { background: var(--gray-l); border-color: #D1D5DB; }
+.btn-primary {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.btn-primary:hover { background: var(--teal); border-color: var(--teal); }
+
+/* ── METRICS GRID ─────────────────────────────────────────────────── */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+.metric-val {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.5px;
+  line-height: 1;
+}
+.metric-label {
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 4px;
+  font-weight: 400;
+}
+.metric-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.metric-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+}
+.metric-badge.bom { background: var(--green-l); color: var(--green); }
+.metric-badge.atencao { background: var(--amber-l); color: var(--amber); }
+.metric-badge.critico { background: var(--red-l); color: var(--red); }
+.metric-lh   .metric-val { color: var(--green); }
+.metric-wave .metric-val { color: var(--teal); }
+.metric-bar  .metric-val { color: var(--red); }
+.metric-div  .metric-val { color: var(--purple); }
+
+/* ── SECTIONS ─────────────────────────────────────────────────────── */
+.section { margin-bottom: 24px; }
+.section-hd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.section-hd h2 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.1px;
+}
+.badge-count {
+  background: var(--ink);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 1px 7px;
+}
+
+/* ── BREAKDOWN TABLE ──────────────────────────────────────────────── */
+.bd-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.bd-formula {
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  background: var(--gray-l);
+  border-bottom: 1px solid var(--border);
+}
+.bd-formula b { color: var(--ink); }
+.bd-table { width: 100%; border-collapse: collapse; }
+.bd-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  padding: 8px 14px;
+  background: var(--gray-l);
+  border-bottom: 1px solid var(--border);
+}
+.bd-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.bd-table tr:last-child td { border-bottom: none; }
+.bd-table code { font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+.impact-neg { font-weight: 600; color: var(--red); font-family: var(--mono); }
+
+/* ── BARRIER CARDS ────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.card-title { font-weight: 500; font-size: 13px; line-height: 1.4; flex: 1; min-width: 150px; }
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: .2px;
+  flex-shrink: 0;
+}
+.b-alta    { background: var(--red-l);    color: var(--red); }
+.b-media   { background: var(--orange-l); color: var(--orange); }
+.b-baixa   { background: var(--amber-l);  color: var(--amber); }
+.b-manual  { background: var(--gray-l);   color: var(--gray); }
+.b-conv    { background: var(--green-l);  color: var(--green); }
+.b-detect  { background: var(--teal-l);   color: var(--teal); }
+.b-div     { background: var(--purple-l); color: var(--purple); }
+.b-lh      { background: #EFF6FF; color: #1D4ED8; }
+.b-wave    { background: var(--teal-l);   color: var(--teal); }
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.card-meta span { display: flex; align-items: center; gap: 3px; }
+.card-meta b { color: var(--ink-2); font-weight: 500; }
+
+/* collapsible evidence */
+details { margin-top: 6px; }
+details summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 500;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+details summary::before { content: "▶"; font-size: 8px; transition: transform .15s; }
+details[open] summary::before { transform: rotate(90deg); }
+.ev-list {
+  margin-top: 6px;
+  background: var(--gray-l);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.ev-list code {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-2);
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+  word-break: break-all;
+}
+.ev-list code:last-child { border-bottom: none; }
+
+/* ── DIVERGÊNCIA ──────────────────────────────────────────────────── */
+.div-card { border-left: 3px solid var(--purple); }
+.div-note {
+  font-size: 11px;
+  color: var(--purple);
+  background: var(--purple-l);
+  border-radius: 5px;
+  padding: 7px 10px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ── COLLAPSIBLE SECTION ──────────────────────────────────────────── */
+details.sec-collapse {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+}
+details.sec-collapse > summary {
+  list-style: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+details.sec-collapse > summary::after { content: "▶"; font-size: 9px; margin-left: auto; color: var(--ink-3); transition: transform .15s; }
+details.sec-collapse[open] > summary::after { transform: rotate(90deg); }
+.sec-inner { padding: 0 16px 14px; }
+
+/* ── HISTORY ──────────────────────────────────────────────────────── */
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.url-search-wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.url-search-input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: var(--mono);
+}
+.evolution-panel {
+  margin-bottom: 16px;
+}
+.evolution-panel[hidden] { display: none; }
+.evolution-chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+.evolution-chart-wrap svg { width: 100%; height: auto; display: block; }
+.evolution-legend {
+  margin-top: 8px;
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.history-item:last-child { border-bottom: none; }
+.history-url {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.history-score {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+.history-badge {
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+.history-badge.bom { background: var(--green-l); color: var(--green); }
+.history-badge.atencao { background: var(--amber-l); color: var(--amber); }
+.history-badge.critico { background: var(--red-l); color: var(--red); }
+.history-meta { color: var(--ink-3); font-size: 11px; flex-shrink: 0; }
+.history-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.history-btn {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s;
+}
+.history-btn:hover { background: var(--gray-l); }
+.history-flag {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--orange);
+  background: var(--orange-l);
+  border: 1px solid #FBC4B5;
+  border-radius: 999px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+.empty-state {
+  color: var(--ink-3);
+  font-size: 13px;
+  padding: 20px 0;
+  text-align: center;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="dot"></div>
+    Meta-Auditor
+    <span style="font-family:var(--mono);font-size:10px;color:#4B5563;margin-left:4px">v{{ app_version }}</span>
+  </div>
+  <div class="nav-links">
+    <a href="/docs">API</a>
+    <a href="/audits">Histórico JSON</a>
+    <a href="/health">Status</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Lighthouse + WAVE → Diagnóstico unificado</div>
+  <h1>Auditoria de <strong>acessibilidade web</strong><br>em um clique</h1>
+  <p class="hero-sub">Analisa qualquer URL com Google Lighthouse e WAVE API em paralelo</p>
+
+  <div class="audit-form">
+    <input
+      type="url"
+      id="url-input"
+      placeholder="https://www.exemplo.com.br"
+      autocomplete="url"
+      spellcheck="false"
+    >
+    <button id="audit-btn" onclick="startAudit()">Auditar →</button>
+  </div>
+  <div style="height:28px"></div>
+</div>
+
+<div class="main">
+
+  <!-- PROGRESS -->
+  <div id="progress-panel" hidden>
+    <div class="progress-header">
+      <div class="spinner"></div>
+      <span id="progress-msg">Iniciando...</span>
+    </div>
+    <div class="progress-track"><div id="progress-fill"></div></div>
+    <div id="progress-steps"></div>
+  </div>
+
+  <!-- ERROR -->
+  <div id="error-panel" hidden>
+    <div class="error-icon">⚠</div>
+    <div id="error-msg"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result-panel" hidden></div>
+
+  <!-- HISTORY -->
+  <div class="section" id="history-section">
+    <div class="section-hd">
+      <h2>Histórico de auditorias</h2>
+      <span class="badge-count" id="history-count">–</span>
+    </div>
+    <div class="url-search-wrap">
+      <input id="url-search-input" class="url-search-input" type="url" list="url-suggestions" placeholder="https://www.uea.edu.br">
+      <datalist id="url-suggestions"></datalist>
+      <button class="btn" onclick="searchByUrl()">Ver evolução</button>
+      <button id="clear-url-filter-btn" class="btn" onclick="clearUrlFilter()" hidden>Limpar</button>
+    </div>
+    <div id="evolution-panel" class="evolution-panel" hidden>
+      <div class="evolution-chart-wrap">
+        <svg id="evolution-svg" viewBox="0 0 600 160" aria-label="Gráfico de evolução por URL"></svg>
+        <div class="evolution-legend">
+          <span style="color:var(--green)">LH score</span>
+          <span style="color:var(--teal)">WAVE AIM x10</span>
+          <span style="color:var(--red)">Barreiras x3</span>
+        </div>
+      </div>
+    </div>
+    <div id="history-list"><p class="empty-state">Carregando...</p></div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+const MSGS = [
+  [0,  '→ Iniciando auditoria...'],
+  [5,  '→ Chamando Google PageSpeed Insights (Lighthouse)...'],
+  [18, '→ Chamando WAVE API...'],
+  [38, '→ Processando audits de acessibilidade...'],
+  [55, '→ Consolidando Lighthouse e WAVE...'],
+  [70, '→ Detectando divergências e barreiras...'],
+  [82, '→ Salvando relatório...'],
+  [90, '→ Quase pronto...'],
+];
+
+let _progressInterval = null;
+let _currentUrlFilter = '';
+
+function startProgress() {
+  const fill   = document.getElementById('progress-fill');
+  const msgEl  = document.getElementById('progress-msg');
+  const steps  = document.getElementById('progress-steps');
+  fill.style.background = '';
+  fill.style.transition = 'width .5s ease-out';
+
+  steps.innerHTML = MSGS.map(([,m]) =>
+    `<div class="progress-step"><span class="step-icon">○</span><span>${m}</span></div>`
+  ).join('');
+
+  let pct = 0;
+  let elapsed = 0;
+
+  _progressInterval = setInterval(() => {
+    elapsed += 0.5;
+    // Slow logarithmic fill: fast start, asymptotes at 92%
+    pct = 92 * (1 - Math.exp(-elapsed / 18));
+    fill.style.width = pct + '%';
+
+    // Activate steps
+    const stepEls = steps.querySelectorAll('.progress-step');
+    MSGS.forEach(([,], idx) => {
+      const el = stepEls[idx];
+      if (!el) return;
+      if (pct >= (MSGS[idx][0] ?? 0)) {
+        el.classList.add('active');
+        const nextThr = MSGS[idx + 1] ? MSGS[idx + 1][0] : 100;
+        el.classList.toggle('done', idx < MSGS.length - 1 && pct >= nextThr);
+        const icon = el.querySelector('.step-icon');
+        if (icon) icon.textContent = idx < MSGS.length - 1 && pct >= nextThr ? '✓' : '◉';
+      }
+    });
+
+    // Update main message
+    let currentMsg = MSGS[0][1];
+    for (const [thr, msg] of MSGS) {
+      if (pct >= thr) currentMsg = msg.replace('→ ', '');
+    }
+    msgEl.textContent = currentMsg;
+  }, 500);
+}
+
+function stopProgress(success) {
+  if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
+  const fill = document.getElementById('progress-fill');
+  fill.style.transition = 'width .3s ease-out';
+  fill.style.width = success ? '100%' : '0%';
+  if (success) {
+    fill.style.background = '';
+  } else {
+    fill.style.background = '#EF4444';
+  }
+}
+
+async function startAudit() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) { flashInput(); return; }
+
+  // UI state
+  document.getElementById('audit-btn').disabled = true;
+  document.getElementById('audit-btn').textContent = 'Auditando...';
+  hide('error-panel');
+  hide('result-panel');
+  show('progress-panel');
+  startProgress();
+
+  try {
+    const res = await fetch('/audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    let data;
+    try {
+      data = await res.json();
+    } catch (_) {
+      throw new Error('Resposta inválida do servidor');
+    }
+
+    if (!res.ok) {
+      const detail = data && data.detail;
+      const msg = typeof detail === 'string' ? detail : (detail != null ? JSON.stringify(detail) : `Erro ${res.status}`);
+      throw new Error(msg);
+    }
+
+    stopProgress(true);
+    setTimeout(() => {
+      hide('progress-panel');
+      renderResult(data);
+      show('result-panel');
+      loadHistory();
+    }, 400);
+
+  } catch (err) {
+    stopProgress(false);
+    setTimeout(() => {
+      hide('progress-panel');
+      document.getElementById('error-msg').textContent = err.message;
+      show('error-panel');
+    }, 300);
+  } finally {
+    document.getElementById('audit-btn').disabled = false;
+    document.getElementById('audit-btn').textContent = 'Auditar →';
+  }
+}
+
+function renderResult(data) {
+  const auditId = data.audit_id;
+  const url     = data.url;
+  const lh      = data.lighthouse || {};
+  const wave    = data.wave || {};
+  const providers = data.providers || {};
+  const report  = data.report || {};
+  const sb      = lh.score_breakdown || {};
+
+  const lhScoreRaw = lh.accessibility_score;
+  const lhScore    = (lhScoreRaw == null) ? null : Math.round(lhScoreRaw * 100);
+  const waveAim   = wave.statistics?.AIMscore ?? '—';
+  const barreiras = report.barreiras_automaticas || [];
+  const divergs   = report.divergencias || [];
+  const alertas   = report.alertas_revisao || [];
+  const manuais   = report.checks_manuais || [];
+  const errCt     = wave.categories_summary?.error?.count ?? 0;
+  const contCt    = wave.categories_summary?.contrast?.count ?? 0;
+  const psiErr    = providers.lighthouse?.error || '';
+  const waveErr   = providers.wave?.error || '';
+  const providerNotice = psiErr || waveErr ? `
+    <div style="margin:0 0 12px;padding:10px 12px;border:1px solid #FECACA;background:#FEF2F2;border-radius:8px;font-size:12px;color:#991B1B;line-height:1.45">
+      ${psiErr ? `<div><b>PSI/Lighthouse:</b> ${escHtml(psiErr)}</div>` : ''}
+      ${waveErr ? `<div><b>WAVE:</b> ${escHtml(waveErr)}</div>` : ''}
+    </div>` : '';
+
+  const panel = document.getElementById('result-panel');
+  panel.innerHTML = `
+    <div class="result-header">
+      <div>
+        <div class="result-url">
+          <a href="${escUrl(url)}" target="_blank" rel="noopener">${escHtml(url)}</a>
+        </div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:3px">
+          Auditoria #${auditId} · ${new Date().toLocaleString('pt-BR')}
+        </div>
+      </div>
+      <div class="result-actions">
+        <a href="/audits/${auditId}/report.html" target="_blank" rel="noopener" class="btn btn-primary" title="Abrir relatório no browser">
+          📄 Abrir relatório
+        </a>
+        <a href="/audits/${auditId}/export.zip" class="btn" title="ZIP: brutos LH+WAVE, relatório JSON e HTML" download>⬇ ZIP (testes)</a>
+        <a href="/audits/${auditId}/export.html" class="btn" title="Descarregar relatório em HTML" download>⬇ HTML</a>
+        <a href="/audits/${auditId}/export.json" class="btn" title="Descarregar registo (JSON) com relatório consolidado" download>⬇ JSON</a>
+        <a href="/audits/${auditId}" target="_blank" rel="noopener" class="btn" title="Ver JSON no browser (sem descarregar)">Ver JSON</a>
+      </div>
+    </div>
+
+    ${providerNotice}
+
+    <!-- MÉTRICAS -->
+    <div class="metrics">
+      <div class="metric metric-lh">
+        <div class="metric-val">
+          ${lhScore == null ? '—' : `${lhScore}<small style="font-size:14px">/100</small>`}
+        </div>
+        ${lhScore == null ? '' : renderScoreBadge('lh', lhScore)}
+        <div class="metric-label">Score Lighthouse</div>
+        ${sb.score_calculated != null ? `<div class="metric-sub">${escHtml(String(sb.score_calculated))} calc.</div>` : ''}
+      </div>
+      <div class="metric metric-wave">
+        <div class="metric-val">${waveAim !== '—' ? escHtml(String(waveAim)) : '—'}<small style="font-size:14px">/10</small></div>
+        ${waveAim !== '—' ? renderScoreBadge('wave', Number(waveAim)) : ''}
+        <div class="metric-label">WAVE AIMscore</div>
+      </div>
+      <div class="metric metric-bar">
+        <div class="metric-val">${barreiras.length}</div>
+        <div class="metric-label">Barreiras</div>
+      </div>
+      <div class="metric metric-div">
+        <div class="metric-val">${divergs.length}</div>
+        <div class="metric-label">Divergências</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--orange)">${errCt}</div>
+        <div class="metric-label">Erros WAVE</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" style="color:var(--orange)">${contCt}</div>
+        <div class="metric-label">Contraste WAVE</div>
+      </div>
+    </div>
+
+    ${renderBreakdown(sb)}
+    ${renderBarreiras(barreiras)}
+    ${renderDivergencias(divergs)}
+    ${renderCollapsible('Alertas para revisão', alertas.length, renderAlertList(alertas))}
+    ${renderCollapsible('Verificações manuais', manuais.length, renderManualList(manuais))}
+  `;
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderBreakdown(sb) {
+  if (!sb || !sb.failed_audits?.length) return '';
+  const rows = sb.failed_audits.map(f => `
+    <tr>
+      <td><code>${escHtml(f.id)}</code></td>
+      <td style="color:var(--ink-2);font-size:11px">${escHtml(f.group || '')}</td>
+      <td style="text-align:center">${f.weight}</td>
+      <td class="impact-neg">−${escHtml(String(f.impact_pts))} pts</td>
+    </tr>`).join('');
+  return `
+    <div class="section">
+      <div class="section-hd"><h2>Decomposição do score</h2></div>
+      <div class="bd-wrap">
+        <div class="bd-formula">
+          Score = ${sb.effective_weight} ÷ ${sb.total_weight} × 100
+          = <b>${escHtml(String(sb.score_calculated))}</b>
+          &nbsp;·&nbsp; ${sb.passed_audits_count} de ${sb.scored_audits_count} audits passaram
+        </div>
+        <table class="bd-table">
+          <thead><tr>
+            <th>Audit</th><th>Grupo</th><th>Peso</th><th>Impacto</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderBarreiras(barreiras) {
+  if (!barreiras.length) return `
+    <div class="section">
+      <div class="section-hd"><h2>Barreiras automáticas</h2><span class="badge-count">0</span></div>
+      <p class="empty-state">Nenhuma barreira detectada automaticamente.</p>
+    </div>`;
+
+  const cards = barreiras.map(b => {
+    const prioBadge = {
+      alta:   '<span class="badge b-alta">● ALTA</span>',
+      media:  '<span class="badge b-media">● MÉDIA</span>',
+      baixa:  '<span class="badge b-baixa">● BAIXA</span>',
+    }[b.prioridade] || '<span class="badge b-manual">MANUAL</span>';
+
+    const statusBadge = b.status_deteccao === 'automatico_convergente'
+      ? '<span class="badge b-conv">✓ CONVERGENTE</span>'
+      : '<span class="badge b-detect">DETECTADO</span>';
+
+    const tools = (b.confirmado_por || []).map(t =>
+      t === 'lighthouse' ? '<span class="badge b-lh">Lighthouse</span>'
+      : t === 'wave'     ? '<span class="badge b-wave">WAVE</span>'
+      : ''
+    ).join('');
+
+    const evidence = (b.evidencia_localizacao || []).length > 0 ? `
+      <details>
+        <summary>${b.evidencia_localizacao.length} evidência(s) de localização</summary>
+        <div class="ev-list">
+          ${b.evidencia_localizacao.slice(0, 20).map(e =>
+            `<code>${escHtml(e)}</code>`).join('')}
+          ${b.evidencia_localizacao.length > 20
+            ? `<code style="color:var(--ink-3)">… e mais ${b.evidencia_localizacao.length - 20}</code>`
+            : ''}
+        </div>
+      </details>` : '';
+
+    return `
+      <div class="card">
+        <div class="card-top">
+          ${prioBadge}${statusBadge}${tools}
+          <div class="card-title">${escHtml(b.titulo_tecnico || '')}</div>
+        </div>
+        <div class="card-meta">
+          ${b.wcag_criterio ? `<span>📋 <b>WCAG</b> ${escHtml(b.wcag_criterio)}</span>` : ''}
+          ${b.publico_afetado ? `<span>👥 ${escHtml(b.publico_afetado)}</span>` : ''}
+          <span>🔢 <b>${b.ocorrencias_count}</b> ${pluralize(b.ocorrencias_count, 'ocorrência', 'ocorrências')}</span>
+          ${b.wave_categoria ? `<span>📂 ${escHtml(b.wave_categoria)}</span>` : ''}
+        </div>
+        ${evidence}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="section">
+      <div class="section-hd">
+        <h2>Barreiras automáticas</h2>
+        <span class="badge-count">${barreiras.length}</span>
+      </div>
+      ${cards}
+    </div>`;
+}
+
+function renderDivergencias(divs) {
+  if (!divs.length) return '';
+  const cards = divs.map(d => `
+    <div class="card div-card">
+      <div class="card-top">
+        <span class="badge b-div">⚠ DIVERGÊNCIA</span>
+        <span class="badge b-wave">WAVE: ${d.wave_count} ${pluralize(d.wave_count, 'ocorrência', 'ocorrências')}</span>
+        <div class="card-title">${escHtml(d.titulo_tecnico || d.issue_tipo_normalizado || '')}</div>
+      </div>
+      <div class="card-meta">
+        ${d.wcag_criterio ? `<span>📋 <b>WCAG</b> ${escHtml(d.wcag_criterio)}</span>` : ''}
+        ${d.publico_afetado ? `<span>👥 ${escHtml(d.publico_afetado)}</span>` : ''}
+        <span>🔵 LH: <b>${escHtml(d.lighthouse_status || '')}</b></span>
+        <span>🔴 WAVE: <b>${escHtml(d.wave_categoria || '')}</b></span>
+      </div>
+      ${d.nota ? `<div class="div-note">${escHtml(d.nota)}</div>` : ''}
+    </div>`).join('');
+  return `
+    <div class="section">
+      <div class="section-hd">
+        <h2>Divergências LH ↔ WAVE</h2>
+        <span class="badge-count" style="background:var(--purple)">${divs.length}</span>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin-bottom:12px">
+        Lighthouse passou, mas WAVE detectou ocorrências.
+        O Meta-Auditor aplica o resultado mais restritivo.
+      </p>
+      ${cards}
+    </div>`;
+}
+
+function renderAlertList(alertas) {
+  if (!alertas.length) return '<p class="empty-state">Sem alertas.</p>';
+  return alertas.map(a => `
+    <div class="card" style="padding:10px 14px;margin-bottom:6px">
+      <div class="card-top">
+        <span class="badge b-manual">ALERTA</span>
+        <span class="badge b-wave">WAVE</span>
+        <div class="card-title" style="font-size:12px">${escHtml(a.titulo_tecnico || '')}</div>
+      </div>
+      <div class="card-meta">
+        ${a.wcag_criterio ? `<span>📋 ${escHtml(a.wcag_criterio)}</span>` : ''}
+        <span>🔢 ${a.ocorrencias_count} ${pluralize(a.ocorrencias_count, 'ocorrência', 'ocorrências')}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderManualList(manuais) {
+  if (!manuais.length) return '<p class="empty-state">Sem verificações manuais.</p>';
+  return `<ul style="list-style:none;padding:0">${manuais.map(m => `
+    <li style="padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px;align-items:flex-start">
+      <span style="color:var(--ink-3)">🔍</span>
+      <div>
+        <div style="font-weight:500">${escHtml(m.titulo_tecnico || '')}</div>
+        ${m.wcag_criterio ? `<div style="font-size:11px;color:var(--ink-3);margin-top:2px">WCAG: ${escHtml(m.wcag_criterio)}</div>` : ''}
+      </div>
+    </li>`).join('')}</ul>`;
+}
+
+function renderCollapsible(title, count, inner) {
+  if (!count) return '';
+  return `
+    <details class="sec-collapse">
+      <summary>${escHtml(title)} <span class="badge-count" style="margin-left:4px">${count}</span></summary>
+      <div class="sec-inner">${inner}</div>
+    </details>`;
+}
+
+function pluralize(count, singular, plural) {
+  return Number(count) === 1 ? singular : plural;
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    const endpoint = _currentUrlFilter
+      ? `/audits?url=${encodeURIComponent(_currentUrlFilter)}&limit=30`
+      : '/audits?limit=15';
+    const res  = await fetch(endpoint);
+    const data = await res.json();
+    const list = data.audits || [];
+    const total = data.total != null ? data.total : list.length;
+
+    document.getElementById('history-count').textContent = String(total);
+
+    const el = document.getElementById('history-list');
+    if (!list.length) {
+      el.innerHTML = '<p class="empty-state">Nenhuma auditoria ainda. Insira uma URL acima.</p>';
+      return;
+    }
+    el.innerHTML = [...list].reverse().map(a => {
+      const score  = a.lh_score != null ? Math.round(a.lh_score * 100) : '—';
+      const waveAim = a.wave_aim_score != null ? Number(a.wave_aim_score) : null;
+      const ts     = a.created_at ? a.created_at.replace('T',' ').slice(0,16) : '';
+      const fullUrl = a.url || _currentUrlFilter || '';
+      const shortUrl = fullUrl.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+      const psiFlag = a.psi_unavailable
+        ? `<span class="history-flag" title="${escAttr(a.psi_error || 'PSI indisponível')}">PSI indisponível</span>`
+        : '';
+      return `
+        <div class="history-item">
+          <span class="history-score">${score}/100</span>
+          ${score !== '—' ? renderHistoryBadge('lh', score) : ''}
+          ${waveAim != null ? renderHistoryBadge('wave', waveAim) : ''}
+          <span class="history-url" title="${escAttr(fullUrl)}">${escHtml(shortUrl)}</span>
+          ${psiFlag}
+          <span class="history-meta">${escHtml(ts)}</span>
+          <div class="history-actions">
+            <a href="/audits/${a.id}/report.html" target="_blank" rel="noopener" class="history-btn" title="Abrir relatório">Abrir</a>
+            <a href="/audits/${a.id}/export.zip" class="history-btn" title="ZIP (brutos + relatório)" download>⬇Z</a>
+            <a href="/audits/${a.id}/export.html" class="history-btn" title="Descarregar HTML" download>⬇H</a>
+            <a href="/audits/${a.id}/export.json" class="history-btn" title="Descarregar JSON" download>⬇J</a>
+          </div>
+        </div>`;
+    }).join('');
+
+    if (_currentUrlFilter && list.length >= 2) {
+      drawEvolution(_currentUrlFilter, list);
+      document.getElementById('evolution-panel').hidden = false;
+    } else {
+      document.getElementById('evolution-panel').hidden = true;
+    }
+  } catch (_) {
+    document.getElementById('history-list').innerHTML =
+      '<p class="empty-state">Erro ao carregar histórico.</p>';
+  }
+}
+
+async function searchByUrl() {
+  const input = document.getElementById('url-search-input');
+  const url = (input.value || '').trim();
+  if (!url) return;
+  _currentUrlFilter = url;
+  document.getElementById('clear-url-filter-btn').hidden = false;
+  await loadHistory();
+}
+
+async function clearUrlFilter() {
+  _currentUrlFilter = '';
+  document.getElementById('url-search-input').value = '';
+  document.getElementById('clear-url-filter-btn').hidden = true;
+  document.getElementById('evolution-panel').hidden = true;
+  await loadHistory();
+}
+
+function drawEvolution(url, runs) {
+  const svg = document.getElementById('evolution-svg');
+  const W = 600;
+  const H = 160;
+  const pad = { l: 34, r: 10, t: 10, b: 22 };
+  const innerW = W - pad.l - pad.r;
+  const innerH = H - pad.t - pad.b;
+  const xs = runs.map((_, i) => pad.l + (runs.length === 1 ? innerW / 2 : (i * innerW) / (runs.length - 1)));
+  const y = (v) => pad.t + innerH - Math.max(0, Math.min(100, v)) * (innerH / 100);
+
+  const lh = runs.map((r) => (r.lh_score == null ? null : Math.round(Number(r.lh_score) * 100)));
+  const wave = runs.map((r) => (r.wave_aim_score == null ? null : Math.round(Number(r.wave_aim_score) * 10)));
+  const bar = runs.map((r) => Math.min(100, Math.round(Number(r.barreiras_count || 0) * 3)));
+
+  const buildPath = (vals) => {
+    let d = '';
+    vals.forEach((v, i) => {
+      if (v == null) return;
+      d += `${d ? ' L' : 'M'} ${xs[i]} ${y(v)}`;
+    });
+    return d;
+  };
+
+  const points = (vals, color) =>
+    vals
+      .map((v, i) =>
+        v == null
+          ? ''
+          : `<circle cx="${xs[i]}" cy="${y(v)}" r="2.8" fill="${color}"><title>${url}\n${runs[i].created_at}\nvalor: ${v}</title></circle>`
+      )
+      .join('');
+
+  const xLabels = runs
+    .map((r, i) => {
+      const dt = String(r.created_at || '').slice(5, 10);
+      return `<text x="${xs[i]}" y="${H - 6}" font-size="9" fill="#6B7280" text-anchor="middle">${escHtml(dt)}</text>`;
+    })
+    .join('');
+
+  const grid = [0, 25, 50, 75, 100]
+    .map((g) => `<line x1="${pad.l}" y1="${y(g)}" x2="${W - pad.r}" y2="${y(g)}" stroke="#e5e7eb" stroke-width="1"/>`)
+    .join('');
+
+  svg.innerHTML = `
+    ${grid}
+    <path d="${buildPath(lh)}" fill="none" stroke="#1A6B3C" stroke-width="2"/>
+    <path d="${buildPath(wave)}" fill="none" stroke="#0F6E56" stroke-width="2"/>
+    <path d="${buildPath(bar)}" fill="none" stroke="#C0392B" stroke-width="2" stroke-dasharray="4 3"/>
+    ${points(lh, '#1A6B3C')}
+    ${points(wave, '#0F6E56')}
+    ${points(bar, '#C0392B')}
+    ${xLabels}
+  `;
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────
+function show(id) { document.getElementById(id).hidden = false; }
+function hide(id) { document.getElementById(id).hidden = true; }
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escAttr(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;');
+}
+
+function escUrl(s) {
+  if (s == null) return '';
+  try {
+    const u = new URL(String(s), window.location.origin);
+    if (u.protocol === 'http:' || u.protocol === 'https:') return u.href;
+  } catch (_) {}
+  return 'about:blank#blocked';
+}
+
+function classifyScore(type, value) {
+  if (type === 'lh') {
+    if (value >= 90) return { cls: 'bom', label: 'APROVADO' };
+    if (value >= 75) return { cls: 'atencao', label: 'ATENCAO' };
+    return { cls: 'critico', label: 'CRITICO' };
+  }
+  if (value >= 7) return { cls: 'bom', label: 'APROVADO' };
+  if (value >= 4) return { cls: 'atencao', label: 'ATENCAO' };
+  return { cls: 'critico', label: 'CRITICO' };
+}
+
+function renderScoreBadge(type, value) {
+  const { cls, label } = classifyScore(type, value);
+  const prefix = type === 'lh' ? 'LH' : 'WAVE';
+  return `<div class="metric-badge ${cls}">${prefix} ${label}</div>`;
+}
+
+function renderHistoryBadge(type, value) {
+  const { cls, label } = classifyScore(type, value);
+  const prefix = type === 'lh' ? 'LH' : 'WAVE';
+  return `<span class="history-badge ${cls}">${prefix} ${label}</span>`;
+}
+
+function flashInput() {
+  const inp = document.getElementById('url-input');
+  inp.style.outline = '2px solid #EF4444';
+  inp.focus();
+  setTimeout(() => { inp.style.outline = ''; }, 1200);
+}
+
+// Enter key on input
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startAudit();
+});
+document.getElementById('url-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchByUrl();
+});
+document.getElementById('url-search-input').addEventListener('input', async (e) => {
+  const q = (e.target.value || '').trim();
+  if (q.length < 3) return;
+  try {
+    const res = await fetch(`/audits/buscar-urls?q=${encodeURIComponent(q)}&limit=8`);
+    const data = await res.json();
+    const options = (data.urls || []).map((u) => `<option value="${escAttr(u)}"></option>`).join('');
+    document.getElementById('url-suggestions').innerHTML = options;
+  } catch (_) {
+    // ignore autocomplete failures
+  }
+});
+
+// Load history on page ready
+loadHistory();
+</script>
+</body>
+</html>

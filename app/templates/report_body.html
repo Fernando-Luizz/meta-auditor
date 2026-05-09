@@ -1,0 +1,70 @@
+{# Relatório executivo premium: variáveis compartilhadas (escopo do include pai) + partes A/B #}
+{% from '_report_macros.html' import risk_slug_nv, esforco %}
+
+{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0) %}
+{% for b in bars+divs %}
+  {% set p=(b.get('publico_afetado') or '')|lower %}
+  {% set occ=(b.get('ocorrencias_count') or 1)|int %}
+  {% if 'baixa visão' in p or 'baixa visao' in p or 'low vision' in p or 'contraste' in p or 'leitura em' in p %}{% set cnt.visao = cnt.visao + occ %}{% endif %}
+  {% if 'ceg' in p or 'leitor de tela' in p or 'screen reader' in p %}{% set cnt.cego = cnt.cego + occ %}{% endif %}
+  {% if 'motor' in p or 'tremor' in p or 'polegar' in p or 'móvel' in p or 'movel' in p or 'usuários móveis' in p %}{% set cnt.motor = cnt.motor + occ %}{% endif %}
+  {% if 'cogni' in p or 'dislexia' in p or 'daltonismo' in p or 'percepção de cor' in p %}{% set cnt.cogni = cnt.cogni + occ %}{% endif %}
+  {% if 'surdo' in p or 'deaf' in p %}{% set cnt.surdo = cnt.surdo + occ %}{% endif %}
+  {% if 'estrutura' in p or 'navega' in p or 'teclado' in p %}{% set cnt.naveg = cnt.naveg + occ %}{% endif %}
+{% endfor %}
+{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,1]|max %}
+
+{% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
+{% for bb in bars %}
+  {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
+  {% set occ=(bb.get('ocorrencias_count') or 1)|int %}
+  {% if 'contrast' in tp or 'contraste' in tp %}{% set cats.contraste = cats.contraste + occ %}
+  {% elif 'button' in tp or 'botao' in tp or 'controle_sem_nome' in tp %}{% set cats.botao = cats.botao + occ %}
+  {% elif 'image' in tp or 'img' in tp or 'alt' in tp or 'imagem_sem' in tp %}{% set cats.imagem = cats.imagem + occ %}
+  {% elif 'link' in tp %}{% set cats.link = cats.link + occ %}
+  {% elif 'form' in tp or 'label' in tp or 'input' in tp or 'formulario' in tp %}{% set cats.form = cats.form + occ %}
+  {% elif 'aria' in tp %}{% set cats.aria = cats.aria + occ %}
+  {% else %}{% set cats.outro = cats.outro + occ %}
+  {% endif %}
+{% endfor %}
+{% set mc=[cats.contraste,cats.botao,cats.imagem,cats.link,cats.form,cats.aria,cats.outro,1]|max %}
+
+{% set pour=namespace(p=[],o=[],u=[],r=[]) %}
+{% for bb in bars %}
+  {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
+  {% set nm_cur=bb.get('titulo_tecnico') or bb.get('issue_tipo_normalizado') or tp %}
+  {% if 'contrast' in tp or 'contraste' in tp or 'alt' in tp or 'imagem' in tp or 'image' in tp %}
+    {% if nm_cur not in pour.p %}{% set _ = pour.p.append(nm_cur) %}{% endif %}
+  {% elif 'target' in tp or 'focus' in tp or 'button' in tp or 'link' in tp or 'keyboard' in tp or 'controle' in tp or 'alvo' in tp %}
+    {% if nm_cur not in pour.o %}{% set _ = pour.o.append(nm_cur) %}{% endif %}
+  {% elif 'label' in tp or 'heading' in tp or 'lang' in tp or 'formulario' in tp or 'form' in tp %}
+    {% if nm_cur not in pour.u %}{% set _ = pour.u.append(nm_cur) %}{% endif %}
+  {% else %}
+    {% if nm_cur not in pour.r %}{% set _ = pour.r.append(nm_cur) %}{% endif %}
+  {% endif %}
+{% endfor %}
+
+{% set ps=namespace(s='') %}
+{% for b in bars+divs %}{% set ps.s = ps.s ~ ' ' ~ (b.get('publico_afetado') or '')|lower %}{% endfor %}
+
+{% set rapidas=[] %}
+{% set medias_ef=[] %}
+{% set estruturais=[] %}
+{% for b in bars %}
+  {% set e=esforco(b)|trim %}
+  {% if e=='rapido' %}{% set _ = rapidas.append(b) %}
+  {% elif e=='medio' %}{% set _ = medias_ef.append(b) %}
+  {% else %}{% set _ = estruturais.append(b) %}
+  {% endif %}
+{% endfor %}
+
+{% set sr_nivel = (sr.get('nivel','') if sr else '') %}
+{% set exec_cls = 'exec-sem' %}
+{% if sr_nivel == 'ALTO' %}{% set exec_cls = 'exec-alto' %}
+{% elif sr_nivel == 'MÉDIO' %}{% set exec_cls = 'exec-medio' %}
+{% elif sr_nivel == 'BAIXO' %}{% set exec_cls = 'exec-baixo' %}
+{% endif %}
+{% set risk_css = risk_slug_nv(sr_nivel) %}
+
+{% include 'report_body_a.html' %}
+{% include 'report_body_b.html' %}

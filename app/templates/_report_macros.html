@@ -1,0 +1,99 @@
+{# Macros partilhados pelo relatório executivo premium #}
+{% macro risk_slug_nv(nv) -%}
+{%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
+{%- endmacro %}
+
+{% macro pub_icon(raw) %}
+  {%- set r=(raw or '')|lower -%}
+  {%- if 'ceg' in r or 'leitor de tela' in r %}🦯
+  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'low vision' in r or 'contraste' in r or 'leitura em' in r %}👁️
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r %}🖐️
+  {%- elif 'cogni' in r or 'daltonismo' in r or 'dislexia' in r %}🧠
+  {%- elif 'surdo' in r %}👂
+  {%- else %}♿{%- endif %}
+{% endmacro %}
+
+{% macro pub_desc(raw) %}
+  {%- set r=(raw or '')|lower -%}
+  {%- if 'ceg' in r or 'leitor de tela' in r %}Usuários cegos utilizam leitores de tela (NVDA, JAWS, VoiceOver) que narram o conteúdo em áudio. Elementos sem nome ficam completamente inacessíveis para essa tecnologia.
+  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r %}Usuários com visão parcial — como quem tem glaucoma ou catarata — dependem de alto contraste, fontes maiores e zoom. Texto sem contraste adequado torna-se ilegível mesmo com amplificação.
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r %}Usuários com dificuldade motora — como Parkinson ou lesão nos membros superiores — dependem de alvos grandes e espaçados. Botões pequenos ou agrupados causam cliques errados e frustração.
+  {%- elif 'cogni' in r or 'daltonismo' in r %}Usuários com dislexia, TDAH, autismo ou daltonismo precisam de indicadores visuais além da cor, linguagem clara e estrutura consistente.
+  {%- elif 'surdo' in r %}Usuários surdos ou com deficiência auditiva dependem de legendas, transcrições e alertas visuais para acessar conteúdo multimídia.
+  {%- elif 'estrutura' in r or 'navega' in r %}Usuários que navegam exclusivamente por teclado — por limitação motora ou preferência — precisam de estrutura semântica e foco visível para se orientar.
+  {%- else %}{{ raw }}{%- endif %}
+{% endmacro %}
+
+{% macro termo(t) %}
+  {%- set s=(t or '')|lower -%}
+  {%- if 'button' in s and 'name' in s %}Botão sem nome acessível
+  {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Área de toque insuficiente
+  {%- elif 'contrast' in s or 'contraste' in s %}Contraste de texto insuficiente
+  {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem texto alternativo
+  {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem rótulo
+  {%- elif 'aria' in s %}Marcação ARIA incorreta
+  {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
+  {%- elif 'link' in s %}Link sem destino claro
+  {%- elif 'lang' in s %}Idioma da página não declarado
+  {%- elif 'focus' in s %}Foco do teclado não visível
+  {%- else %}{{ t }}{%- endif %}
+{% endmacro %}
+
+{% macro esforco(b) %}
+  {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- if 'image-alt' in id or 'imagem_sem' in id or 'lang' in id or 'button-name' in id or 'controle_sem_nome' in id or 'label' in id or 'heading' in id %}rapido
+  {%- elif 'contrast' in id or 'contraste' in id or 'target-size' in id or 'alvo_interacao' in id or 'link' in id %}medio
+  {%- else %}estrutural{%- endif %}
+{% endmacro %}
+
+{% macro esforco_badge(b) %}
+  {%- set e=esforco(b)|trim -%}
+  {%- if e=='rapido' %}<span class="ef-badge ef-r" title="Correção simples de código — geralmente menos de 1 dia">⚡ Correção rápida</span>
+  {%- elif e=='medio' %}<span class="ef-badge ef-m" title="Requer ajustes em CSS ou múltiplos elementos — 1 a 5 dias">🛠 Esforço médio</span>
+  {%- else %}<span class="ef-badge ef-s" title="Pode exigir redesenho de componentes ou revisão estrutural">🏗 Projeto estrutural</span>{%- endif %}
+{% endmacro %}
+
+{% macro correcao_detalhada(b) %}
+  {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set cor=(b.get('correcao_sugerida') or '') -%}
+  {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
+    Aumente o contraste entre texto e fundo no CSS usando <code>color</code> e <code>background-color</code>. A proporção mínima exigida é <strong>4,5:1</strong> para texto normal e <strong>3:1</strong> para texto grande (≥18pt). Verifique com a ferramenta <a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener">WebAIM Contrast Checker</a> antes de implementar.
+  {%- elif 'target-size' in id or 'alvo_interacao' in id -%}
+    Aumente a área clicável para no mínimo <strong>24×24 px</strong> (WCAG 2.2, critério 2.5.8) — idealmente <strong>44×44 px</strong> para dispositivos móveis. Geralmente basta adicionar <code>padding</code> ao elemento sem alterar o visual do layout.
+  {%- elif 'button-name' in id or 'controle_sem_nome' in id -%}
+    Adicione texto legível ao botão ou use o atributo <code>aria-label</code>. Exemplo: <code>&lt;button aria-label="Fechar menu"&gt;✕&lt;/button&gt;</code>. Leitores de tela anunciarão o nome em vez de "botão sem nome".
+  {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
+    Diferencie links do texto ao redor além da cor — adicione sublinhado (<code>text-decoration:underline</code>) ou um ícone de seta. Alternativamente, garanta contraste de <strong>3:1</strong> entre a cor do link e o texto adjacente (WCAG 1.4.1).
+  {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
+    Adicione o atributo <code>alt</code> com uma descrição útil da imagem. Para imagens puramente decorativas, use <code>alt=""</code> (vazio) — o leitor de tela a ignorará. <strong>Nunca omita</strong> o atributo, mesmo quando vazio.
+  {%- elif 'aria' in id -%}
+    Prefira elementos HTML semânticos nativos (<code>&lt;button&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>). Use ARIA somente quando não há equivalente HTML disponível. Teste com leitor de tela (NVDA + Firefox ou VoiceOver + Safari) para validar o comportamento.
+  {%- elif 'label' in id -%}
+    Associe um rótulo a cada campo com <code>&lt;label for="id-do-campo"&gt;</code> ou o atributo <code>aria-label</code>. Exemplo: <code>&lt;label for="email"&gt;E-mail&lt;/label&gt;&lt;input id="email" type="email"&gt;</code>.
+  {%- elif 'heading' in id -%}
+    Use apenas um <code>&lt;h1&gt;</code> por página (título principal) e construa a hierarquia em ordem crescente (<code>h2</code>, <code>h3</code>…) sem pular níveis. Leitores de tela usam os títulos para navegação rápida.
+  {%- elif 'focus' in id -%}
+    Nunca remova o indicador de foco (<code>outline:none</code>) sem substituí-lo por um indicador visual igualmente claro. O WCAG 2.2 exige que o foco seja visível com contraste mínimo de <strong>3:1</strong>.
+  {%- elif 'lang' in id -%}
+    Declare o idioma principal no elemento HTML: <code>&lt;html lang="pt-BR"&gt;</code>. Isso permite que leitores de tela pronunciem o conteúdo com o motor de voz correto.
+  {%- elif cor %} {{ cor }}
+  {%- else -%}
+    Corrija conforme o código técnico indicado abaixo{% if b.get('wcag_criterio') %} — referência: WCAG {{ b.get('wcag_criterio') }}{% endif %}.
+  {%- endif -%}
+{% endmacro %}
+
+{% macro tool_badges_barrier(b) %}
+  {%- set st = b.get('status_deteccao','') -%}
+  {%- set cp = (b.get('confirmado_por') or [])|map('lower')|list -%}
+  {%- if st == 'automatico_convergente' or cp|length >= 2 -%}
+<span class="badge b-conv" title="Detectado por mais de uma fonte — alta confiança">✓ Confirmado por LH + WAVE</span>
+  {%- elif cp|length == 1 and 'lighthouse' in cp -%}
+<span class="badge b-lh">Lighthouse</span>
+  {%- elif cp|length == 1 and 'wave' in cp -%}
+<span class="badge b-wave">WAVE</span>
+  {%- elif st == 'manual_pendente' or b.get('prioridade')=='revisao_manual' -%}
+<span class="badge b-man">Revisão manual</span>
+  {%- else -%}
+<span class="badge b-man">{{ b.get('tool','—') }}</span>
+  {%- endif -%}
+{% endmacro %}

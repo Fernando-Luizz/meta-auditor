@@ -1,0 +1,29 @@
+# Ambiente e segredos
+.venv/
+.env
+.env.local
+.env.*.local
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# ZIP de entrega gerado por scripts/package_entrega.ps1 (não versionar)
+meta-auditor-entrega-*.zip
+
+# IDE / SO
+.DS_Store
+Thumbs.db
+
+# Dados gerados em runtime — não versionar
+data/meta_auditor.db
+data/raw/*.json
+data/evidence/*.png
+
+# Manter a estrutura dos diretórios no git
+!data/raw/.gitkeep
+!data/evidence/.gitkeep

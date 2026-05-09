@@ -1,0 +1,36 @@
+# Ambiente virtual Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Controle de versão
+.git/
+.gitignore
+
+# Segredos — nunca enviar para a imagem
+.env
+
+# Dados locais — montados via volume, não copiados na imagem
+data/
+
+# Testes e documentação de desenvolvimento
+tests/
+*.md
+*.pdf
+
+# IDEs e sistema
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# Cache e cobertura de testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Scripts de desenvolvimento Windows
+*.ps1
