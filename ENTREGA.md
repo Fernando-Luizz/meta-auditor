@@ -10,7 +10,7 @@ O núcleo do Meta-Auditor está preparado para avaliação; o que costuma falhar
 | `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/` | Cache de ferramentas; irrelevante para execução. |
 | `__pycache__/` e `*.pyc` | Bytecode regenerável. |
 | `.env` | Pode conter chaves PSI/WAVE; usar só `.env.example` como modelo. |
-| `data/meta_auditor.db` | Base local de desenvolvimento; é criada ao correr a app. |
+| `data/meta_auditor.db` | Base local de desenvolvimento; é criada ao executar a aplicação. |
 | `data/raw/*.json` | JSON brutos por auditoria; pesados e desnecessários para instalar o sistema. |
 | `data/evidence/*.png` | Evidências geradas em runtime. |
 | `.git/` | Opcional: incluir só se a instituição pedir histórico Git; aumenta o tamanho. |
@@ -27,11 +27,11 @@ Na raiz do repositório:
 .\scripts\package_entrega.ps1
 ```
 
-É criado um ficheiro `meta-auditor-entrega-YYYYMMDD-HHmm.zip` na raiz do projeto, sem os artefactos acima.
+É criado um arquivo `meta-auditor-entrega-YYYYMMDD-HHmm.zip` na raiz do projeto, sem os artefatos acima.
 
 ## Teste de fumo (portabilidade)
 
-Numa pasta **nova** (ou máquina virtual / outro utilizador):
+Em uma pasta **nova** (ou máquina virtual / outro usuário):
 
 1. Descompactar o ZIP limpo (ou `git clone` sem `.venv`).
 2. `python -m venv .venv` e ativar o venv.
@@ -48,7 +48,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Aceder `http://127.0.0.1:8010` (mapeamento no `docker-compose.yml`) e repetir `/health` + uma auditoria.
+Acesse `http://127.0.0.1:8010` (mapeamento no `docker-compose.yml`) e repita `/health` + uma auditoria.
 
 ## Nota sobre `GET /audits/{id}/export.zip`
 

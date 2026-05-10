@@ -1,5 +1,5 @@
 # Arranca o servidor sempre a partir desta pasta (evita importar outro pacote `app`).
-# Porta 8010 por defeito: em 8000 costumam acumular-se vários uvicorn e o pedido cai na API errada (ex.: 0.2.0).
+# Porta 8010 por padrão: em 8000 costumam acumular-se vários uvicorn e a requisição cai na API errada (ex.: 0.2.0).
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root

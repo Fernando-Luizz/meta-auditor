@@ -1,3 +1,4 @@
+{% from '_report_macros.html' import termo_barreira %}
 
 {# ═══ BARREIRAS ═══ #}
 <div class="section">
@@ -36,7 +37,7 @@
           {% if t|lower=='lighthouse' %}<span class="badge b-lh">Lighthouse</span>{% endif %}
           {% if t|lower=='wave' %}<span class="badge b-wave">WAVE</span>{% endif %}
         {% endfor %}
-        <span class="btitle">{{ termo(b.get('titulo_tecnico', b.get('issue_tipo_normalizado','—'))) }}</span>
+        <span class="btitle">{{ termo_barreira(b) }}</span>
       </div>
       {% if b.get('issue_id_original') %}<div class="btech">{{ b.get('issue_id_original') }}</div>{% endif %}
       {% if b.get('descricao_tecnica') %}<div class="bhuman">{{ b.get('descricao_tecnica','')|truncate(600) }}</div>{% endif %}
@@ -107,7 +108,7 @@
   <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Quando Lighthouse passou mas WAVE registrou barreira, adota-se o cenário mais restritivo.</p>
   {% for d in divs %}
   <div class="div-card">
-    <div class="div-top"><span class="badge b-div">⚠ DIVERGÊNCIA</span><span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} ocorrência(s)</span><span class="div-ttl">{{ termo(d.get('titulo_tecnico', d.get('issue_tipo_normalizado','—'))) }}</span></div>
+    <div class="div-top"><span class="badge b-div">⚠ DIVERGÊNCIA</span><span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} ocorrência(s)</span><span class="div-ttl">{{ termo_barreira(d) }}</span></div>
     <div class="chips">
       {% if d.get('wcag_criterio') %}<span class="chip">📋 <strong>WCAG {{ d.get('wcag_criterio') }}</strong></span>{% endif %}
       {% if d.get('publico_afetado') %}<span class="chip">{{ pub_icon(d.get('publico_afetado')) }} {{ d.get('publico_afetado') }}</span>{% endif %}
@@ -118,7 +119,7 @@
     {% if d.get('decisao') %}<div class="div-dec">Decisão: {{ d.get('decisao','')|replace('_',' ') }}</div>{% endif %}
   </div>
   {% else %}
-  <p class="empty">Nenhuma divergência registada.</p>
+  <p class="empty">Nenhuma divergência registrada.</p>
   {% endfor %}
 </div>
 
@@ -171,7 +172,7 @@
   <summary><div class="sec-row"><h2>Verificações manuais</h2><span class="cbadge" style="background:var(--ink3)">{{ manuals|length }}</span></div></summary>
   <div class="bc"><div class="bbody"><p style="font-size:13px;color:var(--ink3);margin-bottom:12px;">Itens só validáveis manualmente ou com ATS.</p>
   <ul class="ml">
-    {% for m in manuals %}<li><span class="m-ic">🔍</span><div><span class="m-lbl">{{ termo(m.get('titulo_tecnico','—')) }}</span><span class="m-desc">{{ m.get('descricao_tecnica','')|truncate(300) }}</span></div></li>{% endfor %}
+    {% for m in manuals %}<li><span class="m-ic">🔍</span><div><span class="m-lbl">{{ termo_barreira(m) }}</span><span class="m-desc">{{ m.get('descricao_tecnica','')|truncate(300) }}</span></div></li>{% endfor %}
   </ul></div></div>
 </details>
 {% endif %}

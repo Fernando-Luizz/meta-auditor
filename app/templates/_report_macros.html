@@ -1,4 +1,4 @@
-{# Macros partilhados pelo relatório executivo premium #}
+{# Macros compartilhados pelo relatório executivo premium #}
 {% macro risk_slug_nv(nv) -%}
 {%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
 {%- endmacro %}
@@ -24,19 +24,49 @@
   {%- else %}{{ raw }}{%- endif %}
 {% endmacro %}
 
-{% macro termo(t) %}
-  {%- set s=(t or '')|lower -%}
+{# Nomenclatura PT — s deve estar em minúsculas; pode concatenar tipo + id + título #}
+{% macro _termo_core(s, fallback) %}
   {%- if 'button' in s and 'name' in s %}Botão sem nome acessível
   {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Área de toque insuficiente
   {%- elif 'contrast' in s or 'contraste' in s %}Contraste de texto insuficiente
+  {%- elif 'alt_link' in s or 'imagem_link' in s %}Imagem-link sem texto alternativo
   {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem texto alternativo
   {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem rótulo
+  {%- elif 'rotulo_difere' in s or 'label-in-name' in s %}Rótulo visível não coincide com o nome acessível
   {%- elif 'aria' in s %}Marcação ARIA incorreta
   {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
+  {%- elif 'hierarquia_titulos' in s %}Hierarquia de títulos incorreta
+  {%- elif 'link_sem_nome' in s or 'link-name' in s or 'link_empty' in s %}Link sem nome acessível
+  {%- elif 'link-in-text' in s or ('link' in s and 'text' in s) %}Link pouco distinguível do texto ao redor
   {%- elif 'link' in s %}Link sem destino claro
   {%- elif 'lang' in s %}Idioma da página não declarado
   {%- elif 'focus' in s %}Foco do teclado não visível
-  {%- else %}{{ t }}{%- endif %}
+  {%- else %}{{ fallback }}{%- endif %}
+{% endmacro %}
+
+{% macro termo(t) %}
+{{- _termo_core((t or '')|lower, t or '—') -}}
+{% endmacro %}
+
+{# Preferir para barreiras: título repetido entre tipos não mascara o tipo normalizado #}
+{% macro termo_barreira(b) %}
+  {%- set s = ((b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('issue_id_original') or '') ~ ' ' ~ (b.get('titulo_tecnico') or ''))|lower -%}
+  {{- _termo_core(s, b.get('titulo_tecnico') or b.get('issue_tipo_normalizado') or '—') -}}
+{% endmacro %}
+
+{# Severidade em maiúsculas com acentuação (ex.: media → MÉDIA) — plano de ação e checklists #}
+{% macro prioridade_exibir_caps(p) %}
+{%- set raw = (p|string)|trim if p is not none else '' -%}
+{%- if raw == '' -%}—
+{%- else -%}
+{%- set lo = raw|lower -%}
+{%- if lo == 'media' -%}MÉDIA
+{%- elif lo == 'alta' -%}ALTA
+{%- elif lo == 'baixa' -%}BAIXA
+{%- elif lo == 'revisao_manual' -%}REVISÃO MANUAL
+{%- else -%}{{ raw|upper }}
+{%- endif -%}
+{%- endif -%}
 {% endmacro %}
 
 {% macro esforco(b) %}
@@ -62,8 +92,14 @@
     Aumente a área clicável para no mínimo <strong>24×24 px</strong> (WCAG 2.2, critério 2.5.8) — idealmente <strong>44×44 px</strong> para dispositivos móveis. Geralmente basta adicionar <code>padding</code> ao elemento sem alterar o visual do layout.
   {%- elif 'button-name' in id or 'controle_sem_nome' in id -%}
     Adicione texto legível ao botão ou use o atributo <code>aria-label</code>. Exemplo: <code>&lt;button aria-label="Fechar menu"&gt;✕&lt;/button&gt;</code>. Leitores de tela anunciarão o nome em vez de "botão sem nome".
+  {%- elif 'alt_link' in id or 'imagem_link' in id -%}
+    A imagem dentro deste link não possui texto alternativo, tornando o link invisível para leitores de tela. Adicione <code>alt</code> descritivo à imagem <em>com o destino do link</em> — não apenas o conteúdo visual. Exemplo: <code>&lt;a href="/noticias"&gt;&lt;img src="foto.jpg" alt="Ir para a seção de Notícias"&gt;&lt;/a&gt;</code>. O atributo <code>alt</code> é obrigatório mesmo quando vazio (<code>alt=""</code>).
+  {%- elif 'link-name' in id or 'link_empty' in id or 'link_sem_nome' in id -%}
+    Este link não possui nome acessível — é invisível para leitores de tela e navegação por teclado. Adicione texto descritivo dentro do elemento <code>&lt;a&gt;</code> ou use <code>aria-label</code> indicando o destino ou ação. Exemplo: <code>&lt;a href="/contato" aria-label="Acesse o formulário de contato"&gt;&lt;img src="icone.svg" alt=""&gt;&lt;/a&gt;</code>. Nunca deixe um link sem conteúdo textual ou <code>aria-label</code>.
   {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
     Diferencie links do texto ao redor além da cor — adicione sublinhado (<code>text-decoration:underline</code>) ou um ícone de seta. Alternativamente, garanta contraste de <strong>3:1</strong> entre a cor do link e o texto adjacente (WCAG 1.4.1).
+  {%- elif 'link' in id -%}
+    Revise este link para garantir que seu propósito seja claro tanto pelo texto visível quanto para tecnologias assistivas. Use texto descritivo dentro do <code>&lt;a&gt;</code> ou <code>aria-label</code> indicando o destino. Evite textos genéricos como "clique aqui" ou "saiba mais" sem contexto.
   {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
     Adicione o atributo <code>alt</code> com uma descrição útil da imagem. Para imagens puramente decorativas, use <code>alt=""</code> (vazio) — o leitor de tela a ignorará. <strong>Nunca omita</strong> o atributo, mesmo quando vazio.
   {%- elif 'aria' in id -%}
@@ -78,7 +114,7 @@
     Declare o idioma principal no elemento HTML: <code>&lt;html lang="pt-BR"&gt;</code>. Isso permite que leitores de tela pronunciem o conteúdo com o motor de voz correto.
   {%- elif cor %} {{ cor }}
   {%- else -%}
-    Corrija conforme o código técnico indicado abaixo{% if b.get('wcag_criterio') %} — referência: WCAG {{ b.get('wcag_criterio') }}{% endif %}.
+    Corrija conforme o código técnico indicado{% if b.get('wcag_criterio') %} — referência: WCAG {{ b.get('wcag_criterio') }}{% endif %}. Consulte o Apêndice Técnico para os seletores exatos.
   {%- endif -%}
 {% endmacro %}
 
@@ -96,4 +132,64 @@
   {%- else -%}
 <span class="badge b-man">{{ b.get('tool','—') }}</span>
   {%- endif -%}
+{% endmacro %}
+
+{# traduz_desc_tecnica — padrões Lighthouse/WAVE (EN → PT) para o Apêndice Técnico #}
+{% macro traduz_desc_tecnica(texto) %}
+{%- set t = (texto or '')|lower -%}
+{%- if 'low contrast' in t or 'color contrast' in t or 'contrast ratio' in t -%}
+  Texto com baixo contraste é difícil ou impossível de ler para muitos usuários. A proporção mínima exigida pelo WCAG é 4,5:1 para texto normal e 3:1 para texto grande (≥18pt).
+{%- elif 'missing alternative text' in t or ('alt' in t and 'attribute' in t and 'image' in t) -%}
+  Imagens informativas devem ter texto alternativo curto e descritivo. Para imagens decorativas, use <code>alt=""</code> — o leitor de tela a ignorará. O atributo é obrigatório em qualquer caso.
+{%- elif 'linked image missing' in t or ('alt' in t and 'link' in t) -%}
+  A imagem dentro do link não tem texto alternativo. O <code>alt</code> deve descrever o <em>destino</em> do link, não apenas a imagem.
+{%- elif 'touch targets' in t or 'target-size' in t or 'sufficient size' in t -%}
+  Alvos de toque com tamanho ou espaçamento insuficientes dificultam a interação para usuários com limitações motoras. A área mínima recomendada é 24×24 px (WCAG 2.5.8), idealmente 44×44 px.
+{%- elif 'aria-hidden' in t and 'focusable' in t -%}
+  Elementos focáveis dentro de regiões <code>aria-hidden="true"</code> ficam inacessíveis para tecnologias assistivas. Remova o <code>aria-hidden</code> ou mova os elementos focáveis para fora da região oculta.
+{%- elif 'visible text label' in t or ('accessible name' in t and 'label' in t) -%}
+  O rótulo visível não está contido no nome acessível, causando confusão para usuários de controle por voz que ativam elementos pelo texto que veem.
+{%- elif 'empty link' in t or ('link text' in t and 'discernible' in t) -%}
+  Links sem texto discernível são inacessíveis para leitores de tela. Adicione texto ao link ou use <code>aria-label</code> descrevendo o destino.
+{%- elif 'heading' in t and ('level' in t or 'order' in t or 'sequentially' in t) -%}
+  A hierarquia de cabeçalhos deve ser sequencial sem pular níveis (h1 → h2 → h3…). Leitores de tela usam essa estrutura para navegação rápida pela página.
+{%- elif 'suspicious link' in t -%}
+  Texto de link genérico ("clique aqui", "leia mais") não indica o destino para usuários de leitores de tela. Use texto que descreva o conteúdo de destino.
+{%- elif 'nearby image has the same alternative' in t or 'redundant alternative' in t -%}
+  Duas imagens próximas com o mesmo <code>alt</code> podem causar confusão. Verifique se os textos alternativos são distintos e descrevem cada imagem individualmente.
+{%- elif 'long alternative text' in t -%}
+  Texto alternativo excessivamente longo (recomendado: até 125 caracteres). Descrições longas devem usar <code>aria-describedby</code> ou texto visível na página.
+{%- elif 'redundant link' in t -%}
+  Vários links consecutivos com o mesmo destino geram ruído para usuários de leitores de tela. Considere consolidar em uma única referência.
+{%- elif 'noscript' in t -%}
+  Elemento <code>&lt;noscript&gt;</code> detectado. Verifique se o conteúdo alternativo é equivalente e acessível para usuários sem JavaScript.
+{%- elif 'very small text' in t -%}
+  Texto com tamanho inferior a 10px dificulta a leitura. Recomenda-se mínimo de 14px para texto de corpo; nunca use fonte abaixo de 11px.
+{%- elif 'pdf document' in t or 'pdf' in t -%}
+  Documentos PDF devem ser marcados com estrutura acessível (tags, ordem de leitura, texto alternativo em imagens). Verifique com o verificador de acessibilidade do Adobe Acrobat.
+{%- elif 'custom controls have associated labels' in t or ('controls' in t and 'labels' in t) -%}
+  Controles interativos personalizados devem ter rótulos associados via <code>aria-label</code> ou <code>aria-labelledby</code> para que leitores de tela anunciem seu propósito.
+{%- elif 'custom controls have aria roles' in t or ('controls' in t and 'aria roles' in t) -%}
+  Controles interativos personalizados devem ter <code>role</code> ARIA adequado (ex.: <code>role="button"</code>, <code>role="checkbox"</code>) para que tecnologias assistivas compreendam sua função.
+{%- elif 'focus is not accidentally trapped' in t or 'focus trap' in t -%}
+  Verifique manualmente: o usuário deve conseguir entrar e sair de qualquer controle ou região com Tab/Shift+Tab sem que o foco fique preso.
+{%- elif 'keyboard focusable' in t or 'focusable' in t -%}
+  Controles interativos personalizados devem ser acessíveis por teclado (Tab para focar, Enter/Espaço para ativar) e exibir indicador de foco visível.
+{%- elif 'purpose and state' in t or 'affordance' in t -%}
+  Elementos interativos devem indicar claramente seu estado (ativo, desativado, expandido, selecionado) e ser distinguíveis de elementos estáticos visualmente e via ARIA.
+{%- elif 'logical tab order' in t -%}
+  A ordem de foco pelo teclado (Tab) deve seguir a ordem visual da página. Verifique pressionando Tab em todos os elementos interativos — o foco deve percorrer o conteúdo de forma previsível.
+{%- elif 'focus is directed to new content' in t or 'managed-focus' in t -%}
+  Quando conteúdo novo é adicionado à página (diálogo, notificação, painel), o foco deve ser direcionado automaticamente para ele e retornar ao elemento de origem ao ser fechado.
+{%- elif 'offscreen content is hidden' in t -%}
+  Conteúdo fora da viewport deve estar oculto para tecnologias assistivas via <code>display:none</code> ou <code>aria-hidden="true"</code> — caso contrário é lido pelo leitor de tela mesmo invisível.
+{%- elif 'landmark elements' in t or 'html5 landmark' in t -%}
+  Use elementos HTML5 de marco semântico (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;aside&gt;</code>) para melhorar a navegação por tecnologias assistivas.
+{%- elif 'visual order' in t and 'dom order' in t -%}
+  A ordem visual deve corresponder à ordem do DOM. Se CSS reordena visualmente elementos, verifique se a sequência de leitura do leitor de tela ainda faz sentido.
+{%- elif 'device dependent event handler' in t or 'event handler' in t -%}
+  Eventos dependentes de dispositivo (somente mouse) excluem usuários de teclado ou toque. Substitua por eventos universais: <code>onclick</code> em vez de <code>onmouseover</code>, ou adicione equivalentes de teclado.
+{%- else -%}
+  {{ texto }}
+{%- endif -%}
 {% endmacro %}

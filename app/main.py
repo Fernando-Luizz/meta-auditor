@@ -70,7 +70,7 @@ _jinja_env = Environment(
 
 
 def _build_report_html(audit_row: dict) -> str:
-    """HTML do relatório a partir de um registo completo da tabela `audits`."""
+    """HTML do relatório a partir de um registro completo da tabela `audits`."""
     return _jinja_env.get_template("report.html").render(
         audit=audit_row,
         app_version=APP_VERSION,
@@ -87,7 +87,7 @@ def _raw_path_for_db(file_path: Path) -> str:
 
 
 def _resolved_raw_path(rel: str | None) -> Path | None:
-    """Caminho absoluto a um ficheiro bruto, só se existir e estiver debaixo de PROJECT_ROOT."""
+    """Caminho absoluto para arquivo bruto, apenas se existir e estiver dentro da árvore de PROJECT_ROOT."""
     if not rel or not isinstance(rel, str):
         return None
     p = (PROJECT_ROOT / rel.replace("\\", "/")).resolve()
@@ -115,7 +115,7 @@ def _audit_export_zip_bytes(audit_id: int, row: dict) -> bytes:
             "  01_lighthouse_psi_bruto.json — resposta bruta PageSpeed (Lighthouse)\n"
             "  02_wave_bruto.json — resposta bruta WAVE\n"
             "  03_relatorio_consolidado.json — relatório normalizado (consolidação)\n"
-            "  04_relatorio.html — relatório em HTML (mesmo do browser)\n"
+            "  04_relatorio.html — relatório em HTML (mesmo do navegador)\n"
         )
         zf.writestr("00_leia-me.txt", readme)
 
@@ -125,8 +125,8 @@ def _audit_export_zip_bytes(audit_id: int, row: dict) -> bytes:
         else:
             zf.writestr(
                 "01_lighthouse_psi_bruto_AUSENTE.txt",
-                "Ficheiro Lighthouse/PSI bruto indisponível (caminho não guardado, ficheiro "
-                "apagado ou auditoria antiga sem esta coluna na base de dados).\n",
+                "Arquivo Lighthouse/PSI bruto indisponível (caminho não salvo, arquivo "
+                "removido ou auditoria antiga sem esta coluna no banco de dados).\n",
             )
 
         wv_p = _resolved_raw_path(row.get("wave_raw_path"))
@@ -135,8 +135,8 @@ def _audit_export_zip_bytes(audit_id: int, row: dict) -> bytes:
         else:
             zf.writestr(
                 "02_wave_bruto_AUSENTE.txt",
-                "Ficheiro WAVE bruto indisponível (caminho não guardado, ficheiro apagado ou "
-                "auditoria antiga sem esta coluna na base de dados).\n",
+                "Arquivo WAVE bruto indisponível (caminho não salvo, arquivo removido ou "
+                "auditoria antiga sem esta coluna no banco de dados).\n",
             )
 
         zf.writestr(
@@ -308,27 +308,61 @@ def _crop_lh_screenshot_evidence(lh_raw: dict, lhids: list[str]) -> bytes | None
         return None
 
 
-def _placeholder_evidence_png(title: str = "Imagem indisponível") -> bytes | None:
-    """PNG sintético para o relatório não mostrar thumbnail quebrando (404)."""
+# ─────────────────────────────────────────────────────────────────────────────
+# CORREÇÃO 1 — Placeholder informativo (motivo + seletor)
+# ─────────────────────────────────────────────────────────────────────────────
+def _placeholder_evidence_png(
+    title: str = "Imagem indisponível",
+    reason: str = "",
+    selector: str = "",
+) -> bytes | None:
+    """PNG informativo quando a captura real não é possível (CAPTCHA, bloqueio, timeout)."""
     try:
         from PIL import Image, ImageDraw, ImageFont  # type: ignore
     except ImportError:
         return None
-    subtitle = "Sem Lighthouse brut · captura falhou ou indisponível (ex.: PSI 429, Docker)."
-    w, h = 420, 120
-    img = Image.new("RGB", (w, h), color=(248, 250, 252))
-    draw = ImageDraw.Draw(img)
-    draw.rectangle([0, 0, w - 1, h - 1], outline=(203, 213, 225), width=1)
-    try:
-        from pathlib import Path as _Path
 
-        font_path = _Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts" / "segoeui.ttf"
-        ft = ImageFont.truetype(str(font_path), 15) if font_path.is_file() else ImageFont.load_default()
-        fs = ImageFont.truetype(str(font_path), 11) if font_path.is_file() else ImageFont.load_default()
-    except Exception:
-        ft = fs = ImageFont.load_default()
-    draw.text((12, 16), title, fill=(55, 65, 81), font=ft)
-    draw.text((12, 48), subtitle, fill=(107, 114, 128), font=fs)
+    W, H = 520, 140
+    img = Image.new("RGB", (W, H), color=(248, 250, 252))
+    draw = ImageDraw.Draw(img)
+
+    # Faixa âmbar de cabeçalho
+    draw.rectangle([0, 0, W, 32], fill=(251, 191, 36))
+    draw.rectangle([0, 0, W - 1, H - 1], outline=(203, 213, 225), width=1)
+
+    # Fontes — tenta DejaVu (Linux/Docker), Helvetica (macOS), fallback default
+    ft_bold = ft_reg = ft_sm = None
+    for path in [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
+    ]:
+        try:
+            ft_bold = ImageFont.truetype(path, 13)
+            ft_reg = ImageFont.truetype(path, 12)
+            ft_sm = ImageFont.truetype(path, 10)
+            break
+        except Exception:
+            continue
+    if ft_bold is None:
+        ft_bold = ft_reg = ft_sm = ImageFont.load_default()
+
+    draw.text((8, 9), title, fill=(92, 62, 0), font=ft_bold)
+
+    y = 40
+    if reason:
+        draw.text((8, y), f"Motivo: {reason[:72]}", fill=(107, 114, 128), font=ft_reg)
+        y += 18
+    if selector:
+        short = selector[:68] + ("…" if len(selector) > 68 else "")
+        draw.text((8, y), f"Seletor: {short}", fill=(107, 114, 128), font=ft_sm)
+        y += 16
+    draw.text(
+        (8, y + 4),
+        "Use os seletores CSS no relatório para inspecionar manualmente.",
+        fill=(156, 163, 175),
+        font=ft_sm,
+    )
+
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
     return buf.getvalue()
@@ -385,15 +419,100 @@ def _barrier_selector_candidates(barrier: dict) -> list[str]:
     return out
 
 
-async def _capture_barrier_image(url: str, selectors: list[str], out_file: Path, compact: bool) -> None:
+# ─────────────────────────────────────────────────────────────────────────────
+# CORREÇÃO 2 — JS de highlight injetado via Playwright antes do screenshot
+# ─────────────────────────────────────────────────────────────────────────────
+_HIGHLIGHT_INJECT_JS = """
+(sel) => {
+    try {
+        const el = document.querySelector(sel);
+        if (!el) return false;
+        el.style.setProperty('outline', '3px solid #DC2626', 'important');
+        el.style.setProperty('outline-offset', '2px', 'important');
+        el.style.setProperty('background-color', 'rgba(220,38,38,0.10)', 'important');
+        el.dataset.metaHighlight = '1';
+        return true;
+    } catch { return false; }
+}
+"""
+
+_HIGHLIGHT_REMOVE_JS = """
+() => {
+    document.querySelectorAll('[data-meta-highlight]').forEach(el => {
+        el.style.removeProperty('outline');
+        el.style.removeProperty('outline-offset');
+        el.style.removeProperty('background-color');
+        delete el.dataset.metaHighlight;
+    });
+}
+"""
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CORREÇÃO 3 — Faixa de label Pillow sobreposta à imagem Playwright
+# ─────────────────────────────────────────────────────────────────────────────
+def _add_pillow_label(png_bytes: bytes, label: str) -> bytes:
+    """Sobrepõe faixa vermelha com label no topo da imagem capturada pelo Playwright."""
+    try:
+        from PIL import Image, ImageDraw, ImageFont  # type: ignore
+
+        img = Image.open(io.BytesIO(png_bytes)).convert("RGB")
+        bar_h = 22
+        new_img = Image.new("RGB", (img.width, img.height + bar_h), (220, 38, 38))
+        new_img.paste(img, (0, bar_h))
+        draw = ImageDraw.Draw(new_img)
+        font = None
+        for font_path in [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/System/Library/Fonts/Helvetica.ttc",
+        ]:
+            try:
+                font = ImageFont.truetype(font_path, 12)
+                break
+            except Exception:
+                continue
+        if font is None:
+            font = ImageFont.load_default()
+        draw.text((6, 4), label, fill=(255, 255, 255), font=font)
+        buf = io.BytesIO()
+        new_img.save(buf, format="PNG", optimize=True)
+        return buf.getvalue()
+    except Exception as exc:
+        _log.warning("_add_pillow_label falhou: %s", exc)
+        return png_bytes
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CORREÇÃO 4 — _capture_barrier_image com highlight + clip + label
+# ─────────────────────────────────────────────────────────────────────────────
+async def _capture_barrier_image(
+    url: str,
+    selectors: list[str],
+    out_file: Path,
+    compact: bool,
+    barrier_label: str = "",
+) -> None:
     def _capture_sync() -> None:
         pw_mod = importlib.import_module("playwright.sync_api")
         sync_playwright = pw_mod.sync_playwright
 
-        viewport = {"width": 800, "height": 520} if compact else {"width": 1366, "height": 900}
+        vw = 800 if compact else 1366
+        vh = 520 if compact else 900
+
         with sync_playwright() as pw:
-            browser = pw.chromium.launch(headless=True)
-            page = browser.new_page(viewport=viewport)
+            browser = pw.chromium.launch(
+                headless=True,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            ctx = browser.new_context(
+                viewport={"width": vw, "height": vh},
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/124.0.0.0 Safari/537.36"
+                ),
+            )
+            page = ctx.new_page()
             try:
                 page.goto(url, wait_until="domcontentloaded", timeout=60000)
             except Exception:
@@ -405,15 +524,63 @@ async def _capture_barrier_image(url: str, selectors: list[str], out_file: Path,
                     loc = page.locator(sel).first
                     if loc.count() < 1:
                         continue
+
                     loc.scroll_into_view_if_needed(timeout=4000)
-                    page.wait_for_timeout(250)
-                    loc.screenshot(path=str(out_file), type="png")
+                    page.wait_for_timeout(300)
+
+                    # Injeta outline vermelho + fundo translúcido no elemento
+                    page.evaluate(_HIGHLIGHT_INJECT_JS, sel)
+                    page.wait_for_timeout(150)
+
+                    bbox = loc.bounding_box()
+                    if bbox and bbox["width"] > 0 and bbox["height"] > 0:
+                        pad = 80
+                        clip = {
+                            "x": max(0.0, bbox["x"] - pad),
+                            "y": max(0.0, bbox["y"] - pad),
+                            "width": min(float(vw), bbox["width"] + pad * 2),
+                            "height": min(float(vh), bbox["height"] + pad * 2),
+                        }
+                        # Garante que o clip não extrapola o viewport
+                        if clip["x"] + clip["width"] > vw:
+                            clip["width"] = vw - clip["x"]
+                        if clip["y"] + clip["height"] > vh:
+                            clip["height"] = vh - clip["y"]
+
+                        # Screenshot da PÁGINA com clip (contexto real + highlight visível)
+                        png_bytes = page.screenshot(type="png", clip=clip)
+                    else:
+                        # bbox inválida: screenshot do viewport completo com highlight
+                        png_bytes = page.screenshot(type="png", full_page=False)
+
+                    # Remove highlight antes de fechar
+                    try:
+                        page.evaluate(_HIGHLIGHT_REMOVE_JS)
+                    except Exception:
+                        pass
+
+                    # Sobrepõe faixa de label vermelha no topo
+                    if barrier_label:
+                        png_bytes = _add_pillow_label(png_bytes, barrier_label)
+
+                    DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+                    out_file.write_bytes(png_bytes)
                     browser.close()
                     return
+
                 except Exception:
+                    try:
+                        page.evaluate(_HIGHLIGHT_REMOVE_JS)
+                    except Exception:
+                        pass
                     continue
 
-            page.screenshot(path=str(out_file), type="png", full_page=not compact)
+            # Fallback: nenhum seletor funcionou — screenshot do viewport sem highlight
+            png_bytes = page.screenshot(type="png", full_page=not compact)
+            if barrier_label:
+                png_bytes = _add_pillow_label(png_bytes, f"{barrier_label} · sem seletor")
+            DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+            out_file.write_bytes(png_bytes)
             browser.close()
 
     await asyncio.to_thread(_capture_sync)
@@ -490,7 +657,7 @@ async def audit_export_json(audit_id: int):
 
 @app.get("/audits/{audit_id}/export.html", response_class=HTMLResponse)
 async def audit_export_html(audit_id: int):
-    """Relatório HTML como ficheiro (descarga), não abre no separador do browser."""
+    """Relatório HTML como arquivo (download); não abre na aba do navegador."""
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
@@ -505,7 +672,7 @@ async def audit_export_html(audit_id: int):
 
 @app.get("/audits/{audit_id}/report.html", response_class=HTMLResponse)
 async def audit_report_html(audit_id: int):
-    """Relatório legível (HTML) a partir do registo na base de dados — sem CDN."""
+    """Relatório legível (HTML) a partir do registro no banco de dados — sem CDN."""
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
@@ -519,7 +686,7 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
     Evidência por barreira.
 
     Prioridade: (1) cache em disco — (2) crop do fullPageScreenshot Lighthouse (lhIds)
-    — (3) Playwright ao vivo — (4) screenshot global do bruto Lighthouse.
+    — (3) Playwright ao vivo com highlight + clip + label — (4) screenshot global do bruto Lighthouse.
     """
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
@@ -551,6 +718,7 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
             headers={"Cache-Control": "public, max-age=86400"},
         )
 
+    # ── Prioridade 2: crop do fullPageScreenshot Lighthouse via lhIds ──
     if lhids:
         lh_path = _resolved_raw_path(row.get("lighthouse_raw_path"))
         if lh_path is not None:
@@ -574,9 +742,23 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
             except Exception as exc:
                 _log.warning("Crop Lighthouse falhou (auditoria=%d barreira=%d): %s", audit_id, barrier_idx, exc)
 
+    # ── Monta label "Barreira #N · título · WCAG X.X.X" para sobrepor na imagem ──
+    titulo_barreira = str(barrier.get("titulo_tecnico") or barrier.get("issue_tipo_normalizado") or "")
+    wcag = str(barrier.get("wcag_criterio") or "")
+    barrier_label = f"Barreira #{barrier_idx + 1}"
+    if titulo_barreira:
+        barrier_label += f" · {titulo_barreira[:40]}"
+    if wcag:
+        barrier_label += f" · WCAG {wcag}"
+
+    first_selector = selectors[0] if selectors else ""
+
+    # ── Prioridade 3: Playwright ao vivo — highlight + clip + label ──
     if selectors:
         try:
-            await _capture_barrier_image(url, selectors, out_file, compact=compact)
+            await _capture_barrier_image(
+                url, selectors, out_file, compact=compact, barrier_label=barrier_label
+            )
             if out_file.exists():
                 _log.info("Evidência Playwright: auditoria=%d barreira=%d", audit_id, barrier_idx)
                 return Response(
@@ -587,22 +769,35 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
         except Exception as exc:
             _log.warning("Playwright falhou (auditoria=%d barreira=%d): %s", audit_id, barrier_idx, exc)
 
+    # ── Prioridade 4: screenshot global do bruto Lighthouse (fallback) ──
     lh_path = _resolved_raw_path(row.get("lighthouse_raw_path"))
     if lh_path is None:
-        ph = _placeholder_evidence_png()
+        ph = _placeholder_evidence_png(
+            title="Captura indisponível",
+            reason="Playwright bloqueado (CAPTCHA/anti-bot) e sem Lighthouse bruto",
+            selector=first_selector,
+        )
         if ph:
             return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
         raise HTTPException(status_code=404, detail="Imagem de evidência indisponível")
     try:
         raw = json.loads(lh_path.read_text(encoding="utf-8"))
     except Exception:
-        ph = _placeholder_evidence_png("Bruto Lighthouse inválido")
+        ph = _placeholder_evidence_png(
+            title="Lighthouse bruto inválido",
+            reason="Arquivo JSON corrompido ou ilegível",
+            selector=first_selector,
+        )
         if ph:
             return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
         raise HTTPException(status_code=500, detail="Falha ao ler bruto Lighthouse")
     data_url = _find_screenshot_data_url(raw)
     if not data_url:
-        ph = _placeholder_evidence_png("Sem screenshot no Lighthouse bruto")
+        ph = _placeholder_evidence_png(
+            title="Screenshot não encontrado",
+            reason="Lighthouse não gerou fullPageScreenshot para esta URL",
+            selector=first_selector,
+        )
         if ph:
             return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
         raise HTTPException(status_code=404, detail="Screenshot não encontrado no bruto Lighthouse")
@@ -620,7 +815,11 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
         )
         return Response(content=base64.b64decode(b64data), media_type=mime)
     except Exception:
-        ph = _placeholder_evidence_png("Screenshot Lighthouse inválido")
+        ph = _placeholder_evidence_png(
+            title="Screenshot Lighthouse inválido",
+            reason="Erro ao decodificar base64 do fullPageScreenshot",
+            selector=first_selector,
+        )
         if ph:
             return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
         raise HTTPException(status_code=500, detail="Screenshot inválido no bruto Lighthouse")
@@ -710,7 +909,6 @@ async def start_audit(request: AuditRequest):
     has_lighthouse = not psi_error
     has_wave = wave_raw_path is not None
 
-    # 502 apenas sem Lighthouse e sem JSON WAVE válido gravado em disco.
     if not has_lighthouse and not has_wave:
         parts = []
         if psi_error:
@@ -756,10 +954,9 @@ async def start_audit(request: AuditRequest):
     w_bar, w_alert, w_info = wave_items_to_issues(wave_flat, url)
     lh_passed_tipos = extract_passed_tipo_set(classified["passed"])
     report = build_report(
-        lh_auto, w_bar, w_alert, w_info, lh_manual, lh_passed_tipo_set=lh_passed_tipos
+        lh_auto, w_bar, w_alert, w_info, lh_manual, lh_passed_tipos=lh_passed_tipos
     )
 
-    # ── Extensão experimental: texto auxiliar via IA (desligada por defeito) ──
     if AI_ENHANCE_REPORT and ANTHROPIC_API_KEY:
         try:
             from app.services.ai_enhancer import enhance_report

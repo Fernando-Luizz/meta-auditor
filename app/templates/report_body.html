@@ -32,7 +32,7 @@
 {% set pour=namespace(p=[],o=[],u=[],r=[]) %}
 {% for bb in bars %}
   {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
-  {% set nm_cur=bb.get('titulo_tecnico') or bb.get('issue_tipo_normalizado') or tp %}
+  {% set nm_cur=bb.get('issue_tipo_normalizado') or bb.get('titulo_tecnico') or tp %}
   {% if 'contrast' in tp or 'contraste' in tp or 'alt' in tp or 'imagem' in tp or 'image' in tp %}
     {% if nm_cur not in pour.p %}{% set _ = pour.p.append(nm_cur) %}{% endif %}
   {% elif 'target' in tp or 'focus' in tp or 'button' in tp or 'link' in tp or 'keyboard' in tp or 'controle' in tp or 'alvo' in tp %}

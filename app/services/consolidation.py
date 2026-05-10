@@ -20,7 +20,7 @@ from collections import defaultdict
 def _location_fingerprint(iss: dict) -> str:
     """
     Distingue ocorrências do mesmo tipo na mesma URL quando há evidência de localização.
-    Sem localização, partilha chave __no_loc__ (visão mais agregada).
+    Sem localização, compartilha chave __no_loc__ (visão mais agregada).
     """
     ev = iss.get("evidencia_localizacao")
     if not isinstance(ev, list) or not ev:

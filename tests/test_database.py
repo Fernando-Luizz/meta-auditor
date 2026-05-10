@@ -1,4 +1,4 @@
-"""Testes da camada app.database (SQLite real em ficheiro temporário)."""
+"""Testes da camada app.database (SQLite real em arquivo temporário)."""
 from __future__ import annotations
 
 import asyncio

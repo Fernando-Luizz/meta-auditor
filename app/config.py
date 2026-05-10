@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # O .env do projeto deve prevalecer sobre variáveis já definidas no Windows/sessão
-# (ex.: WAVE_REPORT_TYPE=2 no ambiente bloqueava WAVE_REPORT_TYPE=4 no ficheiro).
+# (ex.: WAVE_REPORT_TYPE=2 no ambiente bloqueava WAVE_REPORT_TYPE=4 no arquivo).
 load_dotenv(_PROJECT_ROOT / ".env", override=True)
 load_dotenv()  # cwd: só preenche chaves ainda ausentes
 

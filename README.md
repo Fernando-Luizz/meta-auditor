@@ -46,7 +46,7 @@ cp .env.example .env
 
 # 4. Iniciar o servidor
 uvicorn app.main:app --reload --port 8000
-# Windows (recomendado): .\run_dev.ps1 — porta **8010** por defeito (evita conflito com outros serviços na 8000)
+# Windows (recomendado): .\run_dev.ps1 — porta **8010** por padrão (evita conflito com outros serviços na 8000)
 ```
 
 ---
@@ -56,7 +56,7 @@ uvicorn app.main:app --reload --port 8000
 | Como iniciou | URL típica |
 |--------------|------------|
 | `uvicorn ... --port 8000` | http://127.0.0.1:8000 |
-| `.\run_dev.ps1` (Windows, porta por defeito) | http://127.0.0.1:8010 |
+| `.\run_dev.ps1` (Windows, porta padrão) | http://127.0.0.1:8010 |
 | Variável `$env:META_AUDITOR_PORT` antes de `run_dev.ps1` | porta personalizada |
 | `docker compose up` (mapeamento `8010:8000` no `docker-compose.yml`) | http://127.0.0.1:8010 |
 
@@ -254,4 +254,4 @@ Não envie um ZIP “da pasta do projeto” com `.venv`, caches, `.env` com chav
 
 ## Licença
 
-Projeto acadêmico — UEA / EST — 2026. Ver ficheiro `LICENSE`.
+Projeto acadêmico — UEA / EST — 2026. Ver arquivo `LICENSE`.

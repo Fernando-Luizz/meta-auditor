@@ -70,13 +70,16 @@
 {% macro termo(t) %}
   {%- set s=(t or '')|lower -%}
   {%- if 'button' in s and 'name' in s %}Botão sem nome — leitor de tela anuncia apenas "botão"
-  {%- elif 'target-size' in s or 'touch target' in s %}Alvo de toque pequeno demais — difícil de clicar
+  {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Alvo de toque pequeno demais — difícil de clicar
   {%- elif 'contrast' in s or 'contraste' in s %}Contraste insuficiente — texto ilegível para baixa visão
-  {%- elif 'image-alt' in s or 'alt' in s %}Imagem sem descrição — invisível para leitores de tela
-  {%- elif 'label' in s %}Campo de formulário sem identificação
+  {%- elif 'alt_link' in s or 'imagem_link' in s %}Imagem-link sem texto alternativo
+  {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem descrição — invisível para leitores de tela
+  {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem identificação
   {%- elif 'aria' in s %}Marcação ARIA incorreta
   {%- elif 'heading' in s %}Estrutura de títulos quebrada
-  {%- elif 'link' in s %}Link sem descrição clara de destino
+  {%- elif 'link_sem_nome' in s or 'link-name' in s or 'link_empty' in s %}Link sem nome acessível
+  {%- elif 'link-in-text' in s or ('link' in s and 'text' in s) %}Link pouco distinguível do texto ao redor
+  {%- elif 'link' in s %}Link sem destino claro
   {%- elif 'lang' in s %}Idioma da página não declarado
   {%- elif 'focus' in s %}Foco do teclado não visível
   {%- else %}{{ t }}{%- endif %}

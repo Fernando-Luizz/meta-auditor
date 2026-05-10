@@ -492,7 +492,17 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
     "controle_sem_nome_acessivel": "Adicionar atributo aria-label ou texto visível ao botão/controle.",
     "contraste_insuficiente": "Aumentar contraste para razão mínima de 4,5:1 (texto normal) ou 3:1 (texto grande).",
     "imagem_sem_texto_alternativo": "Adicionar atributo alt descritivo. Para imagens decorativas usar alt=\"\".",
-    "link_sem_nome_acessivel": "Adicionar texto descritivo ao link ou aria-label com o destino/ação.",
+    "imagem_link_sem_texto_alternativo": (
+        "Adicione alt descritivo à imagem dentro do link. "
+        "O alt deve indicar o destino do link, não apenas o conteúdo visual. "
+        "Exemplo: <img src='banner.jpg' alt='Acesse a página de inscrição'>. "
+        "O atributo alt é obrigatório mesmo quando vazio."
+    ),
+    "link_sem_nome_acessivel": (
+        "Adicione texto descritivo dentro do <a> ou use aria-label com o destino ou ação. "
+        "Links com apenas ícone ou imagem sem alt são invisíveis para leitores de tela. "
+        "Exemplo: <a href='/sobre' aria-label='Conheça nossa equipe'>...</a>."
+    ),
     "formulario_sem_rotulo": "Associar campo a um <label for='id'> ou usar aria-label/aria-labelledby.",
     "campo_select_sem_label": "Adicionar label associado ao select ou aria-label descrevendo o campo.",
     "rotulo_difere_do_nome_acessivel": "Garantir que o nome acessível contenha o texto visível do controle (Label in Name).",
