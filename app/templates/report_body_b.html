@@ -173,6 +173,74 @@
 </div>
 {% endif %}
 
+{# ══ O QUE ESTÁ CORRETO — sempre visível se Lighthouse rodou ══════════════ #}
+{% set aprovados = r.get('itens_aprovados') or [] %}
+{% set sb_passed = sb.get('passed_audits_count', 0)|int %}
+{% set sb_scored = sb.get('scored_audits_count', 0)|int %}
+{% set _lh_ran = audit.lh_score is not none %}
+{# Fallback: score_breakdown ausente → sb_passed pode ser 0 mesmo com Lighthouse #}
+{% set _show_approved = (aprovados|length > 0) or (sb_passed > 0) or _lh_ran %}
+{% if _show_approved %}
+<section class="ma-approved-sec" aria-labelledby="approved-heading">
+  <div class="ma-approved-box">
+    <div class="ma-approved-header" id="approved-heading">
+      <span class="ma-approved-icon" aria-hidden="true">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="ma-approved-title-text">O que está correto</span>
+      {% if sb_passed > 0 and sb_scored > 0 %}
+      <span class="ma-approved-count">{{ sb_passed }}/{{ sb_scored }} critérios Lighthouse aprovados</span>
+      {% elif aprovados|length > 0 %}
+      <span class="ma-approved-count">{{ aprovados|length }} itens aprovados</span>
+      {% elif _lh_ran %}
+      <span class="ma-approved-count">Lighthouse · resumo no Apêndice A4</span>
+      {% endif %}
+    </div>
+    <div class="ma-approved-body">
+      {% if aprovados|length > 0 %}
+      <ul class="ma-approved-list" aria-label="Itens aprovados pelo Lighthouse">
+        {% for item in aprovados[:10] %}
+        <li class="ma-approved-item">
+          <span class="ma-approved-check" aria-hidden="true">✓</span>
+          <span class="ma-approved-text">{{ item.get('title', '—') }}</span>
+        </li>
+        {% endfor %}
+        {% if aprovados|length > 10 %}
+        <li class="ma-approved-item ma-approved-more">
+          <span class="ma-approved-check" aria-hidden="true">+</span>
+          <span class="ma-approved-text">e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }} — ver <a href="#apendice-a4-lighthouse">Apêndice A4</a></span>
+        </li>
+        {% endif %}
+      </ul>
+      {% elif sb_passed > 0 %}
+      <p class="ma-approved-empty">{{ sb_passed }} critério{{ 's' if sb_passed > 1 else '' }} aprovado{{ 's' if sb_passed > 1 else '' }} pelo Lighthouse. Detalhes completos no <a href="#apendice-a4-lighthouse">Apêndice A4</a>.</p>
+      {% else %}
+      <p class="ma-approved-empty">Detalhes disponíveis no <a href="#apendice-a4-lighthouse">Apêndice A4</a> · Itens Lighthouse.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ── Fix 3: parâmetros formais — antes das barreiras (visível cedo no PDF) ── #}
+{% set _mco3 = r.get('metadados_coleta') or {} %}
+{% set _lh_ver3 = ((_mco3.get('lighthouse') or {}).get('version') or '')|trim %}
+<div class="ma-eval-declaration ma-eval-declaration--top" role="region" aria-labelledby="eval-decl-top-heading">
+  <div class="ma-eval-decl-header">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 8h8M4 5h5M4 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span id="eval-decl-top-heading">Parâmetros da avaliação</span>
+  </div>
+  <div class="ma-eval-decl-grid">
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Nível de referência</span><span class="ma-eval-val">WCAG 2.1 — Nível AA</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Data da avaliação</span><span class="ma-eval-val">{{ (audit.created_at or '—')[:10] }}</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Avaliador / sistema</span><span class="ma-eval-val">Meta-Auditor {{ app_version }} — UEA / Escola Superior de Tecnologia</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">URL avaliada</span><span class="ma-eval-val" style="word-break:break-all">{{ audit.url }}</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Escopo da amostra</span><span class="ma-eval-val">{% if r.get('multi_page') %}Múltiplas páginas{% else %}Página única (homepage / URL declarada){% endif %} — sem autenticação</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Ferramentas</span><span class="ma-eval-val">Google Lighthouse{% if _lh_ver3 %} v{{ _lh_ver3 }}{% endif %} (via PSI) · WebAIM WAVE API v3</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Cobertura / aviso</span><span class="ma-eval-val">~30–40% WCAG 2.1 AA — <strong>não substitui auditoria humana especializada</strong></span></div>
+  </div>
+</div>
+
 {# ══ 11. BARREIRAS DETALHADAS ════════════════════════════════════════ #}
 {% if bars %}
 <section aria-labelledby="barriers-heading">
@@ -187,7 +255,6 @@
     {% for b in bars %}
     {% set bprio=(b.get('prioridade','media'))|lower %}
     {% set occ=(b.get('ocorrencias_count') or 1)|int %}
-    {% set evcodes=b.get('evidencia_localizacao') or [] %}
     {% set ef = esforco(b)|trim %}
     {% set strip_cls = 'manual' if bprio=='revisao_manual' else (bprio if bprio in ['alta','media'] else 'baixa') %}
     {% set loc_dot = strip_cls %}
@@ -212,7 +279,7 @@
       <div class="ma-bc-strip {{ strip_cls }}" role="presentation"></div>
       <div class="ma-bc-head">
         <div class="ma-bc-head-left">
-          <span class="ma-bc-num">Barreira #{{ loop.index }} · {{ phase_lbl }}</span>
+          <span class="ma-bc-num">Barreira #{{ loop.index }} · {{ phase_lbl }}{% if r.get('multi_page') and b.get('page_label') %} · <span class="ma-page-label" title="{{ b.get('page_url','') }}">{{ b.get('page_label') }}</span>{% endif %}</span>
           <h3 class="ma-bc-title" id="bar-title-{{ loop.index }}">{{ termo_barreira(b) }}</h3>
           <details class="ma-bc-tech-details">
             <summary class="ma-bc-tech-summary">Códigos da ferramenta <span class="ma-bc-tech-hint">(opcional — detalhe técnico)</span></summary>
@@ -233,7 +300,13 @@
       </div>
       <div class="ma-bc-location">
         <span class="ma-bc-location-dot {{ loc_dot }}" aria-hidden="true"></span>
-        <span><strong>Onde está:</strong> {{ b.get('onde_esta') or 'Não especificado — ver evidências e localização técnica no Apêndice.' }}</span>
+        <div class="ma-bc-location-body">
+          <span><strong>Onde está:</strong> {{ b.get('onde_esta') or 'Não especificado — ver evidências e localização técnica no Apêndice.' }}</span>
+          {% set _bar_url = b.get('page_url') or audit.url %}
+          {% if _bar_url %}
+          <span class="ma-bc-location-url"><strong>Página:</strong> <span class="ma-bc-url-text">{{ _bar_url }}</span></span>
+          {% endif %}
+        </div>
         <span class="ma-bc-location-count">{{ occ }} {% if occ == 1 %}local{% else %}locais{% endif %}</span>
       </div>
       {% if occ > 1 %}
@@ -254,125 +327,173 @@
           <span class="ma-bc-aud-desc">{{ pub_desc(b.get('publico_afetado','')) }}</span>
         </div>
       </div>
-      {% if b.get('justificativa_gerencial') %}
-      <div class="ma-bc-justify" role="note">
-        <strong>Justificativa gerencial</strong>
-        {{ b.get('justificativa_gerencial') }}
+
+      {% set ds = b.get('dados_semanticos') or {} %}
+      {% if ds %}
+      <div class="sem-compare" role="note" aria-label="Evidência semântica da barreira">
+        <div class="sem-compare__title">Comparação semântica do elemento</div>
+        {% if ds.get('visivel') %}
+        <div class="sem-row">
+          <div class="sem-key">Texto visível</div>
+          <div class="sem-val"><code>{{ ds.get('visivel') }}</code></div>
+        </div>
+        {% endif %}
+        {% if ds.get('acessivel') %}
+        <div class="sem-row">
+          <div class="sem-key">Nome acessível</div>
+          <div class="sem-val"><code>{{ ds.get('acessivel') }}</code></div>
+        </div>
+        {% endif %}
+        {% if ds.get('problema') %}
+        <div class="sem-row sem-row--problem">
+          <div class="sem-key">Problema</div>
+          <div class="sem-val">{{ ds.get('problema') }}</div>
+        </div>
+        {% endif %}
       </div>
       {% endif %}
 
-      {# ── Screenshot principal — visível diretamente (sem <details>) ── #}
+      <div class="ev-wrap">
+      {# ── Screenshot principal ── #}
+      {# REGRA DE QUALIDADE:
+         LH_CROP / EMBEDDED / PLAYWRIGHT validado são confiáveis.
+         Outras fontes ficam como captura ao vivo no browser e indisponível no PDF. #}
       <div class="ma-bc-evidence" role="region" aria-label="Evidência visual da barreira #{{ loop.index }}">
-        {% if b.get('evidencias') and (b.get('evidencias')|length > 0) %}
-          {% for ev in b.get('evidencias')[:1] %}
-            {% if ev.get('screenshot_base64') %}
-            <figure class="ev-figure">
-              <img class="ev-img ev-img-main"
-                   src="data:image/png;base64,{{ ev.get('screenshot_base64') }}"
-                   alt="Captura de tela mostrando onde está o problema de acessibilidade nesta barreira"
-                   loading="lazy">
-              <figcaption class="ev-caption">
-                Evidência visual · Barreira #{{ loop.index }}
-                {% if ev.get('xpath') %} — <code style="font-size:10px">{{ ev.get('xpath')|truncate(60) }}</code>{% endif %}
-              </figcaption>
-            </figure>
+        {% set _ev_src = b.get('evidence_source', 'URL') %}
+        {% set _ev_b64 = b.get('evidencia_b64') %}
+        {# Fallback: campo legado evidencias[0].screenshot_base64 #}
+        {% if not _ev_b64 and b.get('evidencias') %}
+          {% for _ev in b.get('evidencias')[:1] %}
+            {% if _ev.get('screenshot_base64') %}
+              {% set _ev_b64 = 'data:image/png;base64,' ~ _ev.get('screenshot_base64') %}
             {% endif %}
           {% endfor %}
-        {% else %}
-          {# Screenshot automático via endpoint de evidências #}
-          {% set ev_anchor = 'evid-' ~ (audit.id|string) ~ '-' ~ (loop.index0|string) %}
-          <figure class="ev-figure">
-            <a id="{{ ev_anchor }}"
-               href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0"
-               target="_blank" rel="noopener"
-               style="display:inline-block;line-height:0;max-width:100%"
-               aria-label="Ampliar captura de tela da barreira #{{ loop.index }}">
-              <img class="ev-img ev-img-main"
-                   src="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=1"
-                   alt="Captura de tela mostrando onde está o problema de acessibilidade"
-                   loading="lazy"
-                   onerror="this.closest('figure').querySelector('.ev-fail').style.display='flex';this.style.display='none';">
-            </a>
-            <div class="ev-fail" role="status" style="display:none">
-              <span class="ef-icon" aria-hidden="true">📷</span>
-              <span>Imagem não disponível (CAPTCHA, autenticação ou bloqueio). Consulte o Apêndice Técnico para os seletores de localização.</span>
-            </div>
-            <figcaption class="ev-caption">Clique para ampliar · Barreira #{{ loop.index }}</figcaption>
-          </figure>
         {% endif %}
+
+        {# Confiável = base64 embutido COM fonte aprovada #}
+        {% set _ev_reliable = _ev_b64 and _ev_src in ('LH_CROP', 'EMBEDDED', 'PLAYWRIGHT') %}
+
+        <figure class="ev-figure" data-ev-src="{{ _ev_src }}">
+          {% if _ev_reliable %}
+            <img class="ev-img ev-img-main"
+                 src="{{ _ev_b64 }}"
+                 alt="Evidência visual da barreira #{{ loop.index }}: {{ termo_barreira(b) }}"
+                 loading="lazy">
+          {% else %}
+            {# Sem evidência confiável:
+               Browser: tenta captura ao vivo (pode funcionar)
+               PDF: CSS oculta a imagem, exibe bloco indisponível #}
+            <img class="ev-img ev-img-main ev-img-live"
+                 src="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=1"
+                 alt="Evidência visual da barreira #{{ loop.index }}: {{ termo_barreira(b) }}"
+                 loading="eager"
+                 onerror="this.style.display='none';this.closest('figure').querySelector('.ev-unavail').style.display='flex';">
+            <div class="ev-unavail" role="note">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5M8 10.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span>Evidência visual indisponível — elemento detectado apenas por ferramenta visual (WAVE) sem boundingRect, ou bloqueado por anti-bot. Consulte os seletores no Apêndice Técnico.</span>
+            </div>
+          {% endif %}
+          <figcaption class="ev-caption">
+            {% if _ev_reliable %}
+              {% if _ev_src == 'LH_CROP' %}
+                <span class="ev-badge ev-badge--lh">Lighthouse · recorte com destaque</span>
+              {% elif _ev_src == 'PLAYWRIGHT' %}
+                <span class="ev-badge ev-badge--url">Captura ao vivo validada</span>
+              {% else %}
+                <span class="ev-badge ev-badge--lh">Evidência capturada</span>
+              {% endif %}
+            {% else %}
+              <span class="ev-badge ev-badge--unavail">Sem evidência confiável</span>
+              · <a href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0"
+                   target="_blank" rel="noopener" class="ev-expand-link no-print">ver captura ao vivo ↗</a>
+            {% endif %}
+            · Barreira #{{ loop.index }}
+          </figcaption>
+        </figure>
+      </div>
       </div>
 
-      {# ── Impacto + Como Corrigir ── #}
-      <div class="ma-bc-body">
-        <div class="ma-bc-col">
-          <div class="ma-bc-col-label impact">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-              <path d="M8 2v6M8 11v1" stroke="#E53E3E" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="8" cy="8" r="7" stroke="#E53E3E" stroke-width="1.5"/>
-            </svg>
-            Impacto
+      {# ── Camada determinística executiva
+         SEMPRE visível — critério WCAG, impacto técnico, correção base.
+         A camada IA gerencial complementa esta logo abaixo quando disponível.
+         O conteúdo técnico completo (versao_dev + ticket) está no Apêndice A1.
+      ── #}
+      <div class="ma-bc-exec-layer">
+        <p class="ma-bc-layer-subhead ma-bc-layer-subhead--det">Camada determinística executiva</p>
+        <div class="ma-bc-body">
+          <div class="ma-bc-col">
+            <div class="ma-bc-col-label impact">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+                <path d="M8 2v6M8 11v1" stroke="#E53E3E" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="8" cy="8" r="7" stroke="#E53E3E" stroke-width="1.5"/>
+              </svg>
+              Impacto
+            </div>
+            <p class="ma-bc-impact-text">
+              {% if b.get('impacto_descricao') %}{{ b.get('impacto_descricao') }}
+              {% elif bprio=='alta' %}Prioridade alta: corrigir com urgência.
+              {% elif bprio=='revisao_manual' %}Requer validação manual adicional.
+              {% else %}Planejar correção conforme o ciclo da equipe.{% endif %}
+              <br><br>
+              {{ pub_desc(b.get('publico_afetado','')) }}
+              {# Mostrar apenas descrição em português; texto em inglês das ferramentas vai para o Apêndice Técnico #}
+              {% if b.get('descricao_humana') %}<br><br>{{ b.get('descricao_humana') }}{% endif %}
+            </p>
           </div>
-          <p class="ma-bc-impact-text">
-            {% if b.get('impacto_descricao') %}{{ b.get('impacto_descricao') }}
-            {% elif bprio=='alta' %}Prioridade alta: corrigir com urgência.
-            {% elif bprio=='revisao_manual' %}Requer validação manual adicional.
-            {% else %}Planejar correção conforme o ciclo da equipe.{% endif %}
-            <br><br>
-            {{ pub_desc(b.get('publico_afetado','')) }}
-            {# Mostrar apenas descrição em português; texto em inglês das ferramentas vai para o Apêndice Técnico #}
-            {% if b.get('descricao_humana') %}<br><br>{{ b.get('descricao_humana') }}{% endif %}
-            {% if b.get('explicacao_usuario') %}<br><br>{{ b.get('explicacao_usuario') }}{% endif %}
-          </p>
-        </div>
-        <div class="ma-bc-col">
-          <div class="ma-bc-col-label fix">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-              <path d="M2 8h12M10 4l4 4-4 4" stroke="#1A6B3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Como corrigir
-          </div>
-          <div class="ma-bc-fix-steps">
-            <div class="ma-bc-fix-step">{{ (b.get('como_corrigir_claro') or correcao_detalhada(b))|safe }}</div>
+          <div class="ma-bc-col">
+            <div class="ma-bc-col-label fix">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+                <path d="M2 8h12M10 4l4 4-4 4" stroke="#1A6B3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Como corrigir
+            </div>
+            <div class="ma-bc-fix-steps">
+              <div class="ma-bc-fix-step">{{ correcao_detalhada(b)|safe }}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      {# Ticket de backlog — útil para gestor e equipe #}
-      {% if b.get('versao_gestor') or b.get('versao_dev') or b.get('texto_ticket') %}
-      <div class="ma-bc-follow">
-        <details class="ticket-details">
-          <summary>🎫 Ver sugestão de ticket para o backlog</summary>
-          <div class="ticket-body">
-            {% if b.get('versao_gestor') %}
-            <div class="tk-row"><div class="tk-lbl">Versão gestor</div><div class="tk-val">{{ b.get('versao_gestor') }}</div></div>
-            {% endif %}
-            {% if b.get('versao_dev') %}
-            <div class="tk-row"><div class="tk-lbl">Versão dev</div><div class="tk-val">{{ b.get('versao_dev') }}</div></div>
-            {% endif %}
-            {% set tk = b.get('texto_ticket') if b.get('texto_ticket') is mapping else {} %}
-            {% if tk %}
-            {% if tk.get('titulo') %}<div class="tk-row"><div class="tk-lbl">Título</div><div class="tk-val">{{ tk.get('titulo') }}</div></div>{% endif %}
-            {% if tk.get('descricao') %}<div class="tk-row"><div class="tk-lbl">Descrição</div><div class="tk-val">{{ tk.get('descricao') }}</div></div>{% endif %}
-            {% if tk.get('criterio_de_pronto') %}<div class="tk-row"><div class="tk-lbl">Critério de pronto</div><div class="tk-val">{{ tk.get('criterio_de_pronto') }}</div></div>{% endif %}
-            {% endif %}
+      {% if b.get('justificativa_gerencial') or b.get('explicacao_usuario') or b.get('como_corrigir_claro') or b.get('acao_gerencial') %}
+      <div class="ma-bc-ai-layer" role="note" aria-label="Camada assistida por IA">
+        <p class="ma-bc-layer-subhead ma-bc-layer-subhead--ai">Camada assistida por IA</p>
+        <div class="ma-bc-ai-body">
+          {% if b.get('justificativa_gerencial') %}
+          <div class="ma-bc-ai-row">
+            <div class="ma-bc-ai-lbl">Por que priorizar</div>
+            <div class="ma-bc-ai-val">{{ b.get('justificativa_gerencial') }}</div>
           </div>
-        </details>
+          {% endif %}
+          {% if b.get('explicacao_usuario') %}
+          <div class="ma-bc-ai-row">
+            <div class="ma-bc-ai-lbl">Quem é afetado</div>
+            <div class="ma-bc-ai-val">{{ b.get('explicacao_usuario') }}</div>
+          </div>
+          {% endif %}
+          {% if b.get('como_corrigir_claro') %}
+          <div class="ma-bc-ai-row">
+            <div class="ma-bc-ai-lbl">O que precisa mudar</div>
+            <div class="ma-bc-ai-val">{{ b.get('como_corrigir_claro') }}</div>
+          </div>
+          {% endif %}
+          {% if b.get('acao_gerencial') %}
+          <div class="ma-bc-ai-row ma-bc-ai-row--action">
+            <div class="ma-bc-ai-lbl ma-bc-ai-lbl--action">Ação da gestão</div>
+            <div class="ma-bc-ai-val ma-bc-ai-val--action">{{ b.get('acao_gerencial') }}</div>
+          </div>
+          {% endif %}
+        </div>
       </div>
       {% endif %}
 
-      {# Detalhe técnico no apêndice — evcodes e/ou descricao_tecnica #}
-      {% if evcodes or b.get('descricao_tecnica') %}
-      <div class="ma-bc-appendix-ref" role="note">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+      {# Ticket NÃO aparece mais no corpo executivo.
+         O corpo só aponta para o apêndice técnico da barreira. #}
+      <div class="ma-bc-appendix-ref ma-bc-appendix-ref--quiet" role="note">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
           <path d="M8 2v9M4 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        {% if evcodes %}
-        Seletores CSS/HTML e localização técnica completa no <a href="#apendice-tecnico-barreira-{{ loop.index }}">Apêndice Técnico — Barreira #{{ loop.index }}</a>.
-        {% else %}
-        Descrição técnica e contexto da ferramenta no <a href="#apendice-tecnico-barreira-{{ loop.index }}">Apêndice Técnico — Barreira #{{ loop.index }}</a>.
-        {% endif %}
+        <a href="#apendice-tecnico-barreira-{{ loop.index }}">Ver apêndice técnico da barreira #{{ loop.index }}</a>
       </div>
-      {% endif %}
     </article>
     {% endfor %}
   </details>
@@ -634,6 +755,8 @@
   <div class="sec-ey">Transparência metodológica</div>
   <h2 style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px" id="method-heading">Como esta auditoria foi realizada</h2>
   <p style="font-size:12px;color:var(--ink3);line-height:1.6">Dois pipelines complementares: Lighthouse (estrutura do DOM PSI) + WAVE (página perceptível). Cobertura automática típica: ~30–40% AA.</p>
+  <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Os <strong>parâmetros formais</strong> desta avaliação (data, URL, ferramentas, escopo e aviso legal) encontram-se na secção <strong>Parâmetros da avaliação</strong> antes das barreiras automáticas.</p>
+
   <div class="method-grid">
     <div class="method-card mc-lh" role="region" aria-label="Lighthouse"><div class="mc-icon" aria-hidden="true">🔦</div><div class="mc-title">Lighthouse Accessibility</div><div class="mc-desc">Audits binários sobre o relatório PSI; útil para erros estruturais e boas práticas.</div></div>
     <div class="method-card mc-wave" role="region" aria-label="WAVE"><div class="mc-icon" aria-hidden="true">🌊</div><div class="mc-title">WebAIM WAVE</div><div class="mc-desc">Análise da página renderizada; destaca contrastes e marcação visual quando aplicável.</div></div>
@@ -694,18 +817,25 @@
     <p class="ap-desc">Seletores CSS/HTML, localização técnica, alertas de ferramentas e itens de revisão manual. Este material complementa as barreiras descritas no corpo do relatório.</p>
   </div>
 
-  {# ── A1. Seletores por barreira ── #}
+  {# ── A1. Seletores e backlog por barreira (todas as barreiras) ── #}
   {% if bars %}
   <div class="ap-block">
-    <h3 class="ap-block-title">A1 · Localização técnica por barreira</h3>
+    <h3 class="ap-block-title">A1 · Localização técnica e backlog por barreira</h3>
     {% for b in bars %}
     {% set evcodes=b.get('evidencia_localizacao') or [] %}
-    {% if evcodes or b.get('descricao_tecnica') %}
     <div class="ap-barrier-block" id="apendice-tecnico-barreira-{{ loop.index }}">
       <div class="ap-barrier-title">
         <span class="ap-barrier-num">Barreira #{{ loop.index }}</span>
         <span class="ap-barrier-name">{{ termo_barreira(b) }}</span>
+        {% if b.get('page_label') %}<span class="ma-page-label" title="{{ b.get('page_url','') }}">{{ b.get('page_label') }}</span>{% endif %}
       </div>
+      {% set _ap_url = b.get('page_url') or audit.url %}
+      {% if _ap_url %}
+      <div class="ap-page-url-row">
+        <span class="ap-field-label ap-field-label--inline">Página</span>
+        <span class="ap-page-url-link">{{ _ap_url }}</span>
+      </div>
+      {% endif %}
       {% if b.get('descricao_tecnica') %}
       <div class="ap-desc-tecnica">
         <div class="ap-field-label">Descrição técnica (fonte da ferramenta)</div>
@@ -727,8 +857,108 @@
         </button>
       </div>
       {% endif %}
+      {# Backlog técnico no apêndice:
+         1) base determinística do Meta-Auditor
+         2) sugestão assistida por IA (quando existir)
+      #}
+      <div class="ap-ticket-block">
+        <div class="ap-field-label">Backlog técnico</div>
+
+        {% set tk = b.get('texto_ticket') if b.get('texto_ticket') is mapping else {} %}
+        {% set has_ai_ticket = b.get('versao_dev') or tk.get('titulo') or tk.get('descricao') or tk.get('criterio_de_pronto') %}
+
+        <div class="ap-ticket-stack">
+
+          {# ── Base determinística ─────────────────────────────── #}
+          <div class="ap-ticket-sub ap-ticket-sub--base">
+            <div class="ap-ticket-subhead">Base determinística do Meta-Auditor</div>
+            <div class="ap-ticket-rows">
+              <div class="tk-row">
+                <div class="tk-lbl">Título</div>
+                <div class="tk-val tk-titulo">{{ termo_barreira(b) }}</div>
+              </div>
+
+              {% if b.get('wcag_criterio') %}
+              <div class="tk-row">
+                <div class="tk-lbl">WCAG</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }} — Nível AA</div>
+              </div>
+              {% endif %}
+
+              <div class="tk-row">
+                <div class="tk-lbl">Descrição</div>
+                <div class="tk-val">{{ correcao_detalhada(b)|striptags|truncate(400) }}</div>
+              </div>
+
+              <div class="tk-row">
+                <div class="tk-lbl">Critério de pronto</div>
+                <div class="tk-val">Auditoria de acessibilidade confirma ausência da barreira; testes com leitor de tela e teclado passam sem erro.</div>
+              </div>
+            </div>
+          </div>
+
+          {# ── Sugestão IA ─────────────────────────────────────── #}
+          {% if has_ai_ticket %}
+          <div class="ap-ticket-sub ap-ticket-sub--ai">
+            <div class="ap-ticket-subhead">Sugestão assistida por IA</div>
+            <div class="ap-ticket-rows">
+
+              {% if tk.get('titulo') %}
+              <div class="tk-row">
+                <div class="tk-lbl">Título</div>
+                <div class="tk-val tk-titulo">{{ tk.get('titulo') }}</div>
+              </div>
+              {% endif %}
+
+              {% if b.get('wcag_criterio') %}
+              <div class="tk-row">
+                <div class="tk-lbl">WCAG</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }} — Nível AA</div>
+              </div>
+              {% endif %}
+
+              {% if b.get('versao_dev') %}
+              <div class="tk-row">
+                <div class="tk-lbl">Versão dev</div>
+                <div class="tk-val">{{ b.get('versao_dev') }}</div>
+              </div>
+              {% endif %}
+
+              {% if tk.get('descricao') %}
+              <div class="tk-row">
+                <div class="tk-lbl">Descrição</div>
+                <div class="tk-val">{{ tk.get('descricao') }}</div>
+              </div>
+              {% endif %}
+
+              {% if tk.get('criterio_de_pronto') %}
+              <div class="tk-row">
+                <div class="tk-lbl">Critério de pronto</div>
+                <div class="tk-val">{{ tk.get('criterio_de_pronto') | replace('\n', '<br>') | safe }}</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          {# Quando nível 2 está ativo mas a IA não gerou resultado para esta barreira
+             (timeout, falha de API ou cache de resultado vazio) #}
+          {% if report.get('ai_enhancement_level', 0) >= 2 %}
+          <div class="ap-ticket-sub ap-ticket-sub--ai ap-ticket-sub--absent">
+            <div class="ap-ticket-subhead">Sugestão assistida por IA</div>
+            <p class="ap-ticket-absent-note">
+              Sugestão IA não gerada para esta barreira.
+              {% if b.get('ai_nivel2_motivo') %}
+              Motivo: {{ b.get('ai_nivel2_motivo') }}.
+              {% endif %}
+              Pode ser gerada ao re-executar a auditoria com nível 2 ativo.
+            </p>
+          </div>
+          {% endif %}
+          {% endif %}
+
+        </div>
+      </div>
     </div>
-    {% endif %}
     {% endfor %}
   </div>
   {% endif %}
@@ -770,7 +1000,7 @@
 
   {# ── A4. Itens Lighthouse (detalhados) ── #}
   {% if lh_appendix %}
-  <div class="ap-block">
+  <div class="ap-block" id="apendice-a4-lighthouse">
     <h3 class="ap-block-title">A4 · Itens Lighthouse ({{ lh_appendix|length }})</h3>
     <table class="bd-t"><thead><tr><th scope="col">Item</th><th scope="col">Score</th><th scope="col">Detalhes</th></tr></thead><tbody>
     {% for item in lh_appendix %}

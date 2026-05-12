@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetaAuditor — Logo Kit v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ma-primary:       #1A6B3C;
+    --ma-primary-dark:  #0D2E1A;
+    --ma-primary-light: #DCFCE7;
+    --ma-primary-mid:   #22C55E;
+    --ma-ink-900:       #0D1117;
+    --ma-ink-700:       #2E3A4E;
+    --ma-ink-400:       #6E8098;
+    --ma-bg:            #F5F7FA;
+    --ma-alta:          #E53E3E;
+    --ma-media:         #D97706;
+    --ma-lighthouse:    #F97316;
+    --ma-wave:          #3B82F6;
+    --ma-info:          #2563EB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--ma-bg);
+    color: var(--ma-ink-900);
+    padding: 48px 40px;
+    min-height: 100vh;
+  }
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+  }
+  .page-title { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ma-ink-400); }
+  .page-version { font-size: 11px; font-weight: 600; color: var(--ma-primary); background: var(--ma-primary-light); padding: 4px 10px; border-radius: 20px; }
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ma-ink-400);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,0,0,.07);
+  }
+  .divider { height: 1px; background: rgba(0,0,0,.07); margin: 40px 0; }
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .logo-tile {
+    border-radius: 16px;
+    padding: 36px 28px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    border: 1px solid rgba(0,0,0,.07);
+  }
+  .logo-tile.white  { background: #FFFFFF; }
+  .logo-tile.dark   { background: var(--ma-ink-900); }
+  .tile-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ma-ink-400);
+  }
+  .logo-tile.dark .tile-label { color: rgba(255,255,255,.35); }
+  .inline-logo { display: flex; align-items: center; gap: 14px; }
+  .logo-texts { display: flex; flex-direction: column; gap: 4px; line-height: 1; }
+  .wordmark {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ma-ink-900);
+  }
+  .wordmark .accent { color: var(--ma-primary); }
+  .wordmark-white {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+  }
+  .wordmark-white .accent { color: var(--ma-primary-mid); }
+  .tagline {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ma-ink-400);
+  }
+  .tagline-white {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.45);
+  }
+  .asset-note {
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 12px;
+    padding: 20px 22px;
+    font-size: 12px;
+    color: var(--ma-ink-700);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+  .asset-note code { font-family: ui-monospace, monospace; font-size: 11px; background: var(--ma-bg); padding: 2px 6px; border-radius: 4px; }
+  .pal-strip {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 52px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.1);
+  }
+  .pal-swatch { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 5px 7px; }
+  .swatch-code { font-size: 8px; font-weight: 600; font-family: ui-monospace, monospace; }
+  .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; }
+  .token-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .token-dot { width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0; border: 1px solid rgba(0,0,0,.09); }
+  .token-info { display: flex; flex-direction: column; gap: 2px; }
+  .token-name { font-size: 11px; font-weight: 700; color: var(--ma-ink-900); font-family: ui-monospace, monospace; }
+  .token-hex  { font-size: 10px; color: var(--ma-ink-400); font-family: ui-monospace, monospace; }
+  .token-role { font-size: 10px; color: var(--ma-ink-400); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <span class="page-title">MetaAuditor · Logo Kit</span>
+  <span class="page-version">v2 — Paleta Verde UEA</span>
+</div>
+
+<div class="asset-note">
+  <strong>Favicon e touch icon</strong> versionados em <code>app/static/</code>:
+  <code>favicon.svg</code> (principal),
+  <code>favicon.ico</code> (16×16 + 32×32),
+  <code>apple-touch-icon.png</code> (180×180).
+  Regenerar raster com <code>python scripts/generate_favicon_assets.py</code> (Playwright + Pillow).
+  No HTML da app: <code>&lt;link rel="icon" type="image/svg+xml" href="/static/favicon.svg"&gt;</code> etc.
+</div>
+
+<p class="section-label">Logo horizontal — referência</p>
+
+<div class="logo-grid">
+  <div class="logo-tile white">
+    <div class="inline-logo">
+      <img src="favicon.svg" width="48" height="48" alt="">
+      <div class="logo-texts">
+        <span class="wordmark">Meta-<span class="accent">Auditor</span></span>
+        <span class="tagline">UEA · Acessibilidade Web</span>
+      </div>
+    </div>
+    <span class="tile-label">Fundo branco — uso padrão</span>
+  </div>
+
+  <div class="logo-tile dark">
+    <div class="inline-logo">
+      <svg width="48" height="48" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="g-node-d" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4ADE80"/>
+            <stop offset="100%" stop-color="#22C55E"/>
+          </linearGradient>
+        </defs>
+        <line x1="50" y1="42" x2="22" y2="18" stroke="url(#g-node-d)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="42" x2="78" y2="18" stroke="url(#g-node-d)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="42" x2="50" y2="60" stroke="url(#g-node-d)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="22" cy="18" r="7" fill="url(#g-node-d)"/>
+        <circle cx="78" cy="18" r="7" fill="url(#g-node-d)"/>
+        <circle cx="50" cy="42" r="6" fill="none" stroke="url(#g-node-d)" stroke-width="3.5"/>
+        <circle cx="50" cy="42" r="2.5" fill="#4ADE80"/>
+        <rect x="36" y="60" width="28" height="32" rx="4" fill="url(#g-node-d)" opacity=".15"/>
+        <rect x="36" y="60" width="28" height="32" rx="4" fill="none" stroke="url(#g-node-d)" stroke-width="3"/>
+        <line x1="43" y1="70" x2="57" y2="70" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="43" y1="77" x2="57" y2="77" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="43" y1="84" x2="52" y2="84" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div class="logo-texts">
+        <span class="wordmark-white">Meta-<span class="accent">Auditor</span></span>
+        <span class="tagline-white">UEA · Acessibilidade Web</span>
+      </div>
+    </div>
+    <span class="tile-label">Fundo escuro — header do relatório</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<p class="section-label">Paleta — tokens de cor</p>
+
+<div class="pal-strip">
+  <div class="pal-swatch" style="background:#0D2E1A"><span class="swatch-code" style="color:rgba(255,255,255,.5)">900</span></div>
+  <div class="pal-swatch" style="background:#1A6B3C"><span class="swatch-code" style="color:rgba(255,255,255,.6)">700</span></div>
+  <div class="pal-swatch" style="background:#22C55E"><span class="swatch-code" style="color:rgba(255,255,255,.7)">500</span></div>
+  <div class="pal-swatch" style="background:#DCFCE7"><span class="swatch-code" style="color:#14532D">100</span></div>
+  <div class="pal-swatch" style="background:#0D1117"><span class="swatch-code" style="color:rgba(255,255,255,.5)">ink</span></div>
+  <div class="pal-swatch" style="background:#2E3A4E"><span class="swatch-code" style="color:rgba(255,255,255,.5)">ink</span></div>
+  <div class="pal-swatch" style="background:#F5F7FA"><span class="swatch-code" style="color:#52637A">bg</span></div>
+  <div class="pal-swatch" style="background:#E53E3E"><span class="swatch-code" style="color:rgba(255,255,255,.7)">alta</span></div>
+  <div class="pal-swatch" style="background:#D97706"><span class="swatch-code" style="color:rgba(255,255,255,.7)">méd</span></div>
+  <div class="pal-swatch" style="background:#F97316"><span class="swatch-code" style="color:rgba(255,255,255,.7)">LH</span></div>
+  <div class="pal-swatch" style="background:#3B82F6"><span class="swatch-code" style="color:rgba(255,255,255,.7)">WAVE</span></div>
+</div>
+
+<div class="token-grid">
+  <div class="token-row"><div class="token-dot" style="background:#1A6B3C"></div><div class="token-info"><span class="token-name">--ma-primary</span><span class="token-hex">#1A6B3C</span><span class="token-role">Verde UEA — identidade, links, acento</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#0D2E1A"></div><div class="token-info"><span class="token-name">--ma-primary-dark</span><span class="token-hex">#0D2E1A</span><span class="token-role">Verde escuro — hover, bordas ativas</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#22C55E"></div><div class="token-info"><span class="token-name">--ma-primary-mid</span><span class="token-hex">#22C55E</span><span class="token-role">Verde médio — gradiente do ícone</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#DCFCE7"></div><div class="token-info"><span class="token-name">--ma-primary-light</span><span class="token-hex">#DCFCE7</span><span class="token-role">Verde claro — fundo de badge OK</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#0D1117"></div><div class="token-info"><span class="token-name">--ma-ink-900</span><span class="token-hex">#0D1117</span><span class="token-role">Preto — header, texto display</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#2E3A4E"></div><div class="token-info"><span class="token-name">--ma-ink-700</span><span class="token-hex">#2E3A4E</span><span class="token-role">Cinza escuro — corpo de texto</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#6E8098"></div><div class="token-info"><span class="token-name">--ma-ink-400</span><span class="token-hex">#6E8098</span><span class="token-role">Cinza médio — labels, metadata</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#F5F7FA"></div><div class="token-info"><span class="token-name">--ma-bg</span><span class="token-hex">#F5F7FA</span><span class="token-role">Fundo geral da página</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#E53E3E"></div><div class="token-info"><span class="token-name">--ma-alta</span><span class="token-hex">#E53E3E</span><span class="token-role">Vermelho — severidade ALTA</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#D97706"></div><div class="token-info"><span class="token-name">--ma-media</span><span class="token-hex">#D97706</span><span class="token-role">Âmbar — severidade MÉDIA</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#F97316"></div><div class="token-info"><span class="token-name">--ma-lighthouse</span><span class="token-hex">#F97316</span><span class="token-role">Laranja — score Lighthouse</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#3B82F6"></div><div class="token-info"><span class="token-name">--ma-wave</span><span class="token-hex">#3B82F6</span><span class="token-role">Azul — score WAVE</span></div></div>
+  <div class="token-row"><div class="token-dot" style="background:#2563EB"></div><div class="token-info"><span class="token-name">--ma-info</span><span class="token-hex">#2563EB</span><span class="token-role">Azul — links, badges info</span></div></div>
+</div>
+
+</body>
+</html>

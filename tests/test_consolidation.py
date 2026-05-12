@@ -125,6 +125,24 @@ def test_build_report_runs_end_to_end():
     tipos = {x["issue_tipo_normalizado"] for x in b}
     assert "controle_sem_nome_acessivel" in tipos
     assert "contraste_insuficiente" in tipos
+    assert rep.get("itens_aprovados") == []
+
+
+def test_build_report_itens_aprovados_limita_e_filtra():
+    passed = [{"id": f"a{i}", "title": f"Título {i}", "score": 1} for i in range(25)]
+    rep = build_report([], [], [], [], [], lh_passed_audits=passed)
+    items = rep.get("itens_aprovados") or []
+    assert len(items) == 20
+    assert items[0] == {"id": "a0", "title": "Título 0"}
+    rep2 = build_report(
+        [],
+        [],
+        [],
+        [],
+        [],
+        lh_passed_audits=[{"id": "x"}, {"title": "Só título"}],
+    )
+    assert rep2.get("itens_aprovados") == [{"id": "", "title": "Só título"}]
 
 
 def test_divergencia_detectada_lh_passou_wave_barreira():
@@ -242,6 +260,60 @@ def test_build_report_retorna_divergencias_com_lh_passed():
     rep = build_report(lh, [w], [], [], [], lh_passed_tipo_set={"contraste_insuficiente"})
     assert len(rep["divergencias"]) == 1
     assert rep["divergencias"][0]["issue_tipo_normalizado"] == "contraste_insuficiente"
+
+
+def test_build_report_preserva_page_url_e_rotulo_uma_pagina():
+    u = "https://example.com/"
+    lh = [
+        _issue(
+            tool="lighthouse",
+            tipo="t1",
+            confirmado=["lighthouse"],
+            url=u,
+            issue_orig="i",
+            lh_id="i",
+        )
+    ]
+    rep = build_report(lh, [], [], [], [])
+    row = rep["barreiras_automaticas"][0]
+    assert row.get("page_url") == u
+    assert row.get("page_label") == "Página principal"
+    assert rep.get("multi_page") is False
+    assert rep.get("page_map") == {"Página principal": u}
+
+
+def test_build_report_multi_page_rotulos_numericos():
+    u1 = "https://a.example/p1"
+    u2 = "https://a.example/p2"
+    lh = [
+        _issue(
+            tool="lighthouse",
+            tipo="t_a",
+            confirmado=["lighthouse"],
+            url=u1,
+            evidencia=["sel1"],
+            issue_orig="a",
+            lh_id="a",
+        ),
+    ]
+    w = [
+        _issue(
+            tool="wave",
+            tipo="t_b",
+            confirmado=["wave"],
+            url=u2,
+            wave_cat="error",
+            evidencia=["sel2"],
+            issue_orig="b",
+        ),
+    ]
+    rep = build_report(lh, w, [], [], [])
+    assert rep.get("multi_page") is True
+    by_url = {r.get("page_url"): r.get("page_label") for r in rep["barreiras_automaticas"]}
+    assert by_url[u1] == "Página 1"
+    assert by_url[u2] == "Página 2"
+    inv = rep.get("page_map") or {}
+    assert inv.get("Página 1") == u1 and inv.get("Página 2") == u2
 
 
 def test_build_report_sem_lh_passed_divergencias_vazio():

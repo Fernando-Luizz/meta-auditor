@@ -1,4 +1,54 @@
 {# Macros compartilhados pelo relatório executivo premium #}
+
+{# Ícone MetaAuditor — Logo Kit v2 (meta-árvore + documento). svg_id único por página evita colisão de gradientes. #}
+{% macro ma_logo_icon(size=48, svg_id='ma', variant='light') -%}
+<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+{% if variant == 'on_dark' %}
+  <defs>
+    <linearGradient id="g-node-{{ svg_id }}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4ADE80"/>
+      <stop offset="100%" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+  <line x1="50" y1="42" x2="22" y2="18" stroke="url(#g-node-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="42" x2="78" y2="18" stroke="url(#g-node-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="42" x2="50" y2="60" stroke="url(#g-node-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="22" cy="18" r="7" fill="url(#g-node-{{ svg_id }})"/>
+  <circle cx="78" cy="18" r="7" fill="url(#g-node-{{ svg_id }})"/>
+  <circle cx="50" cy="42" r="6" fill="none" stroke="url(#g-node-{{ svg_id }})" stroke-width="3.5"/>
+  <circle cx="50" cy="42" r="2.5" fill="#4ADE80"/>
+  <rect x="36" y="60" width="28" height="32" rx="4" fill="url(#g-node-{{ svg_id }})" opacity=".15"/>
+  <rect x="36" y="60" width="28" height="32" rx="4" fill="none" stroke="url(#g-node-{{ svg_id }})" stroke-width="3"/>
+  <line x1="43" y1="70" x2="57" y2="70" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="77" x2="57" y2="77" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="84" x2="52" y2="84" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"/>
+{% else %}
+  <defs>
+    <linearGradient id="g-node-{{ svg_id }}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#1A6B3C"/>
+    </linearGradient>
+    <linearGradient id="g-line-{{ svg_id }}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#1A6B3C"/>
+    </linearGradient>
+  </defs>
+  <line x1="50" y1="42" x2="22" y2="18" stroke="url(#g-line-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="42" x2="78" y2="18" stroke="url(#g-line-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="42" x2="50" y2="60" stroke="url(#g-line-{{ svg_id }})" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="22" cy="18" r="7" fill="url(#g-node-{{ svg_id }})"/>
+  <circle cx="78" cy="18" r="7" fill="url(#g-node-{{ svg_id }})"/>
+  <circle cx="50" cy="42" r="6" fill="none" stroke="url(#g-node-{{ svg_id }})" stroke-width="3.5"/>
+  <circle cx="50" cy="42" r="2.5" fill="#1A6B3C"/>
+  <rect x="36" y="60" width="28" height="32" rx="4" fill="url(#g-node-{{ svg_id }})" opacity=".15"/>
+  <rect x="36" y="60" width="28" height="32" rx="4" fill="none" stroke="url(#g-node-{{ svg_id }})" stroke-width="3"/>
+  <line x1="43" y1="70" x2="57" y2="70" stroke="#1A6B3C" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="77" x2="57" y2="77" stroke="#1A6B3C" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="84" x2="52" y2="84" stroke="#1A6B3C" stroke-width="2.5" stroke-linecap="round"/>
+{% endif %}
+</svg>
+{%- endmacro %}
+
 {% macro risk_slug_nv(nv) -%}
 {%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
 {%- endmacro %}
@@ -31,8 +81,8 @@
   {%- elif 'contrast' in s or 'contraste' in s %}Contraste de texto insuficiente
   {%- elif 'alt_link' in s or 'imagem_link' in s %}Imagem-link sem texto alternativo
   {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem texto alternativo
+  {%- elif 'rotulo_difere' in s or 'label-in-name' in s or 'label-content-name-mismatch' in s %}Rótulo visível não coincide com o nome acessível
   {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem rótulo
-  {%- elif 'rotulo_difere' in s or 'label-in-name' in s %}Rótulo visível não coincide com o nome acessível
   {%- elif 'aria' in s %}Marcação ARIA incorreta
   {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
   {%- elif 'hierarquia_titulos' in s %}Hierarquia de títulos incorreta
@@ -104,6 +154,8 @@
     Adicione o atributo <code>alt</code> com uma descrição útil da imagem. Para imagens puramente decorativas, use <code>alt=""</code> (vazio) — o leitor de tela a ignorará. <strong>Nunca omita</strong> o atributo, mesmo quando vazio.
   {%- elif 'aria' in id -%}
     Prefira elementos HTML semânticos nativos (<code>&lt;button&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>). Use ARIA somente quando não há equivalente HTML disponível. Teste com leitor de tela (NVDA + Firefox ou VoiceOver + Safari) para validar o comportamento.
+  {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id -%}
+    O rótulo visível não está contido no nome acessível do controle. Revise o atributo <code>aria-label</code> ou <code>aria-labelledby</code> para que o texto anunciado pela tecnologia assistiva inclua literalmente o texto visível — usuários de controle por voz precisam falar o que veem para ativar o elemento (WCAG 2.5.3).
   {%- elif 'label' in id -%}
     Associe um rótulo a cada campo com <code>&lt;label for="id-do-campo"&gt;</code> ou o atributo <code>aria-label</code>. Exemplo: <code>&lt;label for="email"&gt;E-mail&lt;/label&gt;&lt;input id="email" type="email"&gt;</code>.
   {%- elif 'heading' in id -%}

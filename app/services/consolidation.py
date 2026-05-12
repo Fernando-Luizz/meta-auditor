@@ -80,6 +80,17 @@ def _merge_lhids(parts: list[list[str] | None]) -> list[str] | None:
     return out[:20] or None
 
 
+def _merge_semantic_data(parts: list[dict | None]) -> dict | None:
+    """
+    Mantém o primeiro bloco semântico útil.
+    Para o caso atual (Label in Name), um exemplar é suficiente.
+    """
+    for p in parts:
+        if isinstance(p, dict) and any(p.get(k) for k in ("visivel", "acessivel", "problema", "tipo")):
+            return p
+    return None
+
+
 def merge_by_normalized_type(issues: list[dict]) -> list[dict]:
     """
     Agrupa por (issue_tipo_normalizado, page_url, fingerprint_localização).
@@ -95,6 +106,7 @@ def merge_by_normalized_type(issues: list[dict]) -> list[dict]:
     for _key, group in groups.items():
         if len(group) == 1:
             g0 = dict(group[0])
+            g0["dados_semanticos"] = g0.get("dados_semanticos")
             g0["prioridade"] = assign_prioridade(
                 g0["confirmado_por"],
                 g0["status_deteccao"],
@@ -135,6 +147,7 @@ def merge_by_normalized_type(issues: list[dict]) -> list[dict]:
         base["onde_esta"] = onde_join or base.get("onde_esta", "")
         base["evidencia_localizacao"] = _merge_evidencia([i.get("evidencia_localizacao") for i in group])
         base["evidencia_lhids"] = _merge_lhids([i.get("evidencia_lhids") for i in group])
+        base["dados_semanticos"] = _merge_semantic_data([i.get("dados_semanticos") for i in group])
 
         if len(tools) > 1:
             base["status_deteccao"] = "automatico_convergente"
@@ -173,7 +186,15 @@ def _merge_barrier_group(group: list[dict]) -> dict:
     onde_join = " | ".join(dict.fromkeys(str(o) for o in ondes)) if ondes else ""
 
     titles = [i.get("titulo_tecnico") for i in group if i.get("titulo_tecnico")]
-    titulo = max(titles, key=len) if titles else ""
+    # Prefere o título da fonte Lighthouse quando disponível (mais específico e já normalizado).
+    # max(titles, key=len) causava bugs: títulos WAVE genéricos mais longos sobrescreviam
+    # títulos LH corretos (ex.: "Elementos de formulário sem rótulo associado" > "Rótulo visível diferente do nome acessível").
+    lh_titles = [
+        i.get("titulo_tecnico")
+        for i in group
+        if i.get("titulo_tecnico") and i.get("tool") in ("lighthouse", "consolidated")
+    ]
+    titulo = lh_titles[0] if lh_titles else (titles[0] if titles else "")
 
     orig_ids: list[str] = []
     for i in group:
@@ -209,6 +230,7 @@ def _merge_barrier_group(group: list[dict]) -> dict:
     base["onde_esta"] = onde_join or base.get("onde_esta", "")
     base["evidencia_localizacao"] = _merge_evidencia([i.get("evidencia_localizacao") for i in group])
     base["evidencia_lhids"] = _merge_lhids([i.get("evidencia_lhids") for i in group])
+    base["dados_semanticos"] = _merge_semantic_data([i.get("dados_semanticos") for i in group])
     base["issue_id_original"] = id_join or base.get("issue_id_original", "")
     base["lighthouse_audit_id"] = lh_audit
     base["wave_categoria"] = wave_cat
@@ -236,6 +258,7 @@ def merge_barreiras_por_tipo_e_url(barreiras: list[dict]) -> list[dict]:
     for group in by_key.values():
         if len(group) == 1:
             g0 = dict(group[0])
+            g0["dados_semanticos"] = g0.get("dados_semanticos")
             g0["prioridade"] = assign_prioridade(
                 g0["confirmado_por"],
                 g0["status_deteccao"],
@@ -267,10 +290,33 @@ def apply_prioridade_to_list(issues: list[dict]) -> list[dict]:
     return out
 
 
-def _strip_page_url(issues: list[dict]) -> list[dict]:
-    out = []
-    for i in issues:
-        row = {k: v for k, v in i.items() if k != "page_url"}
+def _build_page_map(issues: list[dict]) -> dict[str, str]:
+    """
+    Mapeia URLs únicas para rótulos legíveis no corpo do relatório.
+    Uma URL → «Página principal». Várias → «Página 1», «Página 2», …
+    A URL completa permanece em cada issue (`page_url`) para o apêndice técnico.
+    """
+    urls: list[str] = list(
+        dict.fromkeys(
+            str(i.get("page_url") or "").strip()
+            for i in issues
+            if str(i.get("page_url") or "").strip()
+        )
+    )
+    if not urls:
+        return {}
+    if len(urls) == 1:
+        return {urls[0]: "Página principal"}
+    return {u: f"Página {idx + 1}" for idx, u in enumerate(urls)}
+
+
+def _apply_page_labels(issues: list[dict], page_map: dict[str, str]) -> list[dict]:
+    """Adiciona `page_label` por URL; mantém `page_url` para links no apêndice."""
+    out: list[dict] = []
+    for iss in issues:
+        row = dict(iss)
+        url = str(row.get("page_url") or "").strip()
+        row["page_label"] = page_map.get(url, "") if url else ""
         out.append(row)
     return out
 
@@ -380,7 +426,18 @@ def build_report(
     wave_informativo_issues: list[dict],
     manual_issues: list[dict],
     lh_passed_tipo_set: set[str] | None = None,
+    lh_passed_audits: list[dict] | None = None,
 ) -> dict:
+    _all_issues = (
+        lighthouse_failed_issues
+        + wave_barrier_issues
+        + wave_alert_issues
+        + wave_informativo_issues
+        + manual_issues
+    )
+    page_map = _build_page_map(_all_issues)
+    multi_page = len(page_map) > 1
+
     barreiras = merge_by_normalized_type(lighthouse_failed_issues + wave_barrier_issues)
     barreiras = merge_barreiras_por_tipo_e_url(barreiras)
     alertas = apply_prioridade_to_list(wave_alert_issues)
@@ -411,11 +468,18 @@ def build_report(
         score_risco = 0.0
         nivel_risco = "SEM BARREIRAS"
 
+    # Itens aprovados pelo Lighthouse — máx. 20, só id + title para não inflar o JSON.
+    itens_aprovados: list[dict] = [
+        {"id": str(a.get("id") or ""), "title": str(a.get("title") or "")}
+        for a in (lh_passed_audits or [])
+        if a.get("title")
+    ][:20]
+
     return {
-        "barreiras_automaticas": _strip_page_url(barreiras),
-        "alertas_revisao": _strip_page_url(alertas),
-        "informativos_wave": _strip_page_url(informativos),
-        "checks_manuais": _strip_page_url(manual),
+        "barreiras_automaticas": _apply_page_labels(barreiras, page_map),
+        "alertas_revisao": _apply_page_labels(alertas, page_map),
+        "informativos_wave": _apply_page_labels(informativos, page_map),
+        "checks_manuais": _apply_page_labels(manual, page_map),
         "divergencias": divergencias,
         "score_risco": {
             "valor": score_risco,
@@ -425,4 +489,7 @@ def build_report(
             "n_baixa": n_baixa,
             "total_barreiras": total_barreiras,
         },
+        "multi_page": multi_page,
+        "page_map": {label: url for url, label in page_map.items()},
+        "itens_aprovados": itens_aprovados,
     }

@@ -14,7 +14,8 @@ from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.config import (
@@ -63,16 +64,108 @@ from app.services.extractors import (
 _log = logging.getLogger("uvicorn.error")
 
 _TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
 _jinja_env = Environment(
     loader=FileSystemLoader(str(_TEMPLATES_DIR)),
     autoescape=select_autoescape(["html", "xml"]),
 )
 
 
+def _embed_evidence_into_row(audit_row: dict) -> dict:
+    """
+    Pré-embute evidências base64 em cada barreira antes de renderizar o HTML.
+
+    Cadeia de prioridade por barreira:
+      1. EMBEDDED  — campo legado evidencias[0].screenshot_base64
+      2. LH_CROP   — crop do fullPageScreenshot Lighthouse
+      3. PLAYWRIGHT — lê PNG já cacheado em disco e valida com _evidence_is_good
+      4. UNAVAILABLE — nenhuma evidência confiável disponível
+
+    Adiciona em cada barreira:
+      - evidencia_b64:   str | None
+      - evidence_source: str          "EMBEDDED"|"LH_CROP"|"PLAYWRIGHT"|"UNAVAILABLE"
+    """
+    import copy
+
+    row = copy.deepcopy(audit_row)
+    report = row.get("report")
+    if not isinstance(report, dict):
+        return row
+    bars = report.get("barreiras_automaticas")
+    if not isinstance(bars, list) or not bars:
+        return row
+
+    lh_raw: dict | None = None
+    lh_path = _resolved_raw_path(row.get("lighthouse_raw_path"))
+    if lh_path is not None:
+        try:
+            lh_raw = json.loads(lh_path.read_text(encoding="utf-8"))
+        except Exception:
+            lh_raw = None
+
+    audit_id: int | None = row.get("id")
+    audit_url: str = str(row.get("url") or "")
+
+    for idx, b in enumerate(bars):
+        if not isinstance(b, dict):
+            continue
+
+        # 1) EMBEDDED
+        evidencias = b.get("evidencias")
+        if isinstance(evidencias, list) and evidencias:
+            ev0 = evidencias[0] if isinstance(evidencias[0], dict) else {}
+            if ev0.get("screenshot_base64"):
+                b["evidencia_b64"] = "data:image/png;base64," + ev0["screenshot_base64"]
+                b["evidence_source"] = "EMBEDDED"
+                continue
+
+        # 2) LH_CROP
+        if lh_raw is not None:
+            lhids: list[str] = []
+            raw_lhids = b.get("evidencia_lhids")
+            if isinstance(raw_lhids, list):
+                lhids = [str(x) for x in raw_lhids if x]
+            if lhids:
+                try:
+                    png = _crop_lh_screenshot_evidence(lh_raw, lhids)
+                    if png:
+                        b["evidencia_b64"] = "data:image/png;base64," + base64.b64encode(png).decode()
+                        b["evidence_source"] = "LH_CROP"
+                        continue
+                except Exception:
+                    pass
+
+        # 3) PLAYWRIGHT (somente cache em disco; não roda ao vivo no render)
+        if audit_id is not None and audit_url:
+            lhids_for_key: list[str] = [str(x) for x in (b.get("evidencia_lhids") or []) if x]
+            sels_for_key = _barrier_selector_candidates(b)
+            cached = _cache_key_for_barrier(audit_id, idx, audit_url, lhids_for_key, sels_for_key)
+            if cached.exists():
+                try:
+                    png = cached.read_bytes()
+                    if _evidence_is_good(png):
+                        b["evidencia_b64"] = "data:image/png;base64," + base64.b64encode(png).decode()
+                        b["evidence_source"] = "PLAYWRIGHT"
+                        continue
+                    try:
+                        cached.unlink()
+                        _log.info("Cache de evidência rejeitado e removido: %s", cached.name)
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
+
+        # 4) UNAVAILABLE
+        b["evidence_source"] = "UNAVAILABLE"
+
+    return row
+
+
 def _build_report_html(audit_row: dict) -> str:
     """HTML do relatório a partir de um registro completo da tabela `audits`."""
+    enriched = _embed_evidence_into_row(audit_row)
     return _jinja_env.get_template("report.html").render(
-        audit=audit_row,
+        audit=enriched,
         app_version=APP_VERSION,
         report_evidence_max=REPORT_HTML_EVIDENCE_MAX,
         report_footer_org=REPORT_FOOTER_ORG,
@@ -492,13 +585,96 @@ async def _capture_barrier_image(
     compact: bool,
     barrier_label: str = "",
 ) -> None:
-    def _capture_sync() -> None:
+    def _run_sync() -> None:
+        png = _capture_barrier_image_sync_bytes(
+            url=url,
+            selectors=selectors,
+            compact=compact,
+            barrier_label=barrier_label,
+        )
+        if png:
+            DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+            out_file.write_bytes(png)
+
+    await asyncio.to_thread(_run_sync)
+
+
+def _evidence_is_good(png_bytes: bytes) -> bool:
+    """
+    Valida qualidade mínima da evidência visual.
+
+    Reprova se:
+    - imagem menor que 80x80px
+    - ratio vermelho (r>180, g<120, b<120) abaixo de 0.15%
+    - variância muito baixa (fundo uniforme)
+    """
+    try:
+        from PIL import Image  # type: ignore
+        import statistics as _stats
+
+        img = Image.open(io.BytesIO(png_bytes)).convert("RGB")
+        w, h = img.size
+        if w < 80 or h < 80:
+            return False
+
+        pixels = img.load()
+        red_like = 0
+        sampled = 0
+        sample_r: list[int] = []
+
+        for y in range(0, h, 3):
+            for x in range(0, w, 3):
+                r, g, b = pixels[x, y]
+                sampled += 1
+                sample_r.append(r)
+                if r > 180 and g < 120 and b < 120:
+                    red_like += 1
+
+        red_ratio = red_like / max(sampled, 1)
+        if red_ratio < 0.0015:
+            return False
+        if len(sample_r) > 4 and _stats.variance(sample_r) < 50:
+            return False
+        return True
+    except Exception:
+        return False
+
+
+def _cache_key_for_barrier(
+    audit_id: int,
+    barrier_idx: int,
+    url: str,
+    lhids: list[str],
+    selectors: list[str],
+) -> Path:
+    """Caminho do PNG cacheado para a barreira (compact=True, igual ao endpoint)."""
+    key_src = f"{audit_id}|{barrier_idx}|True|{url}|{'|'.join(lhids)}|{'|'.join(selectors)}"
+    key = hashlib.sha256(key_src.encode("utf-8", errors="replace")).hexdigest()[:20]
+    return DATA_EVIDENCE_DIR / f"audit-{audit_id}-barreira-{barrier_idx}-{key}.png"
+
+
+def _capture_barrier_image_sync_bytes(
+    url: str,
+    selectors: list[str],
+    compact: bool = True,
+    barrier_label: str = "",
+) -> bytes | None:
+    """
+    Captura ao vivo via Playwright. Retorna PNG bytes validados ou None.
+
+    Não faz fallback para screenshot genérico.
+    """
+    try:
         pw_mod = importlib.import_module("playwright.sync_api")
         sync_playwright = pw_mod.sync_playwright
+    except ImportError:
+        _log.warning("Playwright não instalado — captura ao vivo indisponível.")
+        return None
 
-        vw = 800 if compact else 1366
-        vh = 520 if compact else 900
+    vw = 800 if compact else 1366
+    vh = 520 if compact else 900
 
+    def _run() -> bytes | None:
         with sync_playwright() as pw:
             browser = pw.chromium.launch(
                 headless=True,
@@ -515,10 +691,12 @@ async def _capture_barrier_image(
             page = ctx.new_page()
             try:
                 page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            except Exception:
+            except Exception as exc:
                 browser.close()
-                raise
+                _log.warning("Playwright goto falhou (%s): %s", url, exc)
+                return None
 
+            result: bytes | None = None
             for sel in selectors[:10]:
                 try:
                     loc = page.locator(sel).first
@@ -527,47 +705,42 @@ async def _capture_barrier_image(
 
                     loc.scroll_into_view_if_needed(timeout=4000)
                     page.wait_for_timeout(300)
-
-                    # Injeta outline vermelho + fundo translúcido no elemento
                     page.evaluate(_HIGHLIGHT_INJECT_JS, sel)
                     page.wait_for_timeout(150)
 
                     bbox = loc.bounding_box()
-                    if bbox and bbox["width"] > 0 and bbox["height"] > 0:
-                        pad = 80
-                        clip = {
-                            "x": max(0.0, bbox["x"] - pad),
-                            "y": max(0.0, bbox["y"] - pad),
-                            "width": min(float(vw), bbox["width"] + pad * 2),
-                            "height": min(float(vh), bbox["height"] + pad * 2),
-                        }
-                        # Garante que o clip não extrapola o viewport
-                        if clip["x"] + clip["width"] > vw:
-                            clip["width"] = vw - clip["x"]
-                        if clip["y"] + clip["height"] > vh:
-                            clip["height"] = vh - clip["y"]
+                    if not (bbox and bbox["width"] > 0 and bbox["height"] > 0):
+                        try:
+                            page.evaluate(_HIGHLIGHT_REMOVE_JS)
+                        except Exception:
+                            pass
+                        continue
 
-                        # Screenshot da PÁGINA com clip (contexto real + highlight visível)
-                        png_bytes = page.screenshot(type="png", clip=clip)
-                    else:
-                        # bbox inválida: screenshot do viewport completo com highlight
-                        png_bytes = page.screenshot(type="png", full_page=False)
+                    pad = 80
+                    clip = {
+                        "x": max(0.0, bbox["x"] - pad),
+                        "y": max(0.0, bbox["y"] - pad),
+                        "width": min(float(vw), bbox["width"] + pad * 2),
+                        "height": min(float(vh), bbox["height"] + pad * 2),
+                    }
+                    if clip["x"] + clip["width"] > vw:
+                        clip["width"] = vw - clip["x"]
+                    if clip["y"] + clip["height"] > vh:
+                        clip["height"] = vh - clip["y"]
 
-                    # Remove highlight antes de fechar
+                    png_bytes = page.screenshot(type="png", clip=clip)
+
                     try:
                         page.evaluate(_HIGHLIGHT_REMOVE_JS)
                     except Exception:
                         pass
 
-                    # Sobrepõe faixa de label vermelha no topo
                     if barrier_label:
                         png_bytes = _add_pillow_label(png_bytes, barrier_label)
 
-                    DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-                    out_file.write_bytes(png_bytes)
-                    browser.close()
-                    return
-
+                    if _evidence_is_good(png_bytes):
+                        result = png_bytes
+                        break
                 except Exception:
                     try:
                         page.evaluate(_HIGHLIGHT_REMOVE_JS)
@@ -575,15 +748,14 @@ async def _capture_barrier_image(
                         pass
                     continue
 
-            # Fallback: nenhum seletor funcionou — screenshot do viewport sem highlight
-            png_bytes = page.screenshot(type="png", full_page=not compact)
-            if barrier_label:
-                png_bytes = _add_pillow_label(png_bytes, f"{barrier_label} · sem seletor")
-            DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-            out_file.write_bytes(png_bytes)
             browser.close()
+            return result
 
-    await asyncio.to_thread(_capture_sync)
+    try:
+        return _run()
+    except Exception as exc:
+        _log.warning("_capture_barrier_image_sync_bytes falhou (%s): %s", url, exc)
+        return None
 
 
 @asynccontextmanager
@@ -605,6 +777,26 @@ app = FastAPI(
     description="Auditoria de URLs: Lighthouse/PSI (score + audits) e WAVE (achados + localização).",
     lifespan=lifespan,
 )
+
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def root_favicon():
+    """Fallback: browsers pedem /favicon.ico mesmo com <link rel="icon">."""
+    p = _STATIC_DIR / "favicon.ico"
+    if not p.is_file():
+        raise HTTPException(status_code=404, detail="favicon.ico não gerado — rode scripts/generate_favicon_assets.py")
+    return FileResponse(p, media_type="image/x-icon")
+
+
+@app.get("/apple-touch-icon.png", include_in_schema=False)
+async def root_apple_touch_icon():
+    """iOS costuma pedir na raiz ao guardar na tela inicial."""
+    p = _STATIC_DIR / "apple-touch-icon.png"
+    if not p.is_file():
+        raise HTTPException(status_code=404, detail="apple-touch-icon.png não gerado — rode scripts/generate_favicon_assets.py")
+    return FileResponse(p, media_type="image/png")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -683,10 +875,13 @@ async def audit_report_html(audit_id: int):
 @app.get("/audits/{audit_id}/evidence-image")
 async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0), compact: bool = True):
     """
-    Evidência por barreira.
+    Evidência visual por barreira — com validação de qualidade.
 
-    Prioridade: (1) cache em disco — (2) crop do fullPageScreenshot Lighthouse (lhIds)
-    — (3) Playwright ao vivo com highlight + clip + label — (4) screenshot global do bruto Lighthouse.
+    Prioridade:
+      1. Cache em disco (já validado anteriormente)
+      2. LH_CROP via fullPageScreenshot + lhIds
+      3. Playwright ao vivo via _capture_barrier_image_sync_bytes (com validação)
+      4. UNAVAILABLE — retorna 404; sem screenshot genérica
     """
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
@@ -701,48 +896,45 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
     if not url:
         raise HTTPException(status_code=404, detail="URL da auditoria indisponível")
 
-    lhids: list[str] = []
-    raw_lhids = barrier.get("evidencia_lhids")
-    if isinstance(raw_lhids, list):
-        lhids = [str(x) for x in raw_lhids if x]
-
+    lhids: list[str] = [str(x) for x in (barrier.get("evidencia_lhids") or []) if x]
     selectors = _barrier_selector_candidates(barrier)
-    key_src = f"{audit_id}|{barrier_idx}|{compact}|{url}|{'|'.join(lhids)}|{'|'.join(selectors)}"
-    key = hashlib.sha256(key_src.encode("utf-8", errors="replace")).hexdigest()[:20]
-    out_file = DATA_EVIDENCE_DIR / f"audit-{audit_id}-barreira-{barrier_idx}-{key}.png"
+    out_file = _cache_key_for_barrier(audit_id, barrier_idx, url, lhids, selectors)
 
+    # 1) cache em disco
     if out_file.exists():
-        return Response(
-            content=out_file.read_bytes(),
-            media_type="image/png",
-            headers={"Cache-Control": "public, max-age=86400"},
-        )
+        png = out_file.read_bytes()
+        if _evidence_is_good(png):
+            return Response(
+                content=png,
+                media_type="image/png",
+                headers={"Cache-Control": "public, max-age=86400", "X-Meta-Evidence": "cached"},
+            )
+        try:
+            out_file.unlink()
+            _log.info("Cache de evidência inválido removido: %s", out_file.name)
+        except Exception:
+            pass
 
-    # ── Prioridade 2: crop do fullPageScreenshot Lighthouse via lhIds ──
+    # 2) LH_CROP
     if lhids:
         lh_path = _resolved_raw_path(row.get("lighthouse_raw_path"))
         if lh_path is not None:
             try:
                 lh_raw = json.loads(lh_path.read_text(encoding="utf-8"))
                 png_bytes = _crop_lh_screenshot_evidence(lh_raw, lhids)
-                if png_bytes:
+                if png_bytes and _evidence_is_good(png_bytes):
                     DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
                     out_file.write_bytes(png_bytes)
-                    _log.info(
-                        "Evidência LH crop: auditoria=%d barreira=%d lhids=%s",
-                        audit_id,
-                        barrier_idx,
-                        lhids,
-                    )
+                    _log.info("Evidência LH_CROP: audit=%d barreira=%d lhids=%s", audit_id, barrier_idx, lhids)
                     return Response(
                         content=png_bytes,
                         media_type="image/png",
-                        headers={"Cache-Control": "public, max-age=86400"},
+                        headers={"Cache-Control": "public, max-age=86400", "X-Meta-Evidence": "lh_crop"},
                     )
             except Exception as exc:
-                _log.warning("Crop Lighthouse falhou (auditoria=%d barreira=%d): %s", audit_id, barrier_idx, exc)
+                _log.warning("LH_CROP falhou (audit=%d barreira=%d): %s", audit_id, barrier_idx, exc)
 
-    # ── Monta label "Barreira #N · título · WCAG X.X.X" para sobrepor na imagem ──
+    # 3) Playwright ao vivo
     titulo_barreira = str(barrier.get("titulo_tecnico") or barrier.get("issue_tipo_normalizado") or "")
     wcag = str(barrier.get("wcag_criterio") or "")
     barrier_label = f"Barreira #{barrier_idx + 1}"
@@ -751,78 +943,38 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
     if wcag:
         barrier_label += f" · WCAG {wcag}"
 
-    first_selector = selectors[0] if selectors else ""
-
-    # ── Prioridade 3: Playwright ao vivo — highlight + clip + label ──
     if selectors:
         try:
-            await _capture_barrier_image(
-                url, selectors, out_file, compact=compact, barrier_label=barrier_label
+            png_bytes = await asyncio.to_thread(
+                _capture_barrier_image_sync_bytes,
+                url,
+                selectors,
+                compact,
+                barrier_label,
             )
-            if out_file.exists():
-                _log.info("Evidência Playwright: auditoria=%d barreira=%d", audit_id, barrier_idx)
+            if png_bytes:
+                DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+                out_file.write_bytes(png_bytes)
+                _log.info("Evidência Playwright: audit=%d barreira=%d", audit_id, barrier_idx)
                 return Response(
-                    content=out_file.read_bytes(),
+                    content=png_bytes,
                     media_type="image/png",
-                    headers={"Cache-Control": "public, max-age=86400"},
+                    headers={"Cache-Control": "public, max-age=86400", "X-Meta-Evidence": "playwright"},
                 )
+            _log.info(
+                "Playwright não gerou evidência confiável (audit=%d barreira=%d) — UNAVAILABLE",
+                audit_id,
+                barrier_idx,
+            )
         except Exception as exc:
-            _log.warning("Playwright falhou (auditoria=%d barreira=%d): %s", audit_id, barrier_idx, exc)
+            _log.warning("Playwright falhou (audit=%d barreira=%d): %s", audit_id, barrier_idx, exc)
 
-    # ── Prioridade 4: screenshot global do bruto Lighthouse (fallback) ──
-    lh_path = _resolved_raw_path(row.get("lighthouse_raw_path"))
-    if lh_path is None:
-        ph = _placeholder_evidence_png(
-            title="Captura indisponível",
-            reason="Playwright bloqueado (CAPTCHA/anti-bot) e sem Lighthouse bruto",
-            selector=first_selector,
-        )
-        if ph:
-            return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
-        raise HTTPException(status_code=404, detail="Imagem de evidência indisponível")
-    try:
-        raw = json.loads(lh_path.read_text(encoding="utf-8"))
-    except Exception:
-        ph = _placeholder_evidence_png(
-            title="Lighthouse bruto inválido",
-            reason="Arquivo JSON corrompido ou ilegível",
-            selector=first_selector,
-        )
-        if ph:
-            return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
-        raise HTTPException(status_code=500, detail="Falha ao ler bruto Lighthouse")
-    data_url = _find_screenshot_data_url(raw)
-    if not data_url:
-        ph = _placeholder_evidence_png(
-            title="Screenshot não encontrado",
-            reason="Lighthouse não gerou fullPageScreenshot para esta URL",
-            selector=first_selector,
-        )
-        if ph:
-            return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
-        raise HTTPException(status_code=404, detail="Screenshot não encontrado no bruto Lighthouse")
-    try:
-        header, b64data = data_url.split(",", 1)
-        mime = "image/webp"
-        if "image/png" in header:
-            mime = "image/png"
-        elif "image/jpeg" in header:
-            mime = "image/jpeg"
-        _log.warning(
-            "Fallback screenshot global (auditoria=%d barreira=%d)",
-            audit_id,
-            barrier_idx,
-        )
-        return Response(content=base64.b64decode(b64data), media_type=mime)
-    except Exception:
-        ph = _placeholder_evidence_png(
-            title="Screenshot Lighthouse inválido",
-            reason="Erro ao decodificar base64 do fullPageScreenshot",
-            selector=first_selector,
-        )
-        if ph:
-            return Response(content=ph, media_type="image/png", headers={"X-Meta-Evidence": "placeholder"})
-        raise HTTPException(status_code=500, detail="Screenshot inválido no bruto Lighthouse")
+    # 4) UNAVAILABLE — sem fallback genérico
+    _log.info("Evidência indisponível: audit=%d barreira=%d", audit_id, barrier_idx)
+    raise HTTPException(
+        status_code=404,
+        detail="Evidência visual indisponível: sem LH crop confiável e Playwright não encontrou o elemento.",
+    )
 
 
 @app.get("/audits")
@@ -952,9 +1104,16 @@ async def start_audit(request: AuditRequest):
 
     wave_flat = extract_wave_items(raw_wave)
     w_bar, w_alert, w_info = wave_items_to_issues(wave_flat, url)
-    lh_passed_tipos = extract_passed_tipo_set(classified["passed"])
+    lh_passed_tipo_set = extract_passed_tipo_set(classified["passed"])
+    lh_passed_audits = classified["passed"]
     report = build_report(
-        lh_auto, w_bar, w_alert, w_info, lh_manual, lh_passed_tipos=lh_passed_tipos
+        lh_auto,
+        w_bar,
+        w_alert,
+        w_info,
+        lh_manual,
+        lh_passed_tipo_set=lh_passed_tipo_set,
+        lh_passed_audits=lh_passed_audits,
     )
 
     if AI_ENHANCE_REPORT and ANTHROPIC_API_KEY:
@@ -986,8 +1145,13 @@ async def start_audit(request: AuditRequest):
     else:
         wave_meta = {"status": "ok", "error": None}
 
+    _lh_version = (lhr.get("lighthouseVersion") or "") if not psi_error else ""
     collection_meta = {
-        "lighthouse": {"status": "ok" if not psi_error else "failed", "error": psi_error},
+        "lighthouse": {
+            "status": "ok" if not psi_error else "failed",
+            "error": psi_error,
+            "version": _lh_version,
+        },
         "wave": wave_meta,
     }
     report["metadados_coleta"] = collection_meta

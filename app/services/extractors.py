@@ -108,6 +108,64 @@ def _lhids_from_audit(audit: dict) -> list[str]:
     return out[:20]
 
 
+def _semantic_lighthouse_data(audit: dict) -> dict | None:
+    """
+    Extrai dados semânticos úteis para auditorias Lighthouse em que
+    screenshot não é a melhor evidência.
+
+    Caso tratado agora:
+    - label-content-name-mismatch / rotulo_difere_do_nome_acessivel
+    """
+    aid = str(audit.get("id") or "")
+    details = audit.get("details")
+    if not isinstance(details, dict):
+        return None
+
+    items = details.get("items")
+    if not isinstance(items, list) or not items:
+        return None
+
+    if aid == "label-content-name-mismatch":
+        first = items[0] if isinstance(items[0], dict) else {}
+
+        node = first.get("node") if isinstance(first.get("node"), dict) else {}
+        acessivel = str(node.get("nodeLabel") or "").strip()
+
+        visivel = ""
+        sub = first.get("subItems")
+        if isinstance(sub, dict):
+            subitems = sub.get("items")
+            if isinstance(subitems, list):
+                for si in subitems:
+                    if not isinstance(si, dict):
+                        continue
+                    related = si.get("relatedNode")
+                    if isinstance(related, dict):
+                        lbl = str(related.get("nodeLabel") or "").strip()
+                        if lbl:
+                            visivel = lbl
+                            break
+
+        if visivel or acessivel:
+            problema = ""
+            if visivel and acessivel:
+                if not acessivel.lower().startswith(visivel.lower()):
+                    problema = "O nome acessível não começa com o texto visível."
+                elif acessivel != visivel:
+                    problema = "O nome acessível contém o texto visível, mas não coincide exatamente."
+                else:
+                    problema = "Texto visível e nome acessível coincidem."
+
+            return {
+                "tipo": "label_content_name_mismatch",
+                "visivel": visivel or None,
+                "acessivel": acessivel or None,
+                "problema": problema or None,
+            }
+
+    return None
+
+
 def _evidencia_wave_item(item: dict) -> list[str]:
     """Reporttype 3/4: apenas campos de localização WAVE (evita confundir description com seletor)."""
     out: list[str] = []
@@ -183,6 +241,7 @@ def extract_lighthouse_issues(
         meta = normalize_lighthouse_audit(aid, str(a.get("title") or ""), str(a.get("description") or ""))
         evid = _evidencia_lighthouse(a)
         lhids = _lhids_from_audit(a)
+        semantic_data = _semantic_lighthouse_data(a)
         auto.append({
             "tool": "lighthouse",
             "issue_id_original": aid,
@@ -194,6 +253,7 @@ def extract_lighthouse_issues(
             "correcao_sugerida": meta.get("correcao_sugerida") or "",
             "evidencia_localizacao": evid or None,
             "evidencia_lhids": lhids or None,
+            "dados_semanticos": semantic_data,
             "onde_esta": _onde_esta_humano(evid),
             "status_deteccao": "automatico_detectado",
             "confirmado_por": ["lighthouse"],
@@ -212,6 +272,7 @@ def extract_lighthouse_issues(
         meta = normalize_lighthouse_audit(aid, str(a.get("title") or ""), str(a.get("description") or ""))
         evid = _evidencia_lighthouse(a)
         lhids = _lhids_from_audit(a)
+        semantic_data = _semantic_lighthouse_data(a)
         manual_out.append({
             "tool": "lighthouse",
             "issue_id_original": aid,
@@ -223,6 +284,7 @@ def extract_lighthouse_issues(
             "correcao_sugerida": meta.get("correcao_sugerida") or "",
             "evidencia_localizacao": evid or None,
             "evidencia_lhids": lhids or None,
+            "dados_semanticos": semantic_data,
             "onde_esta": _onde_esta_humano(evid),
             "status_deteccao": "manual_pendente",
             "confirmado_por": ["lighthouse"],

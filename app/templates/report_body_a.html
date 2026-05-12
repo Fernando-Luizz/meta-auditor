@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo, ma_logo_icon %}
 {% set _u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set audit_domain = _u.split('/')[0] if _u else '—' %}
 {% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '—' %}
@@ -9,14 +9,10 @@
   <div class="ma-header-body">
     <div class="ma-header-top">
       <div class="ma-logo">
-        <svg width="40" height="40" viewBox="0 0 38 38" fill="none" aria-hidden="true" focusable="false">
-          <rect width="38" height="38" rx="9" fill="#1A6B3C"/>
-          <path d="M19 5L7 10.5V19C7 26.5 12.5 33 19 34.5C25.5 33 31 26.5 31 19V10.5L19 5Z" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M14 19L17.5 22.5L24.5 15.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        {{ ma_logo_icon(40, 'exec', 'light') }}
         <div class="ma-logo-text">
-          <span class="ma-logo-wordmark">Meta<span class="ma-logo-accent">Auditor</span></span>
-          <span class="ma-logo-tagline">UEA · Escola Superior de Tecnologia</span>
+          <span class="ma-logo-wordmark">Meta-<span class="ma-logo-accent">Auditor</span></span>
+          <span class="ma-logo-tagline">UEA · Acessibilidade Web</span>
         </div>
       </div>
       <div class="ma-conform-pill{% if nt == 0 %} ok{% endif %}" role="status">
@@ -354,14 +350,14 @@
 {% if report.resumo_executivo_ai %}
 <div class="exec-ai-box" role="note" aria-label="Análise executiva gerada por IA">
   <div class="exec-ai-header">
-    <span class="exec-ai-badge">✦ Análise IA</span>
-    <span class="exec-ai-sub">Gerado pelo Meta-Auditor com Claude (Anthropic) — complementar à auditoria automatizada</span>
+    <span class="exec-ai-badge">Análise executiva</span>
   </div>
   <div class="exec-ai-body">
     {% for para in report.resumo_executivo_ai.split('\n\n') %}
       {% if para.strip() %}<p>{{ para.strip() }}</p>{% endif %}
     {% endfor %}
   </div>
+  <div class="exec-ai-foot">Gerado por IA com base nos dados desta auditoria.</div>
 </div>
 {% endif %}
 
