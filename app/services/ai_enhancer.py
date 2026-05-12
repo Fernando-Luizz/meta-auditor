@@ -38,37 +38,78 @@ def _selectors(barrier: dict, n: int = 3) -> list[str]:
     return []
 
 
+def _iter_json_objects(text: str):
+    """Yield each balanced {...} block found in text, in order of appearance.
+
+    Counts brace depth so nested objects are captured correctly.
+    Yields the first complete block, then continues scanning for more —
+    caller can stop at the first successful parse.
+    """
+    depth = 0
+    start: int | None = None
+    for i, ch in enumerate(text):
+        if ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}":
+            if depth > 0:
+                depth -= 1
+                if depth == 0 and start is not None:
+                    yield text[start : i + 1]
+                    start = None
+
+
 def _parse_json(raw: str) -> dict:
     text = raw.strip()
+    # Strip markdown fences
     for fence in ("```json", "```"):
         if text.startswith(fence):
             text = text[len(fence) :]
             if "```" in text:
                 text = text[: text.rfind("```")]
             break
+    text = text.strip()
+    # Direct parse (happy path — covers prefill responses that start with "{")
     try:
-        return json.loads(text.strip())
+        return json.loads(text)
     except Exception:
-        return {}
+        pass
+    # Fallback: try each balanced {...} block in the response in order.
+    # Stops at the first one that parses successfully — handles preamble text,
+    # stray braces like {x}, and multiple JSON blocks without capturing too much.
+    for candidate in _iter_json_objects(text):
+        try:
+            return json.loads(candidate)
+        except Exception:
+            continue
+    return {}
 
 
-async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900) -> str:
+async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill: str = "") -> str:
     headers = {
         "x-api-key": api_key,
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
     }
+    messages: list[dict] = [{"role": "user", "content": prompt}]
+    if prefill:
+        # Assistant prefill: forces the model to continue from this token,
+        # guaranteeing the output begins with the prefill string.
+        messages.append({"role": "assistant", "content": prefill})
     body = {
         "model": ANTHROPIC_MODEL,
         "max_tokens": max_tokens,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": messages,
     }
     try:
         async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
             resp = await client.post(ANTHROPIC_API_URL, headers=headers, json=body)
             resp.raise_for_status()
             data = resp.json()
-            return data["content"][0]["text"]
+            text = data["content"][0]["text"]
+            # When prefill is used the API returns only what follows it — prepend it back.
+            return (prefill + text) if prefill else text
     except Exception as exc:
         _log.warning("ai_enhancer: chamada Claude falhou — %s", exc)
         return ""
@@ -337,6 +378,35 @@ def _prompt_executive(
     )
 
 
+def _prompt_repair(raw: str) -> str:
+    """Prompts the model to reformat a malformed response into the expected JSON.
+
+    Used as the repair-retry: we send the original broken output back and ask
+    only for reformatting — no new content generation, so it is cheap and fast.
+    """
+    return (
+        "A resposta abaixo deveria ser um JSON válido com exatamente esta estrutura:\n\n"
+        '{"versao_dev": "...", "texto_ticket": {"titulo": "...", "descricao": "...", "criterio_de_pronto": "..."}}\n\n'
+        "Reformate o conteúdo abaixo nessa estrutura JSON. "
+        "NÃO altere o conteúdo — corrija apenas a formatação. "
+        "Responda SOMENTE com o JSON válido, sem markdown:\n\n"
+        f"{raw}"
+    )
+
+
+def _validate_nivel2(parsed: dict) -> tuple[bool, str]:
+    """Returns (ok, motivo). ok=True means all required fields are present and non-empty."""
+    if not parsed.get("versao_dev"):
+        return False, "campo versao_dev ausente ou vazio"
+    tk = parsed.get("texto_ticket")
+    if not isinstance(tk, dict):
+        return False, "campo texto_ticket ausente ou não é objeto"
+    missing = [f for f in ("titulo", "descricao", "criterio_de_pronto") if not tk.get(f)]
+    if missing:
+        return False, f"texto_ticket incompleto — campos ausentes: {', '.join(missing)}"
+    return True, ""
+
+
 async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
     cache_key = f"{barrier.get('issue_tipo_normalizado', '?')},{barrier.get('prioridade', '?')},{level}"
     if cache_key in _cache:
@@ -357,33 +427,46 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
     )
 
     if level >= 2:
-        raw2 = await _call_claude(_prompt_nivel2(barrier), api_key, max_tokens=900)
+        raw2 = await _call_claude(_prompt_nivel2(barrier), api_key, max_tokens=900, prefill="{")
+        parsed2 = _parse_json(raw2)
+
+        # Repair-retry: if raw came back non-empty but JSON parse failed,
+        # send the raw text back asking only for reformatting (no new generation).
+        # Much cheaper than a full retry and fixes the most common failure mode.
+        if not parsed2 and raw2:
+            _log.info(
+                "ai_enhancer: nivel2 repair-retry para '%s'",
+                barrier.get("issue_tipo_normalizado", "?"),
+            )
+            raw2_repair = await _call_claude(
+                _prompt_repair(raw2), api_key, max_tokens=600, prefill="{"
+            )
+            parsed2 = _parse_json(raw2_repair)
+
+        # Evaluate outcome: first check if JSON parsed, then validate required fields.
+        # Partial fields are preserved so the appendix can still show what came through.
         if not raw2:
             result["ai_nivel2_status"] = "falhou"
             result["ai_nivel2_motivo"] = "timeout ou erro de API na chamada do nível 2"
             result["versao_dev"] = ""
             result["texto_ticket"] = {}
+        elif not parsed2:
+            result["ai_nivel2_status"] = "falhou"
+            result["ai_nivel2_motivo"] = "resposta não produziu JSON válido nem após repair-retry"
+            result["versao_dev"] = ""
+            result["texto_ticket"] = {}
         else:
-            parsed2 = _parse_json(raw2)
-            if not parsed2:
+            ok, motivo = _validate_nivel2(parsed2)
+            if not ok:
                 result["ai_nivel2_status"] = "falhou"
-                result["ai_nivel2_motivo"] = "resposta da IA não produziu JSON válido"
-                result["versao_dev"] = ""
-                result["texto_ticket"] = {}
-            elif not parsed2.get("versao_dev") and not parsed2.get("texto_ticket"):
-                result["ai_nivel2_status"] = "falhou"
-                result["ai_nivel2_motivo"] = "JSON válido mas campos versao_dev e texto_ticket ausentes"
-                result["versao_dev"] = ""
-                result["texto_ticket"] = {}
+                result["ai_nivel2_motivo"] = f"JSON válido mas incompleto — {motivo}"
+                result["versao_dev"] = parsed2.get("versao_dev", "")
+                result["texto_ticket"] = parsed2.get("texto_ticket", {})
             else:
                 result["ai_nivel2_status"] = "ok"
                 result["ai_nivel2_motivo"] = ""
-                result.update(
-                    {
-                        "versao_dev": parsed2.get("versao_dev", ""),
-                        "texto_ticket": parsed2.get("texto_ticket", {}),
-                    }
-                )
+                result["versao_dev"] = parsed2.get("versao_dev", "")
+                result["texto_ticket"] = parsed2.get("texto_ticket", {})
 
     # Só cacheia se a IA gerou ao menos um campo não vazio.
     # Evita guardar resultados de timeout/parse-error e bloquear re-tentativas.

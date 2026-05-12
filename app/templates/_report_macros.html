@@ -65,12 +65,14 @@
 
 {% macro pub_desc(raw) %}
   {%- set r=(raw or '')|lower -%}
-  {%- if 'ceg' in r or 'leitor de tela' in r %}Usuários cegos utilizam leitores de tela (NVDA, JAWS, VoiceOver) que narram o conteúdo em áudio. Elementos sem nome ficam completamente inacessíveis para essa tecnologia.
+  {%- if 'estrutura' in r or 'orientação' in r or 'hierarquia' in r %}Usuários de leitores de tela navegam pelo conteúdo usando a estrutura de títulos como mapa da página. Quando essa hierarquia está incorreta ou ausente, a orientação e a navegação ficam comprometidas.
+  {%- elif 'ceg' in r or 'leitor de tela' in r %}Usuários cegos utilizam leitores de tela (NVDA, JAWS, VoiceOver) que narram o conteúdo em áudio. Elementos sem nome ficam completamente inacessíveis para essa tecnologia.
   {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r %}Usuários com visão parcial — como quem tem glaucoma ou catarata — dependem de alto contraste, fontes maiores e zoom. Texto sem contraste adequado torna-se ilegível mesmo com amplificação.
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r %}Usuários com dificuldade motora — como Parkinson ou lesão nos membros superiores — dependem de alvos grandes e espaçados. Botões pequenos ou agrupados causam cliques errados e frustração.
+  {%- elif 'voz' in r or 'controle por voz' in r %}Usuários de controle por voz ativam botões e links pronunciando o texto que veem na tela. Quando o nome acessível não coincide com o texto visível, o comando de voz simplesmente não funciona.
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r or 'utilizadores' in r %}Usuários com dificuldade motora — como Parkinson ou lesão nos membros superiores — dependem de alvos grandes e espaçados. Botões pequenos ou agrupados causam cliques errados e frustração.
   {%- elif 'cogni' in r or 'daltonismo' in r %}Usuários com dislexia, TDAH, autismo ou daltonismo precisam de indicadores visuais além da cor, linguagem clara e estrutura consistente.
   {%- elif 'surdo' in r %}Usuários surdos ou com deficiência auditiva dependem de legendas, transcrições e alertas visuais para acessar conteúdo multimídia.
-  {%- elif 'estrutura' in r or 'navega' in r %}Usuários que navegam exclusivamente por teclado — por limitação motora ou preferência — precisam de estrutura semântica e foco visível para se orientar.
+  {%- elif 'navega' in r or 'teclado' in r %}Usuários que navegam exclusivamente por teclado — por limitação motora ou preferência — precisam de ordem de foco previsível e indicação visual de onde estão na página.
   {%- else %}{{ raw }}{%- endif %}
 {% endmacro %}
 
@@ -137,36 +139,36 @@
   {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
   {%- set cor=(b.get('correcao_sugerida') or '') -%}
   {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
-    Aumente o contraste entre texto e fundo no CSS usando <code>color</code> e <code>background-color</code>. A proporção mínima exigida é <strong>4,5:1</strong> para texto normal e <strong>3:1</strong> para texto grande (≥18pt). Verifique com a ferramenta <a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener">WebAIM Contrast Checker</a> antes de implementar.
+    Os textos e elementos clicáveis do site precisam de cores com contraste suficiente para serem lidos por pessoas com baixa visão. O time de design deve revisar a paleta de cores usada e ajustar os textos e botões que não atingem a legibilidade mínima requerida.
   {%- elif 'target-size' in id or 'alvo_interacao' in id -%}
-    Aumente a área clicável para no mínimo <strong>24×24 px</strong> (WCAG 2.2, critério 2.5.8) — idealmente <strong>44×44 px</strong> para dispositivos móveis. Geralmente basta adicionar <code>padding</code> ao elemento sem alterar o visual do layout.
+    Algumas áreas clicáveis estão pequenas demais, dificultando o uso em celulares e por pessoas com limitações motoras. O time de produto deve revisar o tamanho e o espaçamento dos botões e links para que sejam facilmente acionáveis em qualquer dispositivo.
   {%- elif 'button-name' in id or 'controle_sem_nome' in id -%}
-    Adicione texto legível ao botão ou use o atributo <code>aria-label</code>. Exemplo: <code>&lt;button aria-label="Fechar menu"&gt;✕&lt;/button&gt;</code>. Leitores de tela anunciarão o nome em vez de "botão sem nome".
-  {%- elif 'alt_link' in id or 'imagem_link' in id -%}
-    A imagem dentro deste link não possui texto alternativo, tornando o link invisível para leitores de tela. Adicione <code>alt</code> descritivo à imagem <em>com o destino do link</em> — não apenas o conteúdo visual. Exemplo: <code>&lt;a href="/noticias"&gt;&lt;img src="foto.jpg" alt="Ir para a seção de Notícias"&gt;&lt;/a&gt;</code>. O atributo <code>alt</code> é obrigatório mesmo quando vazio (<code>alt=""</code>).
-  {%- elif 'link-name' in id or 'link_empty' in id or 'link_sem_nome' in id -%}
-    Este link não possui nome acessível — é invisível para leitores de tela e navegação por teclado. Adicione texto descritivo dentro do elemento <code>&lt;a&gt;</code> ou use <code>aria-label</code> indicando o destino ou ação. Exemplo: <code>&lt;a href="/contato" aria-label="Acesse o formulário de contato"&gt;&lt;img src="icone.svg" alt=""&gt;&lt;/a&gt;</code>. Nunca deixe um link sem conteúdo textual ou <code>aria-label</code>.
-  {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
-    Diferencie links do texto ao redor além da cor — adicione sublinhado (<code>text-decoration:underline</code>) ou um ícone de seta. Alternativamente, garanta contraste de <strong>3:1</strong> entre a cor do link e o texto adjacente (WCAG 1.4.1).
-  {%- elif 'link' in id -%}
-    Revise este link para garantir que seu propósito seja claro tanto pelo texto visível quanto para tecnologias assistivas. Use texto descritivo dentro do <code>&lt;a&gt;</code> ou <code>aria-label</code> indicando o destino. Evite textos genéricos como "clique aqui" ou "saiba mais" sem contexto.
-  {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
-    Adicione o atributo <code>alt</code> com uma descrição útil da imagem. Para imagens puramente decorativas, use <code>alt=""</code> (vazio) — o leitor de tela a ignorará. <strong>Nunca omita</strong> o atributo, mesmo quando vazio.
-  {%- elif 'aria' in id -%}
-    Prefira elementos HTML semânticos nativos (<code>&lt;button&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;header&gt;</code>). Use ARIA somente quando não há equivalente HTML disponível. Teste com leitor de tela (NVDA + Firefox ou VoiceOver + Safari) para validar o comportamento.
+    Alguns botões da página não possuem identificação legível para tecnologias assistivas, tornando-os invisíveis para quem usa leitor de tela ou controle por voz. O time de produto deve garantir que todo botão tenha um nome que identifique claramente sua função.
   {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id -%}
-    O rótulo visível não está contido no nome acessível do controle. Revise o atributo <code>aria-label</code> ou <code>aria-labelledby</code> para que o texto anunciado pela tecnologia assistiva inclua literalmente o texto visível — usuários de controle por voz precisam falar o que veem para ativar o elemento (WCAG 2.5.3).
+    O texto visível em um controle não coincide com o que as tecnologias assistivas identificam, fazendo com que comandos de voz falhem. O time de produto deve revisar os rótulos dos controles interativos para que o texto que o usuário vê corresponda exatamente ao que a tecnologia anuncia.
+  {%- elif 'alt_link' in id or 'imagem_link' in id -%}
+    Esta imagem funciona como link, mas não tem descrição que identifique o destino para quem não pode visualizá-la. Quem usa leitor de tela não consegue saber aonde o link leva. O time de conteúdo deve adicionar uma descrição que explique claramente o destino de cada imagem-link.
+  {%- elif 'link-name' in id or 'link_empty' in id or 'link_sem_nome' in id -%}
+    Alguns links da página não possuem texto ou descrição identificável, tornando-os invisíveis para leitores de tela e navegação por teclado. O time de produto deve garantir que cada link tenha um texto que indique claramente seu destino ou propósito.
+  {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
+    Links misturados ao texto precisam se diferenciar visualmente além da cor, para que usuários com baixa visão ou daltonismo consigam identificá-los. O time de design deve revisar como os links se destacam do texto ao redor.
+  {%- elif 'link' in id -%}
+    Alguns links têm texto genérico ou pouco descritivo, dificultando a navegação para quem usa leitor de tela. O time de conteúdo deve revisar os textos dos links e substituir expressões como "clique aqui" por descrições que indiquem claramente o destino.
+  {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
+    Imagens informativas da página não possuem descrição para quem não pode visualizá-las. Usuários cegos dependem dessas descrições para entender o conteúdo. O time de conteúdo deve revisar as imagens e solicitar a adição de um texto descritivo que transmita a informação de cada uma.
+  {%- elif 'aria' in id -%}
+    A estrutura de acessibilidade de alguns componentes interativos está configurada incorretamente, podendo causar comportamento inesperado em leitores de tela. O time web deve revisar os componentes afetados com foco em como são anunciados pelas tecnologias assistivas.
   {%- elif 'label' in id -%}
-    Associe um rótulo a cada campo com <code>&lt;label for="id-do-campo"&gt;</code> ou o atributo <code>aria-label</code>. Exemplo: <code>&lt;label for="email"&gt;E-mail&lt;/label&gt;&lt;input id="email" type="email"&gt;</code>.
-  {%- elif 'heading' in id -%}
-    Use apenas um <code>&lt;h1&gt;</code> por página (título principal) e construa a hierarquia em ordem crescente (<code>h2</code>, <code>h3</code>…) sem pular níveis. Leitores de tela usam os títulos para navegação rápida.
+    Campos de formulário não possuem rótulos visíveis ou identificáveis por tecnologias assistivas. Usuários de leitores de tela não conseguem saber o que preencher em cada campo. O time de produto deve garantir que cada campo tenha um rótulo claramente associado e legível.
+  {%- elif 'heading' in id or 'hierarquia_titulos' in id or 'h1_ausente' in id -%}
+    A organização dos títulos da página está incorreta, dificultando que usuários de leitores de tela naveguem pelo conteúdo. Esses usuários dependem da hierarquia de títulos para se orientar. O time web deve revisar a estrutura de títulos para garantir sequência lógica do início ao fim da página.
   {%- elif 'focus' in id -%}
-    Nunca remova o indicador de foco (<code>outline:none</code>) sem substituí-lo por um indicador visual igualmente claro. O WCAG 2.2 exige que o foco seja visível com contraste mínimo de <strong>3:1</strong>.
+    Ao navegar pelo site usando apenas o teclado, não há indicação visual de qual elemento está selecionado no momento. Pessoas que não usam o mouse ficam sem referência de onde estão na página. O time de produto deve garantir que o destaque de foco seja sempre visível durante a navegação.
   {%- elif 'lang' in id -%}
-    Declare o idioma principal no elemento HTML: <code>&lt;html lang="pt-BR"&gt;</code>. Isso permite que leitores de tela pronunciem o conteúdo com o motor de voz correto.
+    O idioma da página não está declarado, o que pode fazer leitores de tela pronunciarem o conteúdo de forma errada. É um ajuste simples que o time web pode resolver na configuração geral da página.
   {%- elif cor %} {{ cor }}
   {%- else -%}
-    Corrija conforme o código técnico indicado{% if b.get('wcag_criterio') %} — referência: WCAG {{ b.get('wcag_criterio') }}{% endif %}. Consulte o Apêndice Técnico para os seletores exatos.
+    Encaminhar para o time responsável com referência ao critério WCAG {% if b.get('wcag_criterio') %}{{ b.get('wcag_criterio') }}{% else %}indicado{% endif %}. Os detalhes técnicos para correção estão no Apêndice Técnico.
   {%- endif -%}
 {% endmacro %}
 

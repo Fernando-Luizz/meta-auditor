@@ -332,6 +332,40 @@
       {% if ds %}
       <div class="sem-compare" role="note" aria-label="Evidência semântica da barreira">
         <div class="sem-compare__title">Comparação semântica do elemento</div>
+
+        {% if ds.get('tipo') == 'label_content_name_mismatch' %}
+        {# Label in Name: renderização completa mesmo quando visível não foi capturado #}
+        <div class="sem-row">
+          <div class="sem-key">Texto visível</div>
+          <div class="sem-val">
+            {%- if ds.get('visivel') -%}<code>{{ ds.get('visivel') }}</code>
+            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não capturado automaticamente — inspecionar o elemento</span>{%- endif -%}
+          </div>
+        </div>
+        <div class="sem-row">
+          <div class="sem-key">Nome acessível</div>
+          <div class="sem-val">
+            {%- if ds.get('acessivel') -%}<code>{{ ds.get('acessivel') }}</code>
+            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não disponível</span>{%- endif -%}
+          </div>
+        </div>
+        <div class="sem-row sem-row--problem">
+          <div class="sem-key">Conflito</div>
+          <div class="sem-val">
+            {%- if ds.get('problema') -%}
+              {{ ds.get('problema') }}
+            {%- elif ds.get('acessivel') and ds.get('visivel') -%}
+              O texto visível "{{ ds.get('visivel') }}" e o nome acessível "{{ ds.get('acessivel') }}" são diferentes. Usuários de controle por voz dizem o que veem — o sistema reconhece outra coisa e o comando falha.
+            {%- elif ds.get('acessivel') and not ds.get('visivel') -%}
+              Nome acessível detectado: "{{ ds.get('acessivel') }}". O texto visível não foi capturado automaticamente. A discrepância foi identificada pelo Lighthouse — inspecionar o elemento para confirmar qual texto o usuário vê em tela e por que diverge do nome acessível.
+            {%- else -%}
+              Discrepância entre texto visível e nome acessível detectada. Inspecionar o elemento para confirmar o conflito.
+            {%- endif -%}
+          </div>
+        </div>
+
+        {% else %}
+        {# Outros tipos: renderização padrão #}
         {% if ds.get('visivel') %}
         <div class="sem-row">
           <div class="sem-key">Texto visível</div>
@@ -350,6 +384,8 @@
           <div class="sem-val">{{ ds.get('problema') }}</div>
         </div>
         {% endif %}
+        {% endif %}
+
       </div>
       {% endif %}
 
