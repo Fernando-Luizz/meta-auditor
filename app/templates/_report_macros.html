@@ -53,6 +53,22 @@
 {%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
 {%- endmacro %}
 
+{# Normaliza texto executivo: travessões → dois-pontos, emoji opcional #}
+{% macro clean_exec_text(texto) -%}
+  {%- set t = ((texto or '') | string | strip_emoji) -%}
+  {{- t
+      | replace(' — ', ': ')
+      | replace(' – ', ': ')
+      | replace('— ', ': ')
+      | replace('– ', ': ')
+      | replace(' —', ':')
+      | replace(' –', ':')
+      | replace('—', ': ')
+      | replace('–', ': ')
+      | replace('  ', ' ')
+  -}}
+{%- endmacro %}
+
 {# Ícones de público afetado / gráficos: família 20×20, stroke 1.4, cores Meta-Auditor #}
 {% macro ma_pub_group_svg(kind, size=22) -%}
 {%- set s = size|string -%}
@@ -75,7 +91,7 @@
 {%- endif -%}
 {%- endmacro %}
 
-{% macro ma_chart_pub_svg(kind) -%}{{ ma_pub_group_svg(kind, 18) }}{%- endmacro %}
+{% macro ma_chart_pub_svg(kind) -%}{{ ma_pub_group_svg(kind, 13) }}{%- endmacro %}
 
 {% macro pub_icon(raw) %}
   {%- set r=(raw or '')|lower -%}
@@ -99,7 +115,7 @@
   {%- elif 'cogni' in r or 'daltonismo' in r %}Quem tem dislexia, daltonismo ou TDAH depende de mais de um indicador visual para distinguir links de texto comum, erros de campos normais e botões ativos de inativos. Se a informação depende só de cor, parte desses usuários vai perder a dica.
   {%- elif 'surdo' in r %}Quem é surdo ou tem baixa audição não acessa o conteúdo em áudio ou vídeo sem legenda ou transcrição. Todo material multimídia precisa de alternativa em texto para que essas pessoas consigam seguir o conteúdo.
   {%- elif 'teclado' in r %}Quem navega só pelo teclado precisa ver onde está o foco a cada avanço com Tab. Sem esse indicador visual, é como preencher um formulário sem saber em qual campo você está: cada pressionamento de Enter vira uma surpresa.
-  {%- else %}{{ raw }}{%- endif %}
+  {%- else %}{{ clean_exec_text(raw) }}{%- endif %}
 {% endmacro %}
 
 {# Nomenclatura PT: s deve estar em minúsculas; pode concatenar tipo + id + título #}
@@ -359,24 +375,9 @@
 {%- elif 'device dependent event handler' in t or 'event handler' in t -%}
   Eventos dependentes de dispositivo (somente mouse) excluem usuários de teclado ou toque. Substitua por eventos universais: <code>onclick</code> em vez de <code>onmouseover</code>, ou adicione equivalentes de teclado.
 {%- else -%}
-  {{ texto }}
+  {{- clean_exec_text(texto) -}}
 {%- endif -%}
 {% endmacro %}
-
-{% macro clean_exec_text(texto) -%}
-  {%- set t = ((texto or '') | string | strip_emoji) -%}
-  {{- t
-      | replace(' — ', ': ')
-      | replace(' – ', ': ')
-      | replace('— ', ': ')
-      | replace('– ', ': ')
-      | replace(' —', ':')
-      | replace(' –', ':')
-      | replace('—', ': ')
-      | replace('–', ': ')
-      | replace('  ', ' ')
-  -}}
-{%- endmacro %}
 
 {% macro desc_tecnica_barreira(b) -%}
   {%- set iid = ((b.get('issue_tipo_normalizado','') ~ ' ' ~ b.get('titulo_tecnico','')) | lower) -%}

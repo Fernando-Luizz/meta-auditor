@@ -227,7 +227,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">Contraste, texto alternativo, imagens</div>
+      <div class="ma-pour-scope">{% if pour.p|length > 0 %}{% set _sc=[] %}{% for x in pour.p %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Contraste, texto alternativo, imagens{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.o|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.o|length > 0 %} red{% endif %}">O</div>
@@ -244,7 +244,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">Teclado, foco, controles</div>
+      <div class="ma-pour-scope">{% if pour.o|length > 0 %}{% set _sc=[] %}{% for x in pour.o %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Teclado, foco, controles{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.u|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.u|length > 0 %} red{% endif %}">U</div>
@@ -261,7 +261,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">Formulários, idioma, títulos</div>
+      <div class="ma-pour-scope">{% if pour.u|length > 0 %}{% set _sc=[] %}{% for x in pour.u %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Formulários, idioma, títulos{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.r|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.r|length > 0 %} red{% endif %}">R</div>
@@ -278,7 +278,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">ARIA, HTML semântico</div>
+      <div class="ma-pour-scope">{% if pour.r|length > 0 %}{% set _sc=[] %}{% for x in pour.r %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}ARIA, HTML semântico{% endif %}</div>
     </div>
   </div>
 </section>

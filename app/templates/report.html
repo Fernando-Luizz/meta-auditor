@@ -182,7 +182,7 @@ strong{font-weight:700}
 .ma-scorecard { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
 .ma-score-card { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 12px; padding: 16px; box-shadow: var(--ma-shadow-sm); display: flex; flex-direction: column; gap: 6px; }
 .ma-score-label { font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ma-ink-400); }
-.ma-score-value { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--ma-ink-900); }
+.ma-score-value { font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--ma-ink-900); }
 .ma-score-value.green { color: var(--ma-primary); }
 .ma-score-value.orange { color: var(--ma-lighthouse); }
 .ma-score-value.red { color: var(--ma-alta); }
@@ -1039,15 +1039,15 @@ strong{font-weight:700}
 }
 .dc::before{
   content:'';position:absolute;top:0;left:0;right:0;
-  height:4px;border-radius:var(--rlg) var(--rlg) 0 0;
+  height:3px;border-radius:var(--rlg) var(--rlg) 0 0;
 }
-.dc-lh::before  {background:linear-gradient(90deg,var(--lh),#2A8FFF)}
-.dc-wave::before{background:linear-gradient(90deg,var(--wave),#0BBDAD)}
-.dc-bar::before {background:linear-gradient(90deg,var(--red),#FF6B5B)}
-.dc-risk::before{background:linear-gradient(90deg,var(--amber),#F5A623)}
+.dc-lh::before  {background:var(--lh)}
+.dc-wave::before{background:var(--wave)}
+.dc-bar::before {background:var(--red)}
+.dc-risk::before{background:var(--amber)}
 
 .dc-lbl{font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.dc-big{font-size:38px;font-weight:800;line-height:1;margin:8px 0 4px}
+.dc-big{font-size:34px;font-weight:800;line-height:1;margin:6px 0 4px;letter-spacing:-0.02em}
 .dc-lh  .dc-big{color:var(--lh)}
 .dc-wave .dc-big{color:var(--wave)}
 .dc-bar .dc-big{color:var(--red)}
@@ -1274,8 +1274,8 @@ strong{font-weight:700}
 }
 .hbar-chart{display:flex;flex-direction:column;gap:10px}
 .hbar-row{display:flex;align-items:center;gap:8px}
-.hbar-ic{font-size:0;line-height:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hbar-ic svg{display:block}
+.hbar-ic{font-size:0;line-height:0;width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hbar-ic svg{display:block;max-width:100%;max-height:100%}
 .hbar-lbl{
   font-size:11px;color:var(--ink2);
   min-width:90px;max-width:95px;
@@ -1283,11 +1283,11 @@ strong{font-weight:700}
   font-weight:500;
 }
 .hbar-track{
-  flex:1;height:16px;background:var(--paper);
-  border-radius:8px;overflow:hidden;border:1px solid var(--border);
+  flex:1;height:8px;background:var(--paper);
+  border-radius:4px;overflow:hidden;border:1px solid var(--border);
 }
 .hbar-fill{
-  height:100%;border-radius:8px;min-width:3px;
+  height:100%;border-radius:4px;min-width:3px;
   display:flex;align-items:center;overflow:hidden;
 }
 .hbar-inlbl{
@@ -1295,7 +1295,7 @@ strong{font-weight:700}
   text-shadow:0 1px 2px rgba(0,0,0,.3);
   padding-left:6px;white-space:nowrap;flex-shrink:0;
 }
-.hbar-num{font-size:11px;font-weight:700;color:var(--ink3);min-width:28px;text-align:right}
+.hbar-num{font-size:11px;font-weight:600;color:var(--ink3);min-width:28px;text-align:right}
 .f-red   {background:var(--red)}
 .f-amber {background:var(--amber)}
 .f-green {background:var(--green)}
@@ -1304,6 +1304,7 @@ strong{font-weight:700}
 .f-purple{background:var(--purple)}
 .f-teal  {background:var(--teal)}
 .f-ink   {background:var(--ink3)}
+.f-blue  {background:var(--blue)}
 
 /* ══ LEGEND ═════════════════════════════════════════════════ */
 .leg-block{
@@ -2236,7 +2237,8 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   {% else %}{% set wvcls='crit' %}{% set wvlbl='CRÍTICO' %}{% set wvcol='#C8291E' %}{% endif %}
 {% else %}{% set wv=none %}{% set wvcls=''%}{% set wvlbl=''%}{% set wvcol='#7F96A8' %}{% endif %}
 
-{% set ARC=157.08 %}
+{# Comprimento do arco semicircular (r=47): π·r ≈ 147,65 — alinhado aos gauges em report_body_part1 #}
+{% set ARC=147.65 %}
 {% if lh_pct is not none %}{% set lh_arc=(lh_pct/100.0*ARC)|round(2) %}{% else %}{% set lh_arc=0 %}{% endif %}
 {% if wv is not none %}{% set wv_arc=(wv/10.0*ARC)|round(2) %}{% else %}{% set wv_arc=0 %}{% endif %}
 

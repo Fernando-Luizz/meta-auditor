@@ -136,6 +136,9 @@
       (ma_pub_group_svg('estrutura', 22), 'Navegação por estrutura', cnt.estr, 'Leitores de tela e quem navega por títulos', 'Hierarquia de títulos quebrada dificulta orientação')
     ] %}
     {% for ic, nm, cnt_val, desc, ex in gcards %}
+    {%- if nm == 'Navegação por teclado' and cnt.naveg == 0 %}
+    {%- elif nm == 'Navegação por estrutura' and cnt.estr == 0 %}
+    {%- else %}
     <div class="gc {% if cnt_val > 0 %}gc-afetado{% else %}gc-ok{% endif %}" role="listitem">
       <span class="g-ic" aria-hidden="true">{{ ic|safe }}</span>
       <div class="g-nm">{{ nm }}</div>
@@ -147,6 +150,7 @@
         <span class="gtag-ok" aria-hidden="true"><span class="gtag-ok-ic">{{ ma_tag_ok_svg(10)|safe }}</span> Sem ocorrências mapeadas</span>
       {% endif %}
     </div>
+    {% endif %}
     {% endfor %}
   </div>
 </section>
@@ -330,7 +334,7 @@
         <div class="ma-bc-aud-icon" aria-hidden="true">{{ pub_icon(b.get('publico_afetado',''))|safe }}</div>
         <div class="ma-bc-aud-text">
           <span class="ma-bc-aud-label">Público afetado: {{ b.get('publico_afetado') or '–' }}</span>
-          <span class="ma-bc-aud-desc">{{ pub_desc(b.get('publico_afetado','')) }}</span>
+          <span class="ma-bc-aud-desc">{{ clean_exec_text(pub_desc(b.get('publico_afetado',''))) }}</span>
         </div>
       </div>
 
