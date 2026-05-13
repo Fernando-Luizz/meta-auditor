@@ -107,15 +107,26 @@
 
 {% macro pub_desc(raw) %}
   {%- set r=(raw or '')|lower -%}
-  {%- if 'estrutura' in r or 'orientação' in r or 'orientacao' in r or 'hierarquia' in r %}Quem usa leitor de tela navega pelo site pelos títulos: é como folhear um índice em vez de ler tudo do começo. Quando a hierarquia está errada, esse atalho quebra e a pessoa fica presa no início da página sem conseguir pular para o que interessa.
-  {%- elif 'ceg' in r or ('leitor' in r and 'tela' in r) %}Um leitor de tela narra tudo em voz alta: botões, links, imagens, campos. Se um elemento não tem nome ou descrição, o software passa direto sem anunciar nada: para esse usuário, aquele conteúdo simplesmente não existe.
-  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r %}Quem tem baixa visão trabalha com a tela ampliada e precisa de contraste alto entre texto e fundo para conseguir ler. Quando as cores são parecidas demais, nem o zoom resolve: o texto desaparece no fundo mesmo com a tela no máximo.
-  {%- elif 'voz' in r or 'controle por voz' in r %}Quem usa o site por comando de voz aciona elementos pronunciando o texto que vê na tela. Se o rótulo visível e o nome registrado no código são diferentes, o comando não dispara: como chamar alguém repetidamente pelo nome errado.
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r or 'utilizadores' in r %}Quem tem tremor, Parkinson ou dificuldade nos dedos precisa de áreas de toque grandes e bem espaçadas. Com alvos pequenos, cada clique errado é retrabalho, e em dias difíceis pode tornar o site inutilizável.
-  {%- elif 'cogni' in r or 'daltonismo' in r %}Quem tem dislexia, daltonismo ou TDAH depende de mais de um indicador visual para distinguir links de texto comum, erros de campos normais e botões ativos de inativos. Se a informação depende só de cor, parte desses usuários vai perder a dica.
-  {%- elif 'surdo' in r %}Quem é surdo ou tem baixa audição não acessa o conteúdo em áudio ou vídeo sem legenda ou transcrição. Todo material multimídia precisa de alternativa em texto para que essas pessoas consigam seguir o conteúdo.
-  {%- elif 'teclado' in r %}Quem navega só pelo teclado precisa ver onde está o foco a cada avanço com Tab. Sem esse indicador visual, é como preencher um formulário sem saber em qual campo você está: cada pressionamento de Enter vira uma surpresa.
-  {%- else %}{{ clean_exec_text(raw) }}{%- endif %}
+
+  {%- if 'estrutura' in r or 'títulos' in r or 'titulos' in r or 'heading' in r -%}
+    Usuários que navegam pela estrutura da página — especialmente com leitores de tela e lista de títulos — dependem de hierarquia semântica correta para localizar conteúdo e se orientar rapidamente.
+  {%- elif 'teclado' in r -%}
+    Usuários que navegam apenas por teclado dependem de foco visível, ordem lógica de navegação e controles acionáveis sem uso do mouse.
+  {%- elif 'ceg' in r or 'leitor de tela' in r or 'screen reader' in r -%}
+    Usuários cegos utilizam leitores de tela como NVDA, JAWS ou VoiceOver, que anunciam nomes, estados e estrutura. Elementos sem nome acessível ou descrição tornam-se invisíveis para essa tecnologia.
+  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r -%}
+    Usuários com baixa visão dependem de contraste adequado, zoom e tipografia legível. Quando texto e fundo têm pouca diferença visual, o conteúdo pode desaparecer mesmo com ampliação.
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'movel' in r or 'usuários móveis' in r or 'usuarios moveis' in r -%}
+    Usuários com limitação motora dependem de alvos clicáveis adequados, espaçamento entre controles e navegação previsível para evitar toques acidentais e retrabalho.
+  {%- elif 'voz' in r or 'comando de voz' in r -%}
+    Usuários que acionam interfaces por voz dependem de nomes visíveis e acessíveis coerentes, para que o comando falado corresponda ao elemento exibido na tela.
+  {%- elif 'cogni' in r or 'daltonismo' in r or 'dislexia' in r or 'tdah' in r or 'autismo' in r -%}
+    Usuários com necessidades cognitivas ou perceptivas dependem de estrutura consistente, linguagem clara e pistas visuais que não usem apenas cor para transmitir informação.
+  {%- elif 'surdo' in r or 'auditiv' in r -%}
+    Usuários surdos ou com deficiência auditiva dependem de legendas, transcrições e alternativas visuais para compreender conteúdos multimídia.
+  {%- else -%}
+    {{ raw }}
+  {%- endif %}
 {% endmacro %}
 
 {# Nomenclatura PT: s deve estar em minúsculas; pode concatenar tipo + id + título #}

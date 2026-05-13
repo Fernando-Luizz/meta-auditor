@@ -1907,6 +1907,28 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .if-grid{grid-template-columns:1fr 1fr}
   .section{page-break-inside:avoid}
   .bc{page-break-inside:avoid}
+
+  .bc,
+  .bbody,
+  .if-grid,
+  .ibox,
+  .ev-wrap,
+  .ticket-details,
+  .ticket-body,
+  .ap-group,
+  .ap-ticket-block,
+  .ap-ticket-sub,
+  .ap-field,
+  .tk-row {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  p, li, .tk-val, .ap-field-val {
+    orphans: 3;
+    widows: 3;
+  }
+
   .ap-group-header,.exec-banner,.legal-sec,.pour-cell{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }

@@ -285,6 +285,7 @@
     {% set sev_badge = 'ma-b-alta' if bprio=='alta' else ('ma-b-media' if bprio=='media' else ('ma-b-man' if bprio=='revisao_manual' else 'ma-b-baixa')) %}
     {% set effort_lbl = 'Correção rápida' if ef=='rapido' else ('Esforço médio' if ef=='medio' else 'Projeto estrutural') %}
     {% set phase_lbl = 'Correção rápida (menos de 1 dia)' if ef=='rapido' else ('Esforço médio (1–5 dias)' if ef=='medio' else 'Projeto estrutural (maior esforço)') %}
+    {% set publico_label = (b.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}
     <article class="ma-bc" aria-labelledby="bar-title-{{ loop.index }}">
       <div class="ma-bc-strip {{ strip_cls }}" role="presentation"></div>
       <div class="ma-bc-head">
@@ -333,7 +334,7 @@
       <div class="ma-bc-audience">
         <div class="ma-bc-aud-icon" aria-hidden="true">{{ pub_icon(b.get('publico_afetado',''))|safe }}</div>
         <div class="ma-bc-aud-text">
-          <span class="ma-bc-aud-label">Público afetado: {{ b.get('publico_afetado') or '–' }}</span>
+          <span class="ma-bc-aud-label">Público afetado: {{ publico_label or '–' }}</span>
           <span class="ma-bc-aud-desc">{{ clean_exec_text(pub_desc(b.get('publico_afetado',''))) }}</span>
         </div>
       </div>
@@ -868,6 +869,7 @@
     <h3 class="ap-block-title">A1 · Localização técnica e backlog por barreira</h3>
     {% for b in bars %}
     {% set evcodes=b.get('evidencia_localizacao') or [] %}
+    {% set publico_label = (b.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}
     <div class="ap-barrier-block" id="apendice-tecnico-barreira-{{ loop.index }}">
       <div class="ap-barrier-title">
         <span class="ap-barrier-num">Barreira #{{ loop.index }}</span>
@@ -915,7 +917,7 @@
         <span class="ap-ctx-badge ap-ctx-badge--{{ _ap_prio }}">{{ prioridade_exibir_caps(_ap_prio) }}</span>
         {% if b.get('publico_afetado') %}
         <span class="ap-ctx-sep" aria-hidden="true"></span>
-        <span class="ap-ctx-pub">{{ b.get('publico_afetado') }}</span>
+        <span class="ap-ctx-pub">{{ publico_label }}</span>
         {% endif %}
       </div>
 

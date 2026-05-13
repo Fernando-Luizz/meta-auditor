@@ -48,9 +48,10 @@
         {% if b.get('wave_categoria') %}<span class="chip"><span aria-hidden="true">{{ ma_chip_folder_icon()|safe }}</span> {{ b.get('wave_categoria') }}</span>{% endif %}
       </div>
       {% if b.get('publico_afetado') %}
+      {% set publico_label = (b.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}
       <div class="pub-inline">
         <div class="pi-ic">{{ pub_icon(b.get('publico_afetado'))|safe }}</div>
-        <div><div class="pi-nm">Afeta: {{ b.get('publico_afetado') }}</div><div class="pi-desc">{{ pub_desc(b.get('publico_afetado')) }}</div></div>
+        <div><div class="pi-nm">Afeta: {{ publico_label }}</div><div class="pi-desc">{{ pub_desc(b.get('publico_afetado')) }}</div></div>
       </div>
       {% endif %}
 
@@ -111,7 +112,7 @@
     <div class="div-top">{{ ma_badge_div_inline()|safe }}<span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} ocorrência(s)</span><span class="div-ttl">{{ termo_barreira(d) }}</span></div>
     <div class="chips">
       {% if d.get('wcag_criterio') %}<span class="chip"><span aria-hidden="true">{{ ma_chip_wcag_icon()|safe }}</span> <strong>WCAG {{ d.get('wcag_criterio') }}</strong></span>{% endif %}
-      {% if d.get('publico_afetado') %}<span class="chip"><span aria-hidden="true">{{ pub_icon(d.get('publico_afetado'))|safe }}</span> {{ d.get('publico_afetado') }}</span>{% endif %}
+      {% if d.get('publico_afetado') %}{% set publico_label_d = (d.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}<span class="chip"><span aria-hidden="true">{{ pub_icon(d.get('publico_afetado'))|safe }}</span> {{ publico_label_d }}</span>{% endif %}
       <span class="chip">LH: passou</span>
       <span class="chip">WAVE: {{ d.get('wave_categoria', '–') }}</span>
     </div>
