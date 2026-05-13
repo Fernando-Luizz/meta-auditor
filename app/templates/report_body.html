@@ -1,18 +1,19 @@
 {# Relatório executivo premium: variáveis compartilhadas (escopo do include pai) + partes A/B #}
 {% from '_report_macros.html' import risk_slug_nv, esforco %}
 
-{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0) %}
+{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0) %}
 {% for b in bars+divs %}
   {% set p=(b.get('publico_afetado') or '')|lower %}
   {% set occ=(b.get('ocorrencias_count') or 1)|int %}
   {% if 'baixa visão' in p or 'baixa visao' in p or 'low vision' in p or 'contraste' in p or 'leitura em' in p %}{% set cnt.visao = cnt.visao + occ %}{% endif %}
-  {% if 'ceg' in p or 'leitor de tela' in p or 'screen reader' in p %}{% set cnt.cego = cnt.cego + occ %}{% endif %}
+  {% if 'ceg' in p or ('leitor' in p and 'tela' in p) or 'screen reader' in p %}{% set cnt.cego = cnt.cego + occ %}{% endif %}
   {% if 'motor' in p or 'tremor' in p or 'polegar' in p or 'móvel' in p or 'movel' in p or 'usuários móveis' in p %}{% set cnt.motor = cnt.motor + occ %}{% endif %}
   {% if 'cogni' in p or 'dislexia' in p or 'daltonismo' in p or 'percepção de cor' in p %}{% set cnt.cogni = cnt.cogni + occ %}{% endif %}
   {% if 'surdo' in p or 'deaf' in p %}{% set cnt.surdo = cnt.surdo + occ %}{% endif %}
-  {% if 'estrutura' in p or 'navega' in p or 'teclado' in p %}{% set cnt.naveg = cnt.naveg + occ %}{% endif %}
+  {% if 'teclado' in p %}{% set cnt.naveg = cnt.naveg + occ %}{% endif %}
+  {% if 'estrutura' in p or 'hierarquia' in p or 'orientação' in p or 'orientacao' in p %}{% set cnt.estr = cnt.estr + occ %}{% endif %}
 {% endfor %}
-{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,1]|max %}
+{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr,1]|max %}
 
 {% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
 {% for bb in bars %}

@@ -54,6 +54,7 @@ from app.database import (
 )
 from app.models.request_models import AuditRequest
 from app.services.consolidation import build_report
+from app.services.text_clean import strip_emoji
 from app.services.extractors import (
     extract_lighthouse_issues,
     extract_passed_tipo_set,
@@ -69,6 +70,7 @@ _jinja_env = Environment(
     loader=FileSystemLoader(str(_TEMPLATES_DIR)),
     autoescape=select_autoescape(["html", "xml"]),
 )
+_jinja_env.filters["strip_emoji"] = strip_emoji
 
 
 def _embed_evidence_into_row(audit_row: dict) -> dict:
@@ -481,10 +483,10 @@ def _barrier_selector_candidates(barrier: dict) -> list[str]:
     seen: set[str] = set()
 
     def strip_lh_preface(line: str) -> str:
-        """Remove prefixo Lighthouse '[lhId]' e texto após — (selector costuma ficar primeiro)."""
+        """Remove prefixo Lighthouse '[lhId]' e texto após o separador (selector costuma ficar primeiro)."""
         s = line.strip()
         s = re.sub(r"^\[[^\]\s]+\]\s*", "", s)
-        for sep in (" — ", " – ", " - "):
+        for sep in (" — ", " – ", " - ", ": "):
             if sep in s:
                 s = s.split(sep, 1)[0].strip()
                 break

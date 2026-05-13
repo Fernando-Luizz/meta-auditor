@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatório de Acessibilidade — {{ audit.url }}</title>
+<title>Relatório de Acessibilidade: {{ audit.url }}</title>
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
 <style>
 /* ═══════════════════════════════════════════════════════════
    META-AUDITOR · RELATÓRIO DE ACESSIBILIDADE
-   Design System — Premium Executive Report
+   Design System: Premium Executive Report
    ═══════════════════════════════════════════════════════════ */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* — Brand & Neutrals ————————————————————— */
+  /*: Brand & Neutrals,: : : : : : : : : : : : : : : : : : : : */
   --ink:     #0D1B26;
   --ink2:    #253545;
   --ink3:    #4A5E6E;
@@ -27,7 +27,7 @@
   --border2: #C6CFD9;
   --glass:   rgba(255,255,255,0.08);
 
-  /* — Status Palette ————————————————————— */
+  /*: Status Palette,: : : : : : : : : : : : : : : : : : : : */
   --red:        #C8291E;
   --red-bg:     #FEF0EF;
   --red-mid:    #F1ACA6;
@@ -55,23 +55,23 @@
   --purple-bg:  #F1EBFB;
   --purple-mid: #B898E8;
 
-  /* — Tool Colors ————————————————————— */
+  /*: Tool Colors,: : : : : : : : : : : : : : : : : : : : */
   --lh:     #1464C8;
   --lh-bg:  #EBF3FD;
   --wave:   #0A6B60;
   --wave-bg:#E7F5F3;
 
-  /* — Typography ————————————————————— */
+  /*: Typography,: : : : : : : : : : : : : : : : : : : : */
   --ff:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
   --ff-mono:"SF Mono","Cascadia Mono","Fira Code",Consolas,monospace;
 
-  /* — Geometry ————————————————————— */
+  /*: Geometry,: : : : : : : : : : : : : : : : : : : : */
   --r:  10px;
   --rsm:6px;
   --rlg:16px;
   --rxl:22px;
 
-  /* — Shadows ————————————————————— */
+  /*: Shadows,: : : : : : : : : : : : : : : : : : : : */
   --sh:   0 2px 12px rgba(13,27,38,.10);
   --shsm: 0 1px 4px  rgba(13,27,38,.07);
   --shmd: 0 4px 20px rgba(13,27,38,.12);
@@ -149,7 +149,7 @@ strong{font-weight:700}
 .pbtn:hover{background:var(--ink2)}
 .pbtn:focus{outline:3px solid var(--amber);outline-offset:2px}
 
-/* —— Relatório: header executivo, scorecard, faixa legal —— */
+/*,: Relatório: header executivo, scorecard, faixa legal,: */
 .ma-header { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 16px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 16px; }
 .ma-header-stripe { height: 5px; background: linear-gradient(90deg, var(--ma-primary-dark) 0%, var(--ma-primary) 60%, var(--ma-primary-mid) 100%); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .ma-header-body { padding: 28px 32px 24px; }
@@ -161,7 +161,7 @@ strong{font-weight:700}
 .ma-logo-tagline { font-size: 9px; font-weight: 500; letter-spacing: .13em; text-transform: uppercase; color: var(--ma-ink-400); }
 .ma-conform-pill { display: inline-flex; align-items: center; gap: 7px; background: var(--ma-media-light); border: 1px solid #FDE68A; border-radius: 8px; padding: 8px 14px; }
 .ma-conform-pill.ok { background: var(--ma-primary-light); border-color: #BBF7D0; }
-.ma-conform-icon { font-size: 15px; }
+.ma-conform-icon { width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 0; line-height: 0; }
 .ma-conform-text { display: flex; flex-direction: column; gap: 1px; }
 .ma-conform-title { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ma-media-dark); }
 .ma-conform-pill.ok .ma-conform-title { color: var(--ma-primary-dark); }
@@ -193,6 +193,7 @@ strong{font-weight:700}
 .ma-score-tag.atencao { background: var(--ma-amber-light); color: var(--ma-amber-dark); }
 .ma-score-tag.critico { background: var(--ma-alta-light); color: var(--ma-alta-dark); }
 .ma-score-tag.neutro { background: var(--ma-ink-50); color: var(--ma-ink-400); border: 1px solid var(--ma-border); }
+.ma-score-ic { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; vertical-align: middle; margin-right: 2px; }
 .ma-score-desc { font-size: 10px; color: var(--ma-ink-400); line-height: 1.4; }
 .ma-legal { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 12px; padding: 16px 20px; box-shadow: var(--ma-shadow-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
 .ma-legal-left { display: flex; flex-direction: column; gap: 3px; max-width: 520px; }
@@ -244,6 +245,7 @@ strong{font-weight:700}
 .ma-pour-letter.red { color: var(--ma-alta); }
 .ma-pour-name { font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ma-ink-400); margin-bottom: 10px; }
 .ma-pour-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
+.ma-pour-ic { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; }
 .pb-warn { background: var(--ma-alta-light); color: var(--ma-alta-dark); }
 .pb-warn-amber { background: var(--ma-amber-light); color: var(--ma-amber-dark); }
 .pb-warn-purple { background: var(--purple-bg); color: var(--purple); }
@@ -349,6 +351,59 @@ strong{font-weight:700}
   background:rgba(9,82,160,.08);
 }
 
+/* ── Contexto rápido da barreira no apêndice A1 (determinístico) ── */
+.ap-ctx-strip{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  background:var(--ma-ink-50,#f8fafc);
+  border:1px solid var(--border,#e5e7eb);
+  border-radius:7px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+.ap-ctx-badge{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:2px 8px;
+  border-radius:4px;
+  white-space:nowrap;
+}
+.ap-ctx-badge--alta{
+  background:#fff0f0;
+  color:#c53030;
+  border:1px solid rgba(197,48,48,.25);
+}
+.ap-ctx-badge--media{
+  background:#fffbeb;
+  color:#92400e;
+  border:1px solid rgba(146,64,14,.22);
+}
+.ap-ctx-badge--baixa{
+  background:#f0fff4;
+  color:#276749;
+  border:1px solid rgba(39,103,73,.22);
+}
+.ap-ctx-badge--revisao_manual{
+  background:#f5f3ff;
+  color:#5b21b6;
+  border:1px solid rgba(91,33,182,.22);
+}
+.ap-ctx-sep{
+  width:1px;
+  height:14px;
+  background:var(--border,#e5e7eb);
+  flex-shrink:0;
+}
+.ap-ctx-pub{
+  font-size:11px;
+  color:var(--ink2,#374151);
+  line-height:1.4;
+}
+
 .ap-ticket-sub--absent{
   opacity: .7;
   border-style: dashed;
@@ -370,7 +425,8 @@ strong{font-weight:700}
 .ma-bc-count { font-size: 11px; font-weight: 600; color: var(--ma-ink-500); background: var(--ma-ink-50); padding: 4px 10px; border-radius: 5px; border: 1px solid var(--ma-border); }
 .ma-bc-count span { color: var(--ma-ink-900); }
 .ma-bc-audience { display: flex; align-items: flex-start; gap: 10px; padding: 12px 22px; background: var(--ma-ink-50); border-bottom: 1px solid var(--ma-border); }
-.ma-bc-aud-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--ma-surface); border: 1px solid var(--ma-border); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; line-height: 1; }
+.ma-bc-aud-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--ma-surface); border: 1px solid var(--ma-border); display: flex; align-items: center; justify-content: center; font-size: 0; line-height: 0; flex-shrink: 0; }
+.ma-bc-aud-icon svg { display: block; }
 .ma-bc-aud-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ma-bc-aud-label { font-size: 11px; font-weight: 600; color: var(--ma-ink-700); }
 .ma-bc-aud-desc { font-size: 11px; color: var(--ma-ink-400); line-height: 1.5; }
@@ -523,10 +579,19 @@ strong{font-weight:700}
 }
 .ev-badge--lh      { background: #ddeaff; color: #1a4ca0; }
 .ev-badge--url     { background: #e6f4ea; color: #1a6b3c; }
-.ev-badge--unavail { background: #fef3c7; color: #92400e; }
+.ev-badge--unavail {
+  background: #fef3c7; color: #92400e;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  font-size: 10px;
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.25;
+}
 .ev-expand-link { color: var(--ma-primary); text-decoration: none; font-size: 10px; }
 .ev-expand-link:hover { text-decoration: underline; }
-/* Bloco "indisponível" — visível no browser quando imagem falha ou source não confiável */
+/* Bloco "indisponível": visível no browser quando imagem falha ou source não confiável */
 .ev-unavail {
   display: none; /* começa oculto; JS o exibe se a imagem falhar */
   align-items: flex-start; gap: 8px;
@@ -804,6 +869,8 @@ strong{font-weight:700}
 .ma-td-num { font-size: 12px; font-weight: 700; color: var(--ma-ink-400); width: 36px; }
 .ma-td-fase { width: 130px; }
 .ma-fase-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; padding: 4px 9px; border-radius: 5px; white-space: nowrap; }
+.ma-phase-ic { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; }
+.ma-phase-ic svg { display: block; }
 .ft-1 { background: #FFFBEB; color: #92400E; }
 .ft-2 { background: #FFF7ED; color: #9A3412; }
 .ft-3 { background: #EFF6FF; color: #1E3A5F; }
@@ -890,7 +957,9 @@ strong{font-weight:700}
   padding:14px 22px;
   font-size:11px;font-weight:800;letter-spacing:.5px;
   text-transform:uppercase;white-space:nowrap;flex-shrink:0;
+  display:inline-flex;align-items:center;gap:6px;
 }
+.cf-ic{display:inline-flex;flex-shrink:0;align-items:center;justify-content:center}
 .cf-nc{background:var(--red-bg);color:var(--red)}
 .cf-partial{background:var(--amber-bg);color:var(--amber)}
 .cf-conform{background:var(--green-bg);color:var(--green)}
@@ -1080,7 +1149,8 @@ strong{font-weight:700}
   padding:12px 16px;background:rgba(255,255,255,.07);
   border-radius:var(--rsm);border:1px solid rgba(255,255,255,.10);
 }
-.law-icon{font-size:18px;flex-shrink:0}
+.law-icon{font-size:0;line-height:0;width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.law-icon svg{display:block}
 .law-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
 .law-desc{font-size:11px;color:rgba(255,255,255,.55);line-height:1.45}
 .legal-right{flex-shrink:0;min-width:200px}
@@ -1204,7 +1274,8 @@ strong{font-weight:700}
 }
 .hbar-chart{display:flex;flex-direction:column;gap:10px}
 .hbar-row{display:flex;align-items:center;gap:8px}
-.hbar-ic{font-size:14px;width:22px;text-align:center;flex-shrink:0}
+.hbar-ic{font-size:0;line-height:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hbar-ic svg{display:block}
 .hbar-lbl{
   font-size:11px;color:var(--ink2);
   min-width:90px;max-width:95px;
@@ -1272,9 +1343,13 @@ strong{font-weight:700}
   border:1.5px solid var(--border);border-radius:var(--r);
   padding:16px 17px;transition:box-shadow .1s;
 }
-.gc-afetado{border-color:var(--red-mid);background:var(--red-bg);box-shadow:var(--shsm)}
+.gc-afetado{border-left:3px solid var(--red-mid);border-color:var(--border);background:#fff;box-shadow:var(--shsm)}
 .gc-ok{background:var(--paper);opacity:.55}
-.g-ic{font-size:24px;margin-bottom:6px;display:block}
+.g-ic{font-size:0;line-height:0;margin-bottom:8px;display:block;width:22px;height:22px}
+.g-ic svg{width:22px;height:22px;display:block}
+.gtag-af-ic,.gtag-ok-ic{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.gtag-af-ic{color:#fff}
+.gtag-ok-ic{color:var(--green)}
 .g-nm{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
 .g-desc{font-size:11px;color:var(--ink3);line-height:1.45;margin-bottom:3px}
 .g-ex{font-size:10px;color:var(--ink4);font-style:italic}
@@ -1326,7 +1401,8 @@ strong{font-weight:700}
 .b-baixa {background:var(--green-bg);color:var(--green)}
 .b-lh    {background:var(--lh-bg);   color:var(--lh)}
 .b-wave  {background:var(--wave-bg);  color:var(--wave)}
-.b-conv  {background:var(--green-bg);color:var(--green)}
+.b-conv  {background:var(--green-bg);color:var(--green);display:inline-flex;align-items:center;gap:5px}
+.b-conv .b-conv-ic{color:var(--green);flex-shrink:0}
 .b-div   {background:var(--purple-bg);color:var(--purple)}
 .b-man   {background:var(--paper);color:var(--ink3);border:1px solid var(--border)}
 
@@ -1464,7 +1540,8 @@ details[open] summary::before{transform:rotate(90deg)}
   font-size:13px;
 }
 .ml li:last-child{border-bottom:none}
-.m-ic{font-size:16px;flex-shrink:0}
+.m-ic{font-size:0;line-height:0;flex-shrink:0;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
+.m-ic svg{display:block;max-width:100%;max-height:100%}
 .m-lbl{font-weight:700;display:block}
 .m-desc{font-size:11px;color:var(--ink3)}
 
@@ -1500,7 +1577,8 @@ details[open] summary::before{transform:rotate(90deg)}
   padding:16px 18px;border-radius:var(--r);
   border:1.5px solid var(--border);
 }
-.mc-icon{font-size:20px;margin-bottom:6px}
+.mc-icon{font-size:0;line-height:0;margin-bottom:8px;display:block;width:22px;height:22px}
+.mc-icon svg{display:block}
 .mc-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px}
 .mc-desc{font-size:11px;color:var(--ink3);line-height:1.5}
 .mc-lh  {background:var(--lh-bg);  border-color:var(--blue-mid)}
@@ -1600,7 +1678,7 @@ details[open] summary::before{transform:rotate(90deg)}
   color:var(--ink);
 }
 
-/* ══ Fix 4 — copiar ticket ───────────────────────────────────────────── */
+/* ══ Fix 4: copiar ticket ───────────────────────────────────────────── */
 .ma-copy-ticket-btn{
   display:inline-flex;align-items:center;gap:5px;
   font-size:10px;font-weight:700;
@@ -1612,7 +1690,7 @@ details[open] summary::before{transform:rotate(90deg)}
 .ma-copy-ticket-btn:hover{background:var(--ma-primary);color:#fff}
 .ma-copy-ticket-btn:focus{outline:2px solid var(--ma-primary);outline-offset:2px}
 
-/* ══ Fix 1 — rótulo de página + URL no apêndice ─────────────────────── */
+/* ══ Fix 1: rótulo de página + URL no apêndice ─────────────────────── */
 .ma-page-label{
   display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;
   text-transform:uppercase;color:var(--green-dark);
@@ -1628,7 +1706,7 @@ details[open] summary::before{transform:rotate(90deg)}
   color:var(--ma-primary);word-break:break-all;
 }
 
-/* ══ Fix 2 — O que está correto (card fixo, sem <details>) ─────────── */
+/* ══ Fix 2: O que está correto (card fixo, sem <details>) ─────────── */
 .ma-approved-sec{margin-bottom:20px}
 .ma-approved-box{
   background:var(--green-bg);
@@ -1673,7 +1751,7 @@ details[open] summary::before{transform:rotate(90deg)}
 .ma-approved-more .ma-approved-text{color:var(--ink3);font-style:italic}
 .ma-approved-empty{font-size:11px;color:var(--ink3)}
 
-/* ══ Fix 3 — declaração formal ───────────────────────────────────────── */
+/* ══ Fix 3: declaração formal ───────────────────────────────────────── */
 .ma-eval-declaration{
   background:var(--paper);
   border:1px solid var(--border);border-radius:8px;
@@ -1831,7 +1909,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ap-group-header,.exec-banner,.legal-sec,.pour-cell{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
-  /* print-checklist omitido no PDF — evita duplicação com .ma-check-card (checklist executivo já imprime) */
+  /* print-checklist omitido no PDF: evita duplicação com .ma-check-card (checklist executivo já imprime) */
   .print-checklist{display:none!important}
   .legal-sec{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
@@ -1841,7 +1919,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 }
 
 /* ============================================================
-   META-AUDITOR — Sessão 6: cabeçalho/rodapé impressão + PDF
+   META-AUDITOR: Sessão 6: cabeçalho/rodapé impressão + PDF
    ============================================================ */
 .ma-print-header,
 .ma-print-footer { display: none; }
@@ -2073,7 +2151,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   }
   .ev-badge--lh      { background: #ddeaff !important; color: #1a4ca0 !important; }
   .ev-badge--url     { background: #e6f4ea !important; color: #1a6b3c !important; }
-  .ev-badge--unavail { background: #fef3c7 !important; color: #92400e !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .ev-badge--unavail { background: #fef3c7 !important; color: #92400e !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; text-transform: none !important; letter-spacing: 0.01em !important; font-weight: 600 !important; font-size: 10px !important; white-space: normal !important; line-height: 1.25 !important; }
   .ev-expand-link { display: none !important; }
   /* Regra de qualidade no PDF: captura ao vivo oculta, bloco indisponível visível */
   .ev-img-live { display: none !important; }
@@ -2103,8 +2181,8 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 <body>
 {% from '_report_macros.html' import ma_logo_icon %}
 {% set _print_u = (audit.url or '')|replace('https://','')|replace('http://','') %}
-{% set print_domain = _print_u.split('/')[0] if _print_u else '—' %}
-{% set print_date = (audit.created_at or '')[:10] if audit.created_at else '—' %}
+{% set print_domain = _print_u.split('/')[0] if _print_u else '–' %}
+{% set print_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
 
 <div class="ma-print-header" aria-hidden="true">
   <div class="ma-ph-logo">
@@ -2122,10 +2200,10 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 </div>
 
 <div class="ma-print-footer" aria-hidden="true">
-  <div class="ma-pf-left">Meta-Auditor {{ app_version }} · {{ report_footer_org or 'UEA — Escola Superior de Tecnologia' }}</div>
+  <div class="ma-pf-left">Meta-Auditor {{ app_version }} · {{ report_footer_org or 'UEA: Escola Superior de Tecnologia' }}</div>
   <div class="ma-pf-center">
     <span class="ma-pf-dot"></span>
-    Relatório gerado automaticamente — não substitui auditoria humana especializada
+    Relatório gerado automaticamente: não substitui auditoria humana especializada
     <span class="ma-pf-dot"></span>
   </div>
   <div class="ma-pf-right">Meta-Auditor {{ app_version }}</div>

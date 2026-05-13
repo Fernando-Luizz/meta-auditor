@@ -1,4 +1,8 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, traduz_desc_tecnica %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
+
+{# Lighthouse: tabela A4 (usada cedo em «O que está correto» para não prometer detalhes inexistentes) #}
+{% set lh_appendix = r.get('lighthouse_items') or [] %}
+{% set a4_tabela_lh = (lh_appendix|length > 0) %}
 
 {# ══ Contagens por ferramenta (uso nos gráficos) ════════════════════════ #}
 {% set tc=namespace(conv=0,lh=0,wv=0,man=0) %}
@@ -31,24 +35,25 @@
         {% macro pbar(ic, lbl, v, cls) %}
         {% if v > 0 %}
         <div class="hbar-row" role="listitem" aria-label="{{ lbl }}: {{ v }} ocorrências">
-          <div class="hbar-ic" aria-hidden="true">{{ ic }}</div>
+          <div class="hbar-ic" aria-hidden="true">{{ ic|safe }}</div>
           <div class="hbar-lbl">{{ lbl }}</div>
           <div class="hbar-track"><div class="hbar-fill f-{{ cls }}" style="width:{{ (v/mg*100)|round(0)|int }}%"><span class="hbar-inlbl">{{ v }}</span></div></div>
           <div class="hbar-num" aria-hidden="true">{{ v }}</div>
         </div>
         {% endif %}
         {% endmacro %}
-        {{ pbar('🦯','Cegos/TA', cnt.cego, 'ink') }}
-        {{ pbar('👁️','Baixa visão', cnt.visao, 'red') }}
-        {{ pbar('🖐️','Motor/móvel', cnt.motor, 'amber') }}
-        {{ pbar('🧠','Cognitivo', cnt.cogni, 'lh') }}
-        {{ pbar('👂','Surdos', cnt.surdo, 'wave') }}
-        {{ pbar('⌨️','Navegação', cnt.naveg, 'purple') }}
-        {% if cnt.visao==0 and cnt.cego==0 and cnt.motor==0 and cnt.cogni==0 and cnt.surdo==0 and cnt.naveg==0 %}
+        {{ pbar(ma_chart_pub_svg('cego'),'Cegos/TA', cnt.cego, 'ink') }}
+        {{ pbar(ma_chart_pub_svg('visao'),'Baixa visão', cnt.visao, 'red') }}
+        {{ pbar(ma_chart_pub_svg('motor'),'Motor/móvel', cnt.motor, 'amber') }}
+        {{ pbar(ma_chart_pub_svg('cogni'),'Cognitivo', cnt.cogni, 'lh') }}
+        {{ pbar(ma_chart_pub_svg('surdo'),'Surdos', cnt.surdo, 'wave') }}
+        {{ pbar(ma_chart_pub_svg('teclado'),'Teclado/Tab', cnt.naveg, 'purple') }}
+        {{ pbar(ma_chart_pub_svg('estrutura'),'Estrutura', cnt.estr, 'blue') }}
+        {% if cnt.visao==0 and cnt.cego==0 and cnt.motor==0 and cnt.cogni==0 and cnt.surdo==0 and cnt.naveg==0 and cnt.estr==0 %}
         <div class="empty">Dados de público não disponíveis para estas barreiras.</div>
         {% endif %}
       </div>
-      <div class="chart-info-box"><strong>Contexto:</strong> IBGE Censo 2022 — 8,9% da população brasileira com alguma deficiência.</div>
+      <div class="chart-info-box"><strong>Contexto:</strong> IBGE Censo 2022: 8,9% da população brasileira com alguma deficiência.</div>
     </div>
 
     <div>
@@ -119,26 +124,27 @@
 <section class="grp-sec" aria-labelledby="groups-heading">
   <div class="sec-ey">Impacto Humano</div>
   <h2 class="sec-h" id="groups-heading">Quem é afetado por estas barreiras</h2>
-  <p class="sec-sub">Resumo por grupo — contagem baseada nas etiquetas de público associadas a cada barreira.</p>
+  <p class="sec-sub">Resumo por grupo: contagem baseada nas etiquetas de público associadas a cada barreira.</p>
   <div class="grp-grid" role="list">
     {% set gcards=[
-      ('👁️', 'Baixa visão', cnt.visao, 'Glaucoma, catarata, degeneração macular — dependem de alto contraste e zoom', 'Texto com baixo contraste torna-se ilegível mesmo com lupa de tela'),
-      ('🦯', 'Cegueira total', cnt.cego, 'NVDA, JAWS ou VoiceOver', 'Imagens e botões sem nome inacessíveis'),
-      ('🖐️', 'Limitação motora', cnt.motor, 'Teclado, dispositivos de entrada alternativos', 'Alvos pequenos e foco quebrado'),
-      ('🧠', 'Cognitivo/Daltonismo', cnt.cogni, 'Dislexia, TDAH, autismo, daltonismo', 'Informação só por cor passa despercebida'),
-      ('👂', 'Surdez', cnt.surdo, 'Legendas e transcrições', 'Multimídia sem legenda exclui usuários'),
-      ('⌨️', 'Navegação por teclado', cnt.naveg, 'Sem ponteiro — Tab e atalhos', 'Foco invisível ou ordem incorreta')
+      (ma_pub_group_svg('visao', 22), 'Baixa visão', cnt.visao, 'Glaucoma, catarata, degeneração macular: dependem de alto contraste e zoom', 'Com o zoom no máximo, o texto ainda some no fundo'),
+      (ma_pub_group_svg('cego', 22), 'Cegueira total', cnt.cego, 'NVDA, JAWS ou VoiceOver', 'O software passa em branco: sem anunciar o que é'),
+      (ma_pub_group_svg('motor', 22), 'Limitação motora', cnt.motor, 'Teclado, dispositivos de entrada alternativos', 'Alvos pequenos e foco quebrado'),
+      (ma_pub_group_svg('cogni', 22), 'Cognitivo/Daltonismo', cnt.cogni, 'Dislexia, TDAH, autismo, daltonismo', 'Informação só por cor passa despercebida'),
+      (ma_pub_group_svg('surdo', 22), 'Surdez', cnt.surdo, 'Legendas e transcrições', 'Multimídia sem legenda exclui usuários'),
+      (ma_pub_group_svg('teclado', 22), 'Navegação por teclado', cnt.naveg, 'Sem ponteiro: Tab e atalhos', 'Link sem nome ou foco invisível ao navegar'),
+      (ma_pub_group_svg('estrutura', 22), 'Navegação por estrutura', cnt.estr, 'Leitores de tela e quem navega por títulos', 'Hierarquia de títulos quebrada dificulta orientação')
     ] %}
     {% for ic, nm, cnt_val, desc, ex in gcards %}
     <div class="gc {% if cnt_val > 0 %}gc-afetado{% else %}gc-ok{% endif %}" role="listitem">
-      <span class="g-ic" aria-hidden="true">{{ ic }}</span>
+      <span class="g-ic" aria-hidden="true">{{ ic|safe }}</span>
       <div class="g-nm">{{ nm }}</div>
       <div class="g-desc">{{ desc }}</div>
       <div class="g-ex">{{ ex }}</div>
       {% if cnt_val > 0 %}
-        <span class="gtag-af" aria-label="{{ cnt_val }} ocorrências">⚠ {{ cnt_val }} ocorrência{{ 's' if cnt_val!=1 }}</span>
+        <span class="gtag-af" aria-label="{{ cnt_val }} ocorrências"><span class="gtag-af-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ cnt_val }} ocorrência{{ 's' if cnt_val!=1 }}</span>
       {% else %}
-        <span class="gtag-ok" aria-hidden="false">✓ Sem ocorrências mapeadas</span>
+        <span class="gtag-ok" aria-hidden="true"><span class="gtag-ok-ic">{{ ma_tag_ok_svg(10)|safe }}</span> Sem ocorrências mapeadas</span>
       {% endif %}
     </div>
     {% endfor %}
@@ -153,7 +159,7 @@
   <div class="leg-grid">
     <div>
       <div class="leg-tname"><div class="tdot" style="background:var(--lh)" aria-hidden="true"></div>Google Lighthouse</div>
-      <div class="leg-desc">DOM renderizado pelo motor do PSI (Chrome desktop) — estrutura, ARIA parcial e boas práticas.</div>
+      <div class="leg-desc">DOM renderizado pelo motor do PSI (Chrome desktop): estrutura, ARIA parcial e boas práticas.</div>
       <div class="leg-sc">
         <div class="sc-item"><div class="sc-dot" style="background:var(--green)" aria-hidden="true"></div> ≥90 OK</div>
         <div class="sc-item"><div class="sc-dot" style="background:var(--amber)" aria-hidden="true"></div> 75–89 Atenção</div>
@@ -162,7 +168,7 @@
     </div>
     <div>
       <div class="leg-tname"><div class="tdot" style="background:var(--wave)" aria-hidden="true"></div>WebAIM WAVE</div>
-      <div class="leg-desc">Página como vista pelo usuário — contraste visual, estrutura, erros e alertas.</div>
+      <div class="leg-desc">Página como vista pelo usuário: contraste visual, estrutura, erros e alertas.</div>
       <div class="leg-sc">
         <div class="sc-item"><div class="sc-dot" style="background:var(--green)" aria-hidden="true"></div> AIM ≥7 OK</div>
         <div class="sc-item"><div class="sc-dot" style="background:var(--amber)" aria-hidden="true"></div> 4–6.9 Atenção</div>
@@ -173,7 +179,7 @@
 </div>
 {% endif %}
 
-{# ══ O QUE ESTÁ CORRETO — sempre visível se Lighthouse rodou ══════════════ #}
+{# ══ O QUE ESTÁ CORRETO: sempre visível se Lighthouse rodou ══════════════ #}
 {% set aprovados = r.get('itens_aprovados') or [] %}
 {% set sb_passed = sb.get('passed_audits_count', 0)|int %}
 {% set sb_scored = sb.get('scored_audits_count', 0)|int %}
@@ -201,28 +207,28 @@
       <ul class="ma-approved-list" aria-label="Itens aprovados pelo Lighthouse">
         {% for item in aprovados[:10] %}
         <li class="ma-approved-item">
-          <span class="ma-approved-check" aria-hidden="true">✓</span>
-          <span class="ma-approved-text">{{ item.get('title', '—') }}</span>
+          <span class="ma-approved-check" aria-hidden="true"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="ma-approved-text">{{ item.get('title', '–') }}</span>
         </li>
         {% endfor %}
         {% if aprovados|length > 10 %}
         <li class="ma-approved-item ma-approved-more">
           <span class="ma-approved-check" aria-hidden="true">+</span>
-          <span class="ma-approved-text">e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }} — ver <a href="#apendice-a4-lighthouse">Apêndice A4</a></span>
+          <span class="ma-approved-text">{% if a4_tabela_lh %}e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }}: ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>{% else %}e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }} aprovado{{ 's' if aprovados|length - 10 > 1 else '' }} (nesta execução o A4 não traz tabela detalhada; só os dez primeiros aparecem acima).{% endif %}</span>
         </li>
         {% endif %}
       </ul>
       {% elif sb_passed > 0 %}
-      <p class="ma-approved-empty">{{ sb_passed }} critério{{ 's' if sb_passed > 1 else '' }} aprovado{{ 's' if sb_passed > 1 else '' }} pelo Lighthouse. Detalhes completos no <a href="#apendice-a4-lighthouse">Apêndice A4</a>.</p>
+      <p class="ma-approved-empty">{{ sb_passed }} critério{{ 's' if sb_passed > 1 else '' }} aprovado{{ 's' if sb_passed > 1 else '' }} pelo Lighthouse.{% if a4_tabela_lh %} Detalhes no <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %} O <a href="#apendice-a4-lighthouse">Apêndice A4</a> está reservado na numeração, mas nesta execução não há tabela item a item exportada.{% endif %}</p>
       {% else %}
-      <p class="ma-approved-empty">Detalhes disponíveis no <a href="#apendice-a4-lighthouse">Apêndice A4</a> · Itens Lighthouse.</p>
+      <p class="ma-approved-empty">{% if a4_tabela_lh %}Itens Lighthouse: ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %}Lighthouse executado: o <a href="#apendice-a4-lighthouse">Apêndice A4</a> não inclui lista detalhada nesta execução.{% endif %}</p>
       {% endif %}
     </div>
   </div>
 </section>
 {% endif %}
 
-{# ── Fix 3: parâmetros formais — antes das barreiras (visível cedo no PDF) ── #}
+{# ── Fix 3: parâmetros formais: antes das barreiras (visível cedo no PDF) ── #}
 {% set _mco3 = r.get('metadados_coleta') or {} %}
 {% set _lh_ver3 = ((_mco3.get('lighthouse') or {}).get('version') or '')|trim %}
 <div class="ma-eval-declaration ma-eval-declaration--top" role="region" aria-labelledby="eval-decl-top-heading">
@@ -231,13 +237,13 @@
     <span id="eval-decl-top-heading">Parâmetros da avaliação</span>
   </div>
   <div class="ma-eval-decl-grid">
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Nível de referência</span><span class="ma-eval-val">WCAG 2.1 — Nível AA</span></div>
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Data da avaliação</span><span class="ma-eval-val">{{ (audit.created_at or '—')[:10] }}</span></div>
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Avaliador / sistema</span><span class="ma-eval-val">Meta-Auditor {{ app_version }} — UEA / Escola Superior de Tecnologia</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Nível de referência</span><span class="ma-eval-val">WCAG 2.1: Nível AA</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Data da avaliação</span><span class="ma-eval-val">{{ (audit.created_at or '–')[:10] }}</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Avaliador / sistema</span><span class="ma-eval-val">Meta-Auditor {{ app_version }}: UEA / Escola Superior de Tecnologia</span></div>
     <div class="ma-eval-row"><span class="ma-eval-lbl">URL avaliada</span><span class="ma-eval-val" style="word-break:break-all">{{ audit.url }}</span></div>
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Escopo da amostra</span><span class="ma-eval-val">{% if r.get('multi_page') %}Múltiplas páginas{% else %}Página única (homepage / URL declarada){% endif %} — sem autenticação</span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Escopo da amostra</span><span class="ma-eval-val">{% if r.get('multi_page') %}Múltiplas páginas{% else %}Página única (homepage / URL declarada){% endif %}: sem autenticação</span></div>
     <div class="ma-eval-row"><span class="ma-eval-lbl">Ferramentas</span><span class="ma-eval-val">Google Lighthouse{% if _lh_ver3 %} v{{ _lh_ver3 }}{% endif %} (via PSI) · WebAIM WAVE API v3</span></div>
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Cobertura / aviso</span><span class="ma-eval-val">~30–40% WCAG 2.1 AA — <strong>não substitui auditoria humana especializada</strong></span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Cobertura / aviso</span><span class="ma-eval-val">~30–40% WCAG 2.1 AA: <strong>não substitui auditoria humana especializada</strong></span></div>
   </div>
 </div>
 
@@ -282,7 +288,7 @@
           <span class="ma-bc-num">Barreira #{{ loop.index }} · {{ phase_lbl }}{% if r.get('multi_page') and b.get('page_label') %} · <span class="ma-page-label" title="{{ b.get('page_url','') }}">{{ b.get('page_label') }}</span>{% endif %}</span>
           <h3 class="ma-bc-title" id="bar-title-{{ loop.index }}">{{ termo_barreira(b) }}</h3>
           <details class="ma-bc-tech-details">
-            <summary class="ma-bc-tech-summary">Códigos da ferramenta <span class="ma-bc-tech-hint">(opcional — detalhe técnico)</span></summary>
+            <summary class="ma-bc-tech-summary">Códigos da ferramenta <span class="ma-bc-tech-hint">(opcional: detalhe técnico)</span></summary>
             <div class="ma-bc-selectors ma-bc-selectors--inner">
               {% if b.get('issue_id_original') %}<span class="ma-bc-sel" title="ID na ferramenta de origem">{{ b.get('issue_id_original') }}</span>{% endif %}
               {% if b.get('issue_tipo_normalizado') and b.get('issue_tipo_normalizado') != b.get('issue_id_original') %}
@@ -301,7 +307,7 @@
       <div class="ma-bc-location">
         <span class="ma-bc-location-dot {{ loc_dot }}" aria-hidden="true"></span>
         <div class="ma-bc-location-body">
-          <span><strong>Onde está:</strong> {{ b.get('onde_esta') or 'Não especificado — ver evidências e localização técnica no Apêndice.' }}</span>
+          <span><strong>Onde está:</strong> {{ b.get('onde_esta') or 'Não especificado: ver evidências e localização técnica no Apêndice.' }}</span>
           {% set _bar_url = b.get('page_url') or audit.url %}
           {% if _bar_url %}
           <span class="ma-bc-location-url"><strong>Página:</strong> <span class="ma-bc-url-text">{{ _bar_url }}</span></span>
@@ -311,8 +317,8 @@
       </div>
       {% if occ > 1 %}
       <div class="ma-bc-occ-hint" role="note">
-        <span aria-hidden="true">📍</span>
-        <span>{{ occ }} locais — corrigir o padrão costuma resolver todas as instâncias.</span>
+        <span aria-hidden="true">{{ ma_pin_hint_svg()|safe }}</span>
+        <span>{{ occ }} locais: corrigir o padrão costuma resolver todas as instâncias.</span>
       </div>
       {% endif %}
       <div class="ma-bc-meta">
@@ -321,9 +327,9 @@
         <span class="ma-bc-count">Ocorrências <span>{{ occ }}</span></span>
       </div>
       <div class="ma-bc-audience">
-        <div class="ma-bc-aud-icon" aria-hidden="true">{{ pub_icon(b.get('publico_afetado','')) }}</div>
+        <div class="ma-bc-aud-icon" aria-hidden="true">{{ pub_icon(b.get('publico_afetado',''))|safe }}</div>
         <div class="ma-bc-aud-text">
-          <span class="ma-bc-aud-label">Público afetado: {{ b.get('publico_afetado') or '—' }}</span>
+          <span class="ma-bc-aud-label">Público afetado: {{ b.get('publico_afetado') or '–' }}</span>
           <span class="ma-bc-aud-desc">{{ pub_desc(b.get('publico_afetado','')) }}</span>
         </div>
       </div>
@@ -339,7 +345,7 @@
           <div class="sem-key">Texto visível</div>
           <div class="sem-val">
             {%- if ds.get('visivel') -%}<code>{{ ds.get('visivel') }}</code>
-            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não capturado automaticamente — inspecionar o elemento</span>{%- endif -%}
+            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não capturado automaticamente: inspecionar o elemento</span>{%- endif -%}
           </div>
         </div>
         <div class="sem-row">
@@ -355,9 +361,9 @@
             {%- if ds.get('problema') -%}
               {{ ds.get('problema') }}
             {%- elif ds.get('acessivel') and ds.get('visivel') -%}
-              O texto visível "{{ ds.get('visivel') }}" e o nome acessível "{{ ds.get('acessivel') }}" são diferentes. Usuários de controle por voz dizem o que veem — o sistema reconhece outra coisa e o comando falha.
+              O texto visível "{{ ds.get('visivel') }}" e o nome acessível "{{ ds.get('acessivel') }}" são diferentes. Usuários de controle por voz dizem o que veem: o sistema reconhece outra coisa e o comando falha.
             {%- elif ds.get('acessivel') and not ds.get('visivel') -%}
-              Nome acessível detectado: "{{ ds.get('acessivel') }}". O texto visível não foi capturado automaticamente. A discrepância foi identificada pelo Lighthouse — inspecionar o elemento para confirmar qual texto o usuário vê em tela e por que diverge do nome acessível.
+              Nome acessível detectado: "{{ ds.get('acessivel') }}". O texto visível não foi capturado automaticamente. A discrepância foi identificada pelo Lighthouse: inspecionar o elemento para confirmar qual texto o usuário vê em tela e por que diverge do nome acessível.
             {%- else -%}
               Discrepância entre texto visível e nome acessível detectada. Inspecionar o elemento para confirmar o conflito.
             {%- endif -%}
@@ -426,7 +432,7 @@
                  onerror="this.style.display='none';this.closest('figure').querySelector('.ev-unavail').style.display='flex';">
             <div class="ev-unavail" role="note">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5M8 10.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <span>Evidência visual indisponível — elemento detectado apenas por ferramenta visual (WAVE) sem boundingRect, ou bloqueado por anti-bot. Consulte os seletores no Apêndice Técnico.</span>
+              <span>Evidência visual indisponível: elemento detectado apenas por ferramenta visual (WAVE) sem boundingRect, ou bloqueado por anti-bot. Consulte os seletores no Apêndice Técnico.</span>
             </div>
           {% endif %}
           <figcaption class="ev-caption">
@@ -439,7 +445,7 @@
                 <span class="ev-badge ev-badge--lh">Evidência capturada</span>
               {% endif %}
             {% else %}
-              <span class="ev-badge ev-badge--unavail">Sem evidência confiável</span>
+              <span class="ev-badge ev-badge--unavail" title="Não há captura estática com o elemento destacado (pipeline Lighthouse ou Playwright). A miniatura ao vivo pode falhar no PDF: use o link «ver captura ao vivo» no navegador.">Recorte validado indisponível</span>
               · <a href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0"
                    target="_blank" rel="noopener" class="ev-expand-link no-print">ver captura ao vivo ↗</a>
             {% endif %}
@@ -450,7 +456,7 @@
       </div>
 
       {# ── Camada determinística executiva
-         SEMPRE visível — critério WCAG, impacto técnico, correção base.
+         SEMPRE visível: critério WCAG, impacto técnico, correção base.
          A camada IA gerencial complementa esta logo abaixo quando disponível.
          O conteúdo técnico completo (versao_dev + ticket) está no Apêndice A1.
       ── #}
@@ -466,14 +472,14 @@
               Impacto
             </div>
             <p class="ma-bc-impact-text">
-              {% if b.get('impacto_descricao') %}{{ b.get('impacto_descricao') }}
-              {% elif bprio=='alta' %}Prioridade alta: corrigir com urgência.
-              {% elif bprio=='revisao_manual' %}Requer validação manual adicional.
-              {% else %}Planejar correção conforme o ciclo da equipe.{% endif %}
+              {% if b.get('impacto_descricao') %}{{ clean_exec_text(b.get('impacto_descricao')) }}
+              {% elif bprio=='alta' %}Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+              {% elif bprio=='revisao_manual' %}Precisa de confirmação manual antes de classificar como problema ou falso positivo da ferramenta.
+              {% else %}Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.{% endif %}
               <br><br>
-              {{ pub_desc(b.get('publico_afetado','')) }}
+              {{ clean_exec_text(pub_desc(b.get('publico_afetado',''))) }}
               {# Mostrar apenas descrição em português; texto em inglês das ferramentas vai para o Apêndice Técnico #}
-              {% if b.get('descricao_humana') %}<br><br>{{ b.get('descricao_humana') }}{% endif %}
+              {% if b.get('descricao_humana') %}<br><br>{{ clean_exec_text(b.get('descricao_humana')) }}{% endif %}
             </p>
           </div>
           <div class="ma-bc-col">
@@ -484,7 +490,7 @@
               Como corrigir
             </div>
             <div class="ma-bc-fix-steps">
-              <div class="ma-bc-fix-step">{{ correcao_detalhada(b)|safe }}</div>
+              <div class="ma-bc-fix-step">{{ clean_exec_text(correcao_detalhada(b))|safe }}</div>
             </div>
           </div>
         </div>
@@ -497,25 +503,25 @@
           {% if b.get('justificativa_gerencial') %}
           <div class="ma-bc-ai-row">
             <div class="ma-bc-ai-lbl">Por que priorizar</div>
-            <div class="ma-bc-ai-val">{{ b.get('justificativa_gerencial') }}</div>
+            <div class="ma-bc-ai-val">{{ clean_exec_text(b.get('justificativa_gerencial')) }}</div>
           </div>
           {% endif %}
           {% if b.get('explicacao_usuario') %}
           <div class="ma-bc-ai-row">
             <div class="ma-bc-ai-lbl">Quem é afetado</div>
-            <div class="ma-bc-ai-val">{{ b.get('explicacao_usuario') }}</div>
+            <div class="ma-bc-ai-val">{{ clean_exec_text(b.get('explicacao_usuario')) }}</div>
           </div>
           {% endif %}
           {% if b.get('como_corrigir_claro') %}
           <div class="ma-bc-ai-row">
             <div class="ma-bc-ai-lbl">O que precisa mudar</div>
-            <div class="ma-bc-ai-val">{{ b.get('como_corrigir_claro') }}</div>
+            <div class="ma-bc-ai-val">{{ clean_exec_text(b.get('como_corrigir_claro')) }}</div>
           </div>
           {% endif %}
           {% if b.get('acao_gerencial') %}
           <div class="ma-bc-ai-row ma-bc-ai-row--action">
             <div class="ma-bc-ai-lbl ma-bc-ai-lbl--action">Ação da gestão</div>
-            <div class="ma-bc-ai-val ma-bc-ai-val--action">{{ b.get('acao_gerencial') }}</div>
+            <div class="ma-bc-ai-val ma-bc-ai-val--action">{{ clean_exec_text(b.get('acao_gerencial')) }}</div>
           </div>
           {% endif %}
         </div>
@@ -543,20 +549,20 @@
     <div class="ma-plan-head">
       <p class="ma-plan-eyebrow">Plano de ação priorizado</p>
       <h2 class="ma-plan-title" id="action-heading">Impacto versus facilidade de correção</h2>
-      <p class="ma-plan-sub">Numeração contínua em todas as fases — corrija na ordem apresentada para maximizar impacto por esforço.</p>
+      <p class="ma-plan-sub">Numeração contínua em todas as fases: corrija na ordem apresentada para maximizar impacto por esforço.</p>
     </div>
     <div class="ma-plan-summary">
       {% if rapidas|length > 0 %}
-      <span class="ma-phase-pill pp-rapid">⚡ {% if rapidas|length == 1 %}1 correção rápida{% else %}{{ rapidas|length }} correções rápidas{% endif %} — menos de 1 dia</span>
+      <span class="ma-phase-pill pp-rapid"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(1)|safe }}</span> {% if rapidas|length == 1 %}1 correção rápida{% else %}{{ rapidas|length }} correções rápidas{% endif %}: menos de 1 dia</span>
       {% endif %}
       {% if medias_ef|length > 0 %}
-      <span class="ma-phase-pill pp-medio">🛠 {% if medias_ef|length == 1 %}1 esforço médio{% else %}{{ medias_ef|length }} esforços médios{% endif %} — 1 a 5 dias</span>
+      <span class="ma-phase-pill pp-medio"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(2)|safe }}</span> {% if medias_ef|length == 1 %}1 esforço médio{% else %}{{ medias_ef|length }} esforços médios{% endif %}: 1 a 5 dias</span>
       {% endif %}
       {% if estruturais|length > 0 %}
-      <span class="ma-phase-pill pp-estru">🏗 {% if estruturais|length == 1 %}1 projeto estrutural{% else %}{{ estruturais|length }} projetos estruturais{% endif %} — mais de 5 dias</span>
+      <span class="ma-phase-pill pp-estru"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(3)|safe }}</span> {% if estruturais|length == 1 %}1 projeto estrutural{% else %}{{ estruturais|length }} projetos estruturais{% endif %}: mais de 5 dias</span>
       {% endif %}
       {% if divs|length > 0 %}
-      <span class="ma-phase-pill pp-div">🔎 {% if divs|length == 1 %}1 divergência{% else %}{{ divs|length }} divergências{% endif %} — validação humana</span>
+      <span class="ma-phase-pill pp-div"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(4)|safe }}</span> {% if divs|length == 1 %}1 divergência{% else %}{{ divs|length }} divergências{% endif %}: validação humana</span>
       {% endif %}
     </div>
     <div class="ma-plan-table-wrap">
@@ -581,7 +587,7 @@
           {% endif %}
           <tr>
             <td class="ma-td-num">{{ loop.index }}</td>
-            <td class="ma-td-fase"><span class="ma-fase-tag ft-1">⚡ Fase 1</span></td>
+            <td class="ma-td-fase"><span class="ma-fase-tag ft-1"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(1)|safe }}</span> Fase 1</span></td>
             <td>
               <div class="ma-td-title">{{ termo_barreira(b) }}</div>
               {% if b.get('wcag_criterio') %}<span class="ma-td-wcag">WCAG {{ b.get('wcag_criterio') }}</span>{% endif %}
@@ -601,7 +607,7 @@
           {% endif %}
           <tr>
             <td class="ma-td-num">{{ rapidas|length + loop.index }}</td>
-            <td class="ma-td-fase"><span class="ma-fase-tag ft-2">🛠 Fase 2</span></td>
+            <td class="ma-td-fase"><span class="ma-fase-tag ft-2"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(2)|safe }}</span> Fase 2</span></td>
             <td>
               <div class="ma-td-title">{{ termo_barreira(b) }}</div>
               {% if b.get('wcag_criterio') %}<span class="ma-td-wcag">WCAG {{ b.get('wcag_criterio') }}</span>{% endif %}
@@ -621,7 +627,7 @@
           {% endif %}
           <tr>
             <td class="ma-td-num">{{ rapidas|length + medias_ef|length + loop.index }}</td>
-            <td class="ma-td-fase"><span class="ma-fase-tag ft-3">🏗 Fase 3</span></td>
+            <td class="ma-td-fase"><span class="ma-fase-tag ft-3"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(3)|safe }}</span> Fase 3</span></td>
             <td>
               <div class="ma-td-title">{{ termo_barreira(b) }}</div>
               {% if b.get('wcag_criterio') %}<span class="ma-td-wcag">WCAG {{ b.get('wcag_criterio') }}</span>{% endif %}
@@ -636,7 +642,7 @@
           {% for d in divs %}
           <tr>
             <td class="ma-td-num">{{ rapidas|length + medias_ef|length + estruturais|length + loop.index }}</td>
-            <td class="ma-td-fase"><span class="ma-fase-tag ft-4">🔎 Fase 4</span></td>
+            <td class="ma-td-fase"><span class="ma-fase-tag ft-4"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(4)|safe }}</span> Fase 4</span></td>
             <td>
               <div class="ma-td-title">{{ termo_barreira(d) }}</div>
               {% if d.get('wcag_criterio') %}<span class="ma-td-wcag">WCAG {{ d.get('wcag_criterio') }}</span>{% endif %}
@@ -657,12 +663,12 @@
   <div class="ma-check-card">
     <div class="ma-check-head">
       <h3 class="ma-check-head-title">Checklist de correção</h3>
-      <p class="ma-check-head-sub">Marque cada item conforme a equipe conclui — imprima ou exporte para acompanhamento.</p>
+      <p class="ma-check-head-sub">Marque cada item conforme a equipe conclui: imprima ou exporte para acompanhamento.</p>
     </div>
     {% if rapidas %}
     <div class="ma-check-phase">
       <div class="ma-check-phase-label">
-        <span class="ma-fase-tag ft-1">⚡ Fase 1 — Correções rápidas</span>
+        <span class="ma-fase-tag ft-1"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(1)|safe }}</span> Fase 1: Correções rápidas</span>
         <span class="ma-check-phase-time">Menos de 1 dia cada</span>
       </div>
       {% for b in rapidas %}
@@ -687,7 +693,7 @@
     {% if medias_ef %}
     <div class="ma-check-phase">
       <div class="ma-check-phase-label">
-        <span class="ma-fase-tag ft-2">🛠 Fase 2 — Esforço médio</span>
+        <span class="ma-fase-tag ft-2"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(2)|safe }}</span> Fase 2: Esforço médio</span>
         <span class="ma-check-phase-time">1 a 5 dias</span>
       </div>
       {% for b in medias_ef %}
@@ -712,7 +718,7 @@
     {% if estruturais %}
     <div class="ma-check-phase">
       <div class="ma-check-phase-label">
-        <span class="ma-fase-tag ft-3">🏗 Fase 3 — Projetos estruturais</span>
+        <span class="ma-fase-tag ft-3"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(3)|safe }}</span> Fase 3: Projetos estruturais</span>
         <span class="ma-check-phase-time">Maior esforço</span>
       </div>
       {% for b in estruturais %}
@@ -737,7 +743,7 @@
     {% if divs %}
     <div class="ma-check-phase">
       <div class="ma-check-phase-label">
-        <span class="ma-fase-tag ft-4">🔎 Fase 4 — Divergências</span>
+        <span class="ma-fase-tag ft-4"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(4)|safe }}</span> Fase 4: Divergências</span>
         <span class="ma-check-phase-time">Validação manual</span>
       </div>
       {% for d in divs %}
@@ -775,7 +781,7 @@
       <div class="div-top">
         <h3 class="div-ttl" id="div-title-{{ loop.index }}">{{ termo_barreira(d) }}</h3>
         <span class="badge b-lh">Lighthouse: passou</span>
-        <span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} · {{ d.get('wave_categoria','—') }}</span>
+        <span class="badge b-wave">WAVE: {{ d.get('wave_count', d.get('ocorrencias_count',0)) }} · {{ d.get('wave_categoria', '–') }}</span>
       </div>
       {% set dn = d.get('nota_divergencia') or d.get('nota') %}
       {% if dn %}<div class="div-note" role="note">{{ dn }}</div>{% endif %}
@@ -791,13 +797,13 @@
   <div class="sec-ey">Transparência metodológica</div>
   <h2 style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px" id="method-heading">Como esta auditoria foi realizada</h2>
   <p style="font-size:12px;color:var(--ink3);line-height:1.6">Dois pipelines complementares: Lighthouse (estrutura do DOM PSI) + WAVE (página perceptível). Cobertura automática típica: ~30–40% AA.</p>
-  <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Os <strong>parâmetros formais</strong> desta avaliação (data, URL, ferramentas, escopo e aviso legal) encontram-se na secção <strong>Parâmetros da avaliação</strong> antes das barreiras automáticas.</p>
+  <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Os <strong>parâmetros formais</strong> desta avaliação (data, URL, ferramentas, escopo e aviso legal) estão na seção <strong>Parâmetros da avaliação</strong> antes das barreiras automáticas.</p>
 
   <div class="method-grid">
-    <div class="method-card mc-lh" role="region" aria-label="Lighthouse"><div class="mc-icon" aria-hidden="true">🔦</div><div class="mc-title">Lighthouse Accessibility</div><div class="mc-desc">Audits binários sobre o relatório PSI; útil para erros estruturais e boas práticas.</div></div>
-    <div class="method-card mc-wave" role="region" aria-label="WAVE"><div class="mc-icon" aria-hidden="true">🌊</div><div class="mc-title">WebAIM WAVE</div><div class="mc-desc">Análise da página renderizada; destaca contrastes e marcação visual quando aplicável.</div></div>
-    <div class="method-card mc-man" role="region"><div class="mc-icon" aria-hidden="true">⚠️</div><div class="mc-title">Limitações</div><div class="mc-desc">Não substitui testes manuais, teclado completo, leitores de tela nem envolvimento de usuários.</div></div>
-    <div class="method-card mc-lim" role="region"><div class="mc-icon" aria-hidden="true">📋</div><div class="mc-title">Próximos passos</div><div class="mc-desc">Priorizar correções rápidas, auditoria especializada e monitorização periódica.</div></div>
+    <div class="method-card mc-lh" role="region" aria-label="Lighthouse"><div class="mc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect x="12" y="1" width="4" height="4" rx="1" fill="#1464C8"/><polygon points="8,6 20,6 18,22 10,22" fill="#1464C8" opacity=".18"/><polygon points="8,6 20,6 18,22 10,22" fill="none" stroke="#1464C8" stroke-width="1.4"/><rect x="9" y="22" width="10" height="2.5" rx="1" fill="#1464C8"/><line x1="14" y1="5" x2="5" y2="14" stroke="#1464C8" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><line x1="14" y1="5" x2="23" y2="14" stroke="#1464C8" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><circle cx="14" cy="5" r="2" fill="#1464C8"/></svg></div><div class="mc-title">Lighthouse Accessibility</div><div class="mc-desc">Audits binários sobre o relatório PSI; útil para erros estruturais e boas práticas.</div></div>
+    <div class="method-card mc-wave" role="region" aria-label="WAVE"><div class="mc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="M2 16 Q5 10 8 16 Q11 22 14 16 Q17 10 20 16 Q23 22 26 16" stroke="#0A6B60" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M2 12 Q5 7 8 12 Q11 17 14 12 Q17 7 20 12 Q23 17 26 12" stroke="#0A6B60" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".5"/><circle cx="8" cy="9" r="2" fill="#0A6B60" opacity=".7"/><circle cx="8" cy="9" r="1" fill="#fff"/></svg></div><div class="mc-title">WebAIM WAVE</div><div class="mc-desc">Análise da página renderizada; destaca contrastes e marcação visual quando aplicável.</div></div>
+    <div class="method-card mc-man" role="region"><div class="mc-icon" aria-hidden="true">{{ ma_icon_method_limits()|safe }}</div><div class="mc-title">Limitações</div><div class="mc-desc">Não substitui testes manuais, teclado completo, leitores de tela nem envolvimento de usuários.</div></div>
+    <div class="method-card mc-lim" role="region"><div class="mc-icon" aria-hidden="true">{{ ma_icon_method_next_steps()|safe }}</div><div class="mc-title">Próximos passos</div><div class="mc-desc">Priorizar correções rápidas, auditoria especializada e monitoramento periódico.</div></div>
   </div>
 </section>
 
@@ -806,10 +812,10 @@
   <div class="pcl-cover">
     <div class="pcl-cover-title">Checklist de Correção</div>
     <div class="pcl-cover-url">{{ audit.url }}</div>
-    <div class="pcl-cover-date">Auditoria #{{ audit.id }} · {{ audit.created_at or '—' }} · Meta-Auditor {{ app_version }}</div>
+    <div class="pcl-cover-date">Auditoria #{{ audit.id }} · {{ audit.created_at or '–' }} · Meta-Auditor {{ app_version }}</div>
   </div>
   {% if rapidas %}
-  <div class="pcl-title">⚡ Fase 1 — Correções rápidas</div>
+  <div class="pcl-title"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(1)|safe }}</span> Fase 1: Correções rápidas</div>
   {% for b in rapidas %}
   <div class="pcl-item">
     <div class="pcl-check" aria-hidden="true"></div>
@@ -823,15 +829,15 @@
   {% endfor %}
   {% endif %}
   {% if medias_ef %}
-  <div class="pcl-title" style="margin-top:18px">🛠 Fase 2 — Esforço médio</div>
+  <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(2)|safe }}</span> Fase 2: Esforço médio</div>
   {% for b in medias_ef %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ correcao_detalhada(b)|striptags|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
   {% if estruturais %}
-  <div class="pcl-title" style="margin-top:18px">🏗 Fase 3 — Estruturais</div>
+  <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(3)|safe }}</span> Fase 3: Estruturais</div>
   {% for b in estruturais %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ correcao_detalhada(b)|striptags|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
   {% if divs %}
-  <div class="pcl-title" style="margin-top:18px">🔎 Fase 4 — Divergências</div>
+  <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(4)|safe }}</span> Fase 4: Divergências</div>
   {% for d in divs %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(d) }}</div><div class="pcl-item-sub">{{ ((d.get('nota') or d.get('nota_divergencia') or ''))|striptags|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
 </div>
@@ -843,7 +849,6 @@
    Material de referência para a equipe de desenvolvimento.
    Não faz parte do corpo executivo do relatório.
    ════════════════════════════════════════════════════════════════════ #}
-{% set lh_appendix = r.get('lighthouse_items') or [] %}
 {% set has_appendix = bars or alerts or manuals or infos or (lh_appendix|length > 0) or (sb and sb.get('total_weight',0)>0) %}
 {% if has_appendix %}
 <section id="apendice-tecnico" class="ap-section" aria-labelledby="ap-heading">
@@ -872,15 +877,18 @@
         <span class="ap-page-url-link">{{ _ap_url }}</span>
       </div>
       {% endif %}
-      {% if b.get('descricao_tecnica') %}
+      {% if b.get('descricao_tecnica') or b.get('descricao_humana') %}
       <div class="ap-desc-tecnica">
         <div class="ap-field-label">Descrição técnica (fonte da ferramenta)</div>
-        <p class="ap-field-val">{{ traduz_desc_tecnica(b.get('descricao_tecnica','')) | safe }}</p>
+        <p class="ap-field-val">{{ clean_exec_text(desc_tecnica_barreira(b)) | safe }}</p>
       </div>
       {% endif %}
       {% if evcodes %}
       <div class="ap-selectors">
-        <div class="ap-field-label">Seletores / localização ({{ evcodes|length }} entrada{{ 's' if evcodes|length != 1 }})</div>
+        <div class="ap-field-label">Entradas técnicas brutas de localização ({{ evcodes|length }} entrada{{ 's' if evcodes|length != 1 }})</div>
+        <p style="font-size:11px;color:var(--ink3);margin:6px 0 10px;line-height:1.5">
+          Esta lista combina seletores, nós e fragmentos técnicos capturados pelas ferramentas. Por isso, o total pode ser maior que o número consolidado de ocorrências exibido no corpo do relatório.
+        </p>
         <div class="ev-codes">
           {% for line in evcodes %}<code>{{ line }}</code>{% endfor %}
         </div>
@@ -893,10 +901,20 @@
         </button>
       </div>
       {% endif %}
-      {# Backlog técnico no apêndice:
-         1) base determinística do Meta-Auditor
-         2) sugestão assistida por IA (quando existir)
+      {# Apêndice A1 por barreira:
+         1) Contexto rápido (prioridade + público): determinístico
+         2) Backlog técnico: base determinística
+         3) Sugestão assistida por IA / ticket (nível 2, opcional)
       #}
+      {% set _ap_prio = b.get('prioridade', '') %}
+      <div class="ap-ctx-strip">
+        <span class="ap-ctx-badge ap-ctx-badge--{{ _ap_prio }}">{{ prioridade_exibir_caps(_ap_prio) }}</span>
+        {% if b.get('publico_afetado') %}
+        <span class="ap-ctx-sep" aria-hidden="true"></span>
+        <span class="ap-ctx-pub">{{ b.get('publico_afetado') }}</span>
+        {% endif %}
+      </div>
+
       <div class="ap-ticket-block">
         <div class="ap-field-label">Backlog técnico</div>
 
@@ -917,13 +935,13 @@
               {% if b.get('wcag_criterio') %}
               <div class="tk-row">
                 <div class="tk-lbl">WCAG</div>
-                <div class="tk-val">{{ b.get('wcag_criterio') }} — Nível AA</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível AA</div>
               </div>
               {% endif %}
 
               <div class="tk-row">
                 <div class="tk-lbl">Descrição</div>
-                <div class="tk-val">{{ correcao_detalhada(b)|striptags|truncate(400) }}</div>
+                <div class="tk-val">{{ clean_exec_text(correcao_detalhada(b)|striptags|truncate(400)) }}</div>
               </div>
 
               <div class="tk-row">
@@ -949,28 +967,28 @@
               {% if b.get('wcag_criterio') %}
               <div class="tk-row">
                 <div class="tk-lbl">WCAG</div>
-                <div class="tk-val">{{ b.get('wcag_criterio') }} — Nível AA</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível AA</div>
               </div>
               {% endif %}
 
               {% if b.get('versao_dev') %}
               <div class="tk-row">
                 <div class="tk-lbl">Versão dev</div>
-                <div class="tk-val">{{ b.get('versao_dev') }}</div>
+                <div class="tk-val">{{ clean_exec_text(b.get('versao_dev')) }}</div>
               </div>
               {% endif %}
 
               {% if tk.get('descricao') %}
               <div class="tk-row">
                 <div class="tk-lbl">Descrição</div>
-                <div class="tk-val">{{ tk.get('descricao') }}</div>
+                <div class="tk-val">{{ clean_exec_text(tk.get('descricao')) }}</div>
               </div>
               {% endif %}
 
               {% if tk.get('criterio_de_pronto') %}
               <div class="tk-row">
                 <div class="tk-lbl">Critério de pronto</div>
-                <div class="tk-val">{{ tk.get('criterio_de_pronto') | replace('\n', '<br>') | safe }}</div>
+                <div class="tk-val">{{ clean_exec_text(tk.get('criterio_de_pronto')) | replace('\n', '<br>') | safe }}</div>
               </div>
               {% endif %}
             </div>
@@ -1023,10 +1041,10 @@
     <ul class="ml">
       {% for m in manuals %}
       <li>
-        <span class="m-ic" aria-hidden="true">{% if m.get('resultado')=='falhou' %}❌{% elif m.get('resultado')=='passou' %}✅{% else %}⚠️{% endif %}</span>
+        <span class="m-ic" aria-hidden="true">{{ ma_manual_check_svg(m.get('resultado'))|safe }}</span>
         <div>
-          <span class="m-lbl">{{ m.get('titulo_tecnico') or m.get('check_id') or '—' }}</span>
-          <span class="m-desc">{{ traduz_desc_tecnica(m.get('descricao_tecnica') or m.get('descricao_humana') or '') | safe or '—' }}</span>
+          <span class="m-lbl">{{ m.get('titulo_tecnico') or m.get('check_id') or '–' }}</span>
+          <span class="m-desc">{{ traduz_desc_tecnica(m.get('descricao_tecnica') or m.get('descricao_humana') or '') | safe or '–' }}</span>
         </div>
       </li>
       {% endfor %}
@@ -1035,20 +1053,34 @@
   {% endif %}
 
   {# ── A4. Itens Lighthouse (detalhados) ── #}
-  {% if lh_appendix %}
   <div class="ap-block" id="apendice-a4-lighthouse">
-    <h3 class="ap-block-title">A4 · Itens Lighthouse ({{ lh_appendix|length }})</h3>
-    <table class="bd-t"><thead><tr><th scope="col">Item</th><th scope="col">Score</th><th scope="col">Detalhes</th></tr></thead><tbody>
-    {% for item in lh_appendix %}
-    <tr>
-      <td>{{ item.get('title') or item.get('id') or '—' }}</td>
-      <td>{% if item.get('score') is not none %}<span class="ipts">{{ item.get('score') }}</span>{% else %}—{% endif %}</td>
-      <td style="font-size:12px;color:var(--ink3)">{{ (item.get('description',''))|truncate(150) }}</td>
-    </tr>
-    {% endfor %}
-    </tbody></table>
+    <h3 class="ap-block-title">A4 · Itens Lighthouse ({{ lh_appendix|length if lh_appendix else 0 }})</h3>
+
+    {% if lh_appendix %}
+    <table class="bd-t">
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Score</th>
+          <th scope="col">Detalhes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in lh_appendix %}
+        <tr>
+          <td>{{ item.get('title') or item.get('id') or '–' }}</td>
+          <td>{% if item.get('score') is not none %}<span class="ipts">{{ item.get('score') }}</span>{% else %}<span class="ipts">–</span>{% endif %}</td>
+          <td style="font-size:12px;color:var(--ink3)">{{ clean_exec_text((item.get('description',''))|truncate(150)) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin:0">
+      Não houve itens detalhados do Lighthouse para listar nesta execução. A referência A4 foi mantida para preservar a numeração contínua do apêndice.
+    </p>
+    {% endif %}
   </div>
-  {% endif %}
 
   {# ── A5. Decomposição do score Lighthouse ── #}
   {% if sb and sb.get('total_weight',0)>0 %}
@@ -1063,10 +1095,10 @@
     <table class="bd-t"><thead><tr><th>Audit que falhou</th><th>Grupo</th><th>Peso</th><th>Impacto</th></tr></thead><tbody>
     {% for fa in sb.get('failed_audits') or [] %}
     <tr>
-      <td><code style="font-size:11px">{{ fa.get('id','—') }}</code><div style="font-size:11px;color:var(--ink3)">{{ fa.get('title','') }}</div></td>
-      <td>{{ fa.get('group','—') }}</td>
-      <td>{{ fa.get('weight','—') }}</td>
-      <td class="ipts">{{ fa.get('impact_pts','—') }}</td>
+      <td><code style="font-size:11px">{{ fa.get('id', '–') }}</code><div style="font-size:11px;color:var(--ink3)">{{ fa.get('title','') }}</div></td>
+      <td>{{ fa.get('group', '–') }}</td>
+      <td>{{ fa.get('weight', '–') }}</td>
+      <td class="ipts">{{ fa.get('impact_pts', '–') }}</td>
     </tr>
     {% endfor %}
     </tbody></table>
@@ -1077,9 +1109,9 @@
   {% if infos %}
   <div class="ap-block">
     <h3 class="ap-block-title">A6 · Informativos WAVE ({{ infos|length }})</h3>
-    <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Itens informativos do relatório WAVE — geralmente não são barreiras por si, mas indicam pontos de atenção para a equipe técnica.</p>
+    <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Itens informativos do relatório WAVE: geralmente não são barreiras por si, mas indicam pontos de atenção para a equipe técnica.</p>
     {% for it in infos %}
-    <div class="ac"><div class="at"><span class="badge b-man">Info</span><span class="attl">{{ it.get('titulo_tecnico','—') }}</span></div>
+    <div class="ac"><div class="at"><span class="badge b-man">Info</span><span class="attl">{{ it.get('titulo_tecnico', '–') }}</span></div>
     <p style="font-size:12px;color:var(--ink3)">{{ (it.get('descricao_tecnica') or it.get('descricao_humana') or '')|truncate(420) }}</p></div>
     {% endfor %}
   </div>
@@ -1091,7 +1123,7 @@
     <div class="gl-grid">
       <div><div class="gl-t">WCAG</div><div class="gl-d">Diretrizes W3C; nível AA é referência habitual em legislação.</div></div>
       <div><div class="gl-t">eMAG</div><div class="gl-d">Modelo brasileiro para administração pública digital.</div></div>
-      <div><div class="gl-t">LBI</div><div class="gl-d">Lei 13.146/2015 — inclusão e acessibilidade.</div></div>
+      <div><div class="gl-t">LBI</div><div class="gl-d">Lei 13.146/2015: inclusão e acessibilidade.</div></div>
       <div><div class="gl-t">ARIA</div><div class="gl-d">Atributos para roles e estados quando o HTML nativo não basta.</div></div>
       <div><div class="gl-t">Leitor de tela</div><div class="gl-d">NVDA, JAWS, VoiceOver, Narrador, TalkBack.</div></div>
       <div><div class="gl-t">Contraste</div><div class="gl-d">≥4.5:1 texto normal; ≥3:1 texto grande (resumo).</div></div>
@@ -1118,8 +1150,8 @@
 <footer class="footer" role="contentinfo">
   <div class="footer-disclaimer">
     Relatório gerado pelo <strong>Meta-Auditor {{ app_version }}</strong> (Google Lighthouse / WebAIM WAVE).
-    Testes automatizados cobrem uma fração dos critérios WCAG — <strong>não substituem</strong> auditoria humana especializada nem excluem responsabilidade legal.
+    Testes automatizados cobrem uma fração dos critérios WCAG: <strong>não substituem</strong> auditoria humana especializada nem excluem responsabilidade legal.
     {% if report_footer_author %} Responsável técnico: {{ report_footer_author }}.{% endif %}
   </div>
-  <div style="margin-top:6px">Meta-Auditor · #{{ audit.id }} · {{ audit.created_at or '—' }}{% if report_footer_org %} · {{ report_footer_org }}{% endif %}</div>
+  <div style="margin-top:6px">Meta-Auditor · #{{ audit.id }} · {{ audit.created_at or '–' }}{% if report_footer_org %} · {{ report_footer_org }}{% endif %}</div>
 </footer>

@@ -1,8 +1,8 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo, ma_logo_icon %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg %}
 {% set _u = (audit.url or '')|replace('https://','')|replace('http://','') %}
-{% set audit_domain = _u.split('/')[0] if _u else '—' %}
-{% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '—' %}
-{# Parte A: cabeçalho executivo → exposição legal — na, nm, nb, nt e lh/wv vêm de report.html #}
+{% set audit_domain = _u.split('/')[0] if _u else '–' %}
+{% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
+{# Parte A: cabeçalho executivo → exposição legal: na, nm, nb, nt e lh/wv vêm de report.html #}
 
 <header class="ma-header" role="banner">
   <div class="ma-header-stripe" aria-hidden="true"></div>
@@ -16,13 +16,13 @@
         </div>
       </div>
       <div class="ma-conform-pill{% if nt == 0 %} ok{% endif %}" role="status">
-        <span class="ma-conform-icon">{% if nt == 0 %}✓{% else %}⚠{% endif %}</span>
+        <span class="ma-conform-icon" aria-hidden="true">{% if nt == 0 %}{{ ma_tag_ok_svg(12)|safe }}{% else %}{{ ma_tag_warn_svg(12)|safe }}{% endif %}</span>
         <div class="ma-conform-text">
           <span class="ma-conform-title">
-            {% if nt == 0 %}WCAG 2.1 AA — Sem achados automáticos
-            {% elif sr_nivel == 'ALTO' %}WCAG 2.1 AA — Indícios de não conformidade
-            {% elif sr_nivel == 'MÉDIO' %}WCAG 2.1 AA — Parcialmente conforme
-            {% else %}WCAG 2.1 AA — Parcialmente conforme{% endif %}
+            {% if nt == 0 %}WCAG 2.1 AA: Sem achados automáticos
+            {% elif sr_nivel == 'ALTO' %}WCAG 2.1 AA: Indícios de não conformidade
+            {% elif sr_nivel == 'MÉDIO' %}WCAG 2.1 AA: Parcialmente conforme
+            {% else %}WCAG 2.1 AA: Parcialmente conforme{% endif %}
           </span>
           <span class="ma-conform-sub">
             {% if nt == 0 %}Nenhuma barreira automatizada detectada nesta execução.
@@ -58,12 +58,12 @@
       </div>
       <div class="ma-meta-item">
         <p class="ma-meta-label">Instituição</p>
-        <p class="ma-meta-value">{{ report_footer_org or 'UEA — EST' }}</p>
+        <p class="ma-meta-value">{{ report_footer_org or 'UEA: EST' }}</p>
       </div>
       {% if sr %}
       <div class="ma-meta-item">
         <p class="ma-meta-label">Risco (0–3)</p>
-        <p class="ma-meta-value {% if sr.get('nivel') == 'ALTO' %}red{% elif sr.get('nivel') == 'MÉDIO' %}orange{% elif sr.get('nivel') == 'BAIXO' %}green{% endif %}">{{ sr.get('valor','—') }} · {{ sr.get('nivel','—') }}</p>
+        <p class="ma-meta-value {% if sr.get('nivel') == 'ALTO' %}red{% elif sr.get('nivel') == 'MÉDIO' %}orange{% elif sr.get('nivel') == 'BAIXO' %}green{% endif %}">{{ sr.get('valor', '–') }} · {{ sr.get('nivel', '–') }}</p>
       </div>
       {% endif %}
     </div>
@@ -73,35 +73,35 @@
 <div class="ma-scorecard" role="region" aria-label="Indicadores principais da auditoria">
   <div class="ma-score-card">
     <span class="ma-score-label">Score Lighthouse</span>
-    <span class="ma-score-value {% if lh_pct is none %}muted{% elif lhcls == 'ok' %}green{% elif lhcls == 'warn' %}orange{% else %}red{% endif %}">{% if lh_pct is not none %}{{ lh_pct }}{% else %}—{% endif %}</span>
+    <span class="ma-score-value {% if lh_pct is none %}muted{% elif lhcls == 'ok' %}green{% elif lhcls == 'warn' %}orange{% else %}red{% endif %}">{% if lh_pct is not none %}{{ lh_pct }}{% else %}: {% endif %}</span>
     <span class="ma-score-tag {% if lh_pct is none %}neutro{% elif lhcls == 'ok' %}aprovado{% elif lhcls == 'warn' %}atencao{% else %}critico{% endif %}">
-      {% if lh_pct is none %}Indisponível{% elif lhcls == 'ok' %}✓ Aprovado{% elif lhcls == 'warn' %}⚠ Atenção{% else %}⚠ Crítico{% endif %}
+      {% if lh_pct is none %}Indisponível{% elif lhcls == 'ok' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Aprovado{% elif lhcls == 'warn' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
     </span>
     <span class="ma-score-desc">
       {% if lh_pct is none %}Score Lighthouse não disponível nesta auditoria.
-      {% elif lhcls == 'ok' %}≥ 90 — estrutura DOM e boas práticas.
-      {% elif lhcls == 'warn' %}75–89 — melhorias recomendadas na marcação.
-      {% else %}Abaixo de 75 — revisão estrutural prioritária.{% endif %}
+      {% elif lhcls == 'ok' %}≥ 90: estrutura DOM e boas práticas.
+      {% elif lhcls == 'warn' %}75–89: melhorias recomendadas na marcação.
+      {% else %}Abaixo de 75: revisão estrutural prioritária.{% endif %}
     </span>
   </div>
   <div class="ma-score-card">
     <span class="ma-score-label">WAVE AIM Score</span>
-    <span class="ma-score-value {% if wv is none %}muted{% elif wvcls == 'ok' %}green{% elif wvcls == 'warn' %}orange{% else %}red{% endif %}">{% if wv is not none %}{{ wv|round(1) }}{% else %}—{% endif %}</span>
+    <span class="ma-score-value {% if wv is none %}muted{% elif wvcls == 'ok' %}green{% elif wvcls == 'warn' %}orange{% else %}red{% endif %}">{% if wv is not none %}{{ wv|round(1) }}{% else %}: {% endif %}</span>
     <span class="ma-score-tag {% if wv is none %}neutro{% elif wvcls == 'ok' %}aprovado{% elif wvcls == 'warn' %}atencao{% else %}critico{% endif %}">
-      {% if wv is none %}Indisponível{% elif wvcls == 'ok' %}✓ Aprovado{% elif wvcls == 'warn' %}⚠ Atenção{% else %}⚠ Crítico{% endif %}
+      {% if wv is none %}Indisponível{% elif wvcls == 'ok' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Aprovado{% elif wvcls == 'warn' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
     </span>
     <span class="ma-score-desc">
       {% if wv is none %}AIMscore não disponível nesta auditoria.
-      {% elif wvcls == 'ok' %}≥ 7 — bom alinhamento com o renderizado da página.
-      {% elif wvcls == 'warn' %}4 a 7 — revisar contraste e semântica visual.
-      {% else %}Abaixo de 4 — contraste e erros visuais prioritários.{% endif %}
+      {% elif wvcls == 'ok' %}≥ 7: bom alinhamento com o renderizado da página.
+      {% elif wvcls == 'warn' %}4 a 7: revisar contraste e semântica visual.
+      {% else %}Abaixo de 4: contraste e erros visuais prioritários.{% endif %}
     </span>
   </div>
   <div class="ma-score-card">
     <span class="ma-score-label">Barreiras detectadas</span>
     <span class="ma-score-value {% if nt == 0 %}green{% elif nt <= 2 %}orange{% else %}red{% endif %}">{{ nt }}</span>
     <span class="ma-score-tag {% if nt == 0 %}aprovado{% elif nt <= 2 %}atencao{% else %}critico{% endif %}">
-      {% if nt == 0 %}✓ Nenhuma{% elif nt <= 2 %}⚠ Atenção{% else %}⚠ Crítico{% endif %}
+      {% if nt == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Nenhuma{% elif nt <= 2 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
     </span>
     <span class="ma-score-desc">{{ na }} {{ 'alta' if na == 1 else 'altas' }} · {{ nm }} {{ 'média' if nm == 1 else 'médias' }} · {{ nb }} {{ 'baixa' if nb == 1 else 'baixas' }}</span>
   </div>
@@ -109,7 +109,7 @@
     <span class="ma-score-label">Erros WAVE</span>
     <span class="ma-score-value {% if audit.wave_error_count == 0 %}green{% else %}red{% endif %}">{{ audit.wave_error_count }}</span>
     <span class="ma-score-tag {% if audit.wave_error_count == 0 %}aprovado{% else %}critico{% endif %}">
-      {% if audit.wave_error_count == 0 %}✓ Sem erros{% else %}⚠ Com erros{% endif %}
+      {% if audit.wave_error_count == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem erros{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Com erros{% endif %}
     </span>
     <span class="ma-score-desc">+ {{ audit.wave_contrast_count }} alertas de contraste</span>
   </div>
@@ -122,7 +122,7 @@
     <span class="ma-legal-sub">Este relatório automatizado não substitui parecer jurídico nem auditoria humana completa.</span>
   </div>
   <div class="ma-legal-badges">
-    <span class="ma-legal-badge"><span class="dot" aria-hidden="true"></span>LBI — Lei 13.146/2015</span>
+    <span class="ma-legal-badge"><span class="dot" aria-hidden="true"></span>LBI: Lei 13.146/2015</span>
     <span class="ma-legal-badge"><span class="dot" aria-hidden="true"></span>eMAG v3.1</span>
     <span class="ma-legal-badge"><span class="dot" aria-hidden="true"></span>WCAG 2.1 AA</span>
     <span class="ma-legal-badge"><span class="dot" aria-hidden="true"></span>Decreto 5.296/04</span>
@@ -144,13 +144,13 @@
       <div class="ma-exec-headline">
         <span class="ma-exec-eyebrow">Resumo Executivo</span>
         <h2 class="ma-exec-title" id="exec-title">
-          {% if sr_nivel=='ALTO' %}Portal com barreiras críticas de acessibilidade — ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível — correções prioritárias identificadas{% else %}Portal com barreiras pontuais — melhorias de baixo ou médio esforço disponíveis{% endif %}
+          {% if sr_nivel=='ALTO' %}Portal com barreiras críticas de acessibilidade: ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível: correções prioritárias identificadas{% else %}Portal com barreiras pontuais: melhorias de baixo ou médio esforço disponíveis{% endif %}
         </h2>
       </div>
     </div>
     <div class="ma-exec-body-text">
       Esta auditoria automatizada identificou <strong>{{ nt }} barreira{{ 's' if nt!=1 }} de acessibilidade</strong>
-      neste portal — sendo <strong>{{ na }} {{ 'barreira' if na==1 else 'barreiras' }} de alta prioridade</strong>{% if nm %}, {{ nm }} {{ 'barreira' if nm==1 else 'barreiras' }} de média prioridade{% endif %}{% if nb %} e {{ nb }} {{ 'barreira' if nb==1 else 'barreiras' }} de baixa prioridade{% endif %}.
+      neste portal: sendo <strong>{{ na }} {{ 'barreira' if na==1 else 'barreiras' }} de alta prioridade</strong>{% if nm %}, {{ nm }} {{ 'barreira' if nm==1 else 'barreiras' }} de média prioridade{% endif %}{% if nb %} e {{ nb }} {{ 'barreira' if nb==1 else 'barreiras' }} de baixa prioridade{% endif %}.
       {% if na > 0 %}
         <br><br>
         {%- set grupos_crit=[] %}
@@ -158,17 +158,17 @@
         {%- if cnt.visao > 0 %}{% set _ = grupos_crit.append('pessoas com baixa visão') %}{% endif %}
         {%- if cnt.motor > 0 %}{% set _ = grupos_crit.append('usuários com mobilidade reduzida') %}{% endif %}
         {%- if cnt.cogni > 0 %}{% set _ = grupos_crit.append('pessoas com dificuldades cognitivas') %}{% endif %}
-        As barreiras críticas afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de <strong>tecnologia assistiva</strong> quando o fluxo envolve os mesmos componentes.
+        As barreiras críticas afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.
       {% else %}
         <br><br>
-        Nenhuma barreira foi consolidada como alta prioridade nesta execução; trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.
+        Nenhuma barreira foi consolidada como alta prioridade nesta execução. Trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.
       {% endif %}
       {% if rapidas|length > 0 %}
         <br><br>
         <em>{{ rapidas|length }} {% if rapidas|length == 1 %}problema pode ser corrigido{% else %}problemas podem ser corrigidos{% endif %} em menos de 1 dia</em> pela equipe técnica, com impacto imediato na qualidade da experiência.
       {% endif %}
       <br><br>
-      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência — população potencialmente excluída por barreiras digitais.
+      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando o site tem barreiras de acesso.
     </div>
     <div class="ma-exec-counters" role="list" aria-label="Indicadores do resumo executivo">
       <div class="ma-counter" role="listitem">
@@ -198,7 +198,7 @@
         Este relatório automatizado não substitui parecer jurídico nem auditoria humana completa.
       </p>
       <div class="ma-exec-legal-badges">
-        <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>LBI — Lei 13.146/2015</span>
+        <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>LBI: Lei 13.146/2015</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>eMAG v3.1</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>WCAG 2.1 AA</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>Decreto 5.296/04</span>
@@ -210,13 +210,13 @@
 <section class="ma-principles-card" aria-labelledby="pour-heading">
   <p class="ma-section-eyebrow">Análise WCAG</p>
   <h2 class="ma-section-title" id="pour-heading">Princípios de acessibilidade afetados</h2>
-  <p class="ma-section-sub">Organização exploratória (heurística) com base nos tipos de achado automatizados — não substitui mapeamento critério a critério.</p>
+  <p class="ma-section-sub">Organização exploratória (heurística) com base nos tipos de achado automatizados: não substitui mapeamento critério a critério.</p>
   <div class="ma-pour-grid" role="list">
     <div class="ma-pour-card{% if pour.p|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.p|length > 0 %} red{% endif %}">P</div>
       <div class="ma-pour-name">Perceptível</div>
       {% if pour.p|length > 0 %}
-        <span class="ma-pour-badge pb-warn" role="status">⚠ {{ pour.p|length }} tipo{{ 's' if pour.p|length!=1 }}</span>
+        <span class="ma-pour-badge pb-warn" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.p|length }} tipo{{ 's' if pour.p|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de percepção">
           {% for item in pour.p[:4] %}
           <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ termo(item) }}</div>
@@ -224,7 +224,7 @@
           {% if pour.p|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.p|length - 4 }} outros</div>{% endif %}
         </div>
       {% else %}
-        <span class="ma-pour-badge pb-ok" role="status">✓ Sem achados agrupados aqui</span>
+        <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
       <div class="ma-pour-scope">Contraste, texto alternativo, imagens</div>
@@ -233,7 +233,7 @@
       <div class="ma-pour-letter{% if pour.o|length > 0 %} red{% endif %}">O</div>
       <div class="ma-pour-name">Operável</div>
       {% if pour.o|length > 0 %}
-        <span class="ma-pour-badge pb-warn" role="status">⚠ {{ pour.o|length }} tipo{{ 's' if pour.o|length!=1 }}</span>
+        <span class="ma-pour-badge pb-warn" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.o|length }} tipo{{ 's' if pour.o|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de operabilidade">
           {% for item in pour.o[:4] %}
           <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ termo(item) }}</div>
@@ -241,7 +241,7 @@
           {% if pour.o|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.o|length - 4 }} outros</div>{% endif %}
         </div>
       {% else %}
-        <span class="ma-pour-badge pb-ok" role="status">✓ Sem achados agrupados aqui</span>
+        <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
       <div class="ma-pour-scope">Teclado, foco, controles</div>
@@ -250,7 +250,7 @@
       <div class="ma-pour-letter{% if pour.u|length > 0 %} red{% endif %}">U</div>
       <div class="ma-pour-name">Compreensível</div>
       {% if pour.u|length > 0 %}
-        <span class="ma-pour-badge pb-warn-amber" role="status">⚠ {{ pour.u|length }} tipo{{ 's' if pour.u|length!=1 }}</span>
+        <span class="ma-pour-badge pb-warn-amber" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.u|length }} tipo{{ 's' if pour.u|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de compreensão">
           {% for item in pour.u[:4] %}
           <div class="ma-pour-item"><span class="ma-pour-dot amber" aria-hidden="true"></span>{{ termo(item) }}</div>
@@ -258,7 +258,7 @@
           {% if pour.u|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.u|length - 4 }} outros</div>{% endif %}
         </div>
       {% else %}
-        <span class="ma-pour-badge pb-ok" role="status">✓ Sem achados agrupados aqui</span>
+        <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
       <div class="ma-pour-scope">Formulários, idioma, títulos</div>
@@ -267,7 +267,7 @@
       <div class="ma-pour-letter{% if pour.r|length > 0 %} red{% endif %}">R</div>
       <div class="ma-pour-name">Robusto</div>
       {% if pour.r|length > 0 %}
-        <span class="ma-pour-badge pb-warn-purple" role="status">⚠ {{ pour.r|length }} tipo{{ 's' if pour.r|length!=1 }}</span>
+        <span class="ma-pour-badge pb-warn-purple" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.r|length }} tipo{{ 's' if pour.r|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de robustez">
           {% for item in pour.r[:4] %}
           <div class="ma-pour-item"><span class="ma-pour-dot purple" aria-hidden="true"></span>{{ termo(item) }}</div>
@@ -275,7 +275,7 @@
           {% if pour.r|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.r|length - 4 }} outros</div>{% endif %}
         </div>
       {% else %}
-        <span class="ma-pour-badge pb-ok" role="status">✓ Sem achados agrupados aqui</span>
+        <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
       <div class="ma-pour-scope">ARIA, HTML semântico</div>
@@ -300,10 +300,10 @@
       </div>
     </div>
     <div class="ma-exec-body-text">
-      Este portal não apresentou barreiras catalogadas automaticamente pelas ferramentas utilizadas. Resultado positivo na camada automatizada —
+      Este portal não apresentou barreiras catalogadas automaticamente pelas ferramentas utilizadas. Resultado positivo na camada automatizada:
       recomenda-se ainda testes manuais, leitor de tela e, quando possível, participação de usuários com deficiência.
       <br><br>
-      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência — população potencialmente excluída quando há barreiras não detectadas por crawlers.
+      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando há barreiras não detectadas por crawlers.
     </div>
     <div class="ma-exec-legal">
       <p class="ma-exec-legal-note">
@@ -311,7 +311,7 @@
         Este relatório automatizado não substitui parecer jurídico nem auditoria humana completa.
       </p>
       <div class="ma-exec-legal-badges">
-        <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>LBI — Lei 13.146/2015</span>
+        <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>LBI: Lei 13.146/2015</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>eMAG v3.1</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>WCAG 2.1 AA</span>
         <span class="ma-legal-tag"><span class="ma-legal-tag-dot" aria-hidden="true"></span>Decreto 5.296/04</span>
@@ -333,17 +333,17 @@
   <div class="cf-label">Escopo · WCAG 2.1 AA (automático)</div>
   <div class="cf-value">
     {% if nt==0 %}
-      <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30–40%</strong> dos critérios AA — não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
+      <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30–40%</strong> dos critérios AA: não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
     {% elif sr_nivel=='ALTO' %}
-      <span>O mesmo limite de cobertura (~30–40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade deve ser sustentada por validação humana.</span>
+      <span>O mesmo limite de cobertura (~30–40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade precisa de validação humana para ter peso.</span>
     {% elif sr_nivel=='MÉDIO' %}
       <span>Cobertura automática parcial (~30–40% AA). Use as barreiras listadas como fila de trabalho priorizada; feche lacunas típicas de contraste e semântica e reserve tempo para revisar navegação por teclado e leitores de tela nos fluxos principais.</span>
     {% else %}
-      <span>Cobertura automática limitada (~30–40% AA). Mesmo com severidade predominantemente baixa neste relatório, confirme com checagens assistivas após as correções — especialmente onde há formulários, modais ou conteúdo inserido via script.</span>
+      <span>Cobertura automática limitada (~30–40% AA). Mesmo com severidade predominantemente baixa neste relatório, confirme com checagens assistivas após as correções: especialmente onde há formulários, modais ou conteúdo inserido via script.</span>
     {% endif %}
   </div>
   <div class="cf-badge {% if nt==0 %}cf-conform{% elif sr_nivel=='ALTO' %}cf-nc{% else %}cf-partial{% endif %}">
-    {% if nt==0 %}✓ Auto sem achados{% elif sr_nivel=='ALTO' %}⚠ Validar manualmente{% else %}⚠ Escopo parcial{% endif %}
+    {% if nt==0 %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Auto sem achados{% elif sr_nivel=='ALTO' %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Validar manualmente{% else %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Escopo parcial{% endif %}
   </div>
 </div>
 
@@ -354,7 +354,7 @@
   </div>
   <div class="exec-ai-body">
     {% for para in report.resumo_executivo_ai.split('\n\n') %}
-      {% if para.strip() %}<p>{{ para.strip() }}</p>{% endif %}
+      {% if para.strip() %}<p>{{ clean_exec_text(para.strip()) }}</p>{% endif %}
     {% endfor %}
   </div>
   <div class="exec-ai-foot">Gerado por IA com base nos dados desta auditoria.</div>
@@ -369,25 +369,25 @@
       <div class="legal-eyebrow">Conformidade Legal</div>
       <h2 class="legal-title" id="legal-heading">Exposição Legal e Regulatória</h2>
       <p class="legal-text">
-        Acessibilidade digital é obrigação legal no Brasil. Portais com barreiras podem enfrentar sanções administrativas, demandas judiciais e prejuízo reputacional — além da exclusão de cidadãos.
+        Acessibilidade digital é obrigação legal no Brasil. Portais com barreiras podem enfrentar sanções administrativas, demandas judiciais e prejuízo reputacional: além da exclusão de cidadãos.
       </p>
       <div class="legal-laws" role="list">
         <div class="law-item" role="listitem">
-          <div class="law-icon" aria-hidden="true">⚖️</div>
+          <div class="law-icon" aria-hidden="true"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="2" x2="10" y2="18"/><line x1="6" y1="18" x2="14" y2="18"/><line x1="4" y1="5" x2="16" y2="5"/><path d="M4 5L2 10a3 3 0 0 0 4 0L4 5z"/><path d="M16 5l2 5a3 3 0 0 1-4 0l2-5z"/></svg></div>
           <div>
-            <div class="law-name">LBI — Lei 13.146/2015 (Art. 63)</div>
+            <div class="law-name">LBI: Lei 13.146/2015 (Art. 63)</div>
             <div class="law-desc">Exige que sítios e portais sob jurisdição brasileira sejam acessíveis a pessoas com deficiência.</div>
           </div>
         </div>
         <div class="law-item" role="listitem">
-          <div class="law-icon" aria-hidden="true">📋</div>
+          <div class="law-icon" aria-hidden="true"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h7l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M12 2v4h4"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="7" y1="13" x2="13" y2="13"/></svg></div>
           <div>
             <div class="law-name">Decreto 5.296/2004</div>
             <div class="law-desc">Orienta portais da administração pública sobre acessibilidade para uso por pessoas com deficiência.</div>
           </div>
         </div>
         <div class="law-item" role="listitem">
-          <div class="law-icon" aria-hidden="true">📘</div>
+          <div class="law-icon" aria-hidden="true"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><line x1="6" y1="7" x2="13" y2="7"/><line x1="6" y1="10" x2="13" y2="10"/><line x1="6" y1="13" x2="10" y2="13"/><path d="M15 4h1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/></svg></div>
           <div>
             <div class="law-name">eMAG v3.1</div>
             <div class="law-desc">Referência técnica nacional alinhada ao WCAG para governo eletrônico brasileiro; referência também para privado.</div>
@@ -397,10 +397,10 @@
     </div>
     <div class="legal-right">
       {% if sr %}
-      <div class="risk-meter" role="status" aria-label="Score de risco: {{ sr.get('valor','—') }} de 3, nível {{ sr.get('nivel','') }}">
+      <div class="risk-meter" role="status" aria-label="Score de risco: {{ sr.get('valor', '–') }} de 3, nível {{ sr.get('nivel','') }}">
         <div class="rm-label">Score de Risco</div>
         <div class="rm-score rs-{{ risk_css }}" aria-hidden="true">
-          {{ sr.get('valor','—') }}<span class="rm-max">/3</span>
+          {{ sr.get('valor', '–') }}<span class="rm-max">/3</span>
         </div>
         <div class="rm-nivel rn-{{ risk_css }}">{{ sr.get('nivel','') }}</div>
         {% set rmw=(sr.get('valor',0)|float / 3 * 100)|round(0)|int %}

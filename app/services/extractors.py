@@ -24,11 +24,11 @@ def lighthouse_occurrence_count(audit: dict) -> int:
 def _evidencia_lighthouse(audit: dict) -> list[str]:
     """
     Extrai uma linha de evidência POR ELEMENTO com falha, no formato:
-        [lhId] selector — snippet
+        [lhId] selector: snippet
 
     Corrige o bug em que vários elementos com o mesmo seletor CSS (ex: todas as
     imagens de uma mesma classe) apareciam como uma única evidência repetida.
-    O lhId (ex: '1-45-IMG') é único por elemento na página — garante distinção.
+    O lhId (ex: '1-45-IMG') é único por elemento na página: garante distinção.
     """
     out: list[str] = []
     seen_ids: set[str] = set()
@@ -44,7 +44,7 @@ def _evidencia_lighthouse(audit: dict) -> list[str]:
             return None
         prefix = f"[{lhid}] " if lhid else ""
         if sel and sn:
-            return f"{prefix}{sel} — {sn}"
+            return f"{prefix}{sel}: {sn}"
         return f"{prefix}{sel or sn}"
 
     def _collect_nodes(obj: object) -> None:

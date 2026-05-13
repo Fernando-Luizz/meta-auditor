@@ -1,28 +1,32 @@
 
 {# Group counters (publico) #}
-{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0) %}
+{% from '_report_macros.html' import ma_tag_ok_svg, ma_tag_warn_svg, ma_manual_check_svg %}
+{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0) %}
 {% for b in bars+divs %}
   {% set p=(b.get('publico_afetado') or '')|lower %}
   {% if 'baixa visão' in p or 'baixa visao' in p or 'low vision' in p or 'contraste' in p %}
     {% set cnt.visao = cnt.visao + 1 %}
   {% endif %}
-  {% if 'ceg' in p or 'leitor de tela' in p or 'screen reader' in p %}
+  {% if 'ceg' in p or ('leitor' in p and 'tela' in p) or 'screen reader' in p %}
     {% set cnt.cego = cnt.cego + 1 %}
   {% endif %}
   {% if 'motor' in p or 'tremor' in p or 'polegar' in p or 'móvel' in p or 'movel' in p %}
     {% set cnt.motor = cnt.motor + 1 %}
   {% endif %}
-  {% if 'cogni' in p or 'dislexia' in p %}
+  {% if 'cogni' in p or 'dislexia' in p or 'daltonismo' in p %}
     {% set cnt.cogni = cnt.cogni + 1 %}
   {% endif %}
   {% if 'surdo' in p or 'deaf' in p %}
     {% set cnt.surdo = cnt.surdo + 1 %}
   {% endif %}
-  {% if 'estrutura' in p or 'navega' in p or 'teclado' in p %}
+  {% if 'teclado' in p %}
     {% set cnt.naveg = cnt.naveg + 1 %}
   {% endif %}
+  {% if 'estrutura' in p or 'hierarquia' in p or 'orientação' in p or 'orientacao' in p %}
+    {% set cnt.estr = cnt.estr + 1 %}
+  {% endif %}
 {% endfor %}
-{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg]|max %}
+{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr]|max %}
 
 {# Category counters (tipo de problema) #}
 {% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
@@ -46,34 +50,13 @@
 {% endfor %}
 {% set mc=[cats.contraste,cats.botao,cats.imagem,cats.link,cats.form,cats.aria,cats.outro]|max %}
 
-{% macro pub_icon(raw) %}
-  {%- set r=(raw or '')|lower -%}
-  {%- if 'ceg' in r or 'leitor de tela' in r %}🦯
-  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'low vision' in r %}👁️
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r %}🖐️
-  {%- elif 'cogni' in r %}🧠
-  {%- elif 'surdo' in r %}👂
-  {%- else %}♿{%- endif %}
-{% endmacro %}
-
-{% macro pub_desc(raw) %}
-  {%- set r=(raw or '')|lower -%}
-  {%- if 'ceg' in r or 'leitor de tela' in r %}Usuários cegos utilizam softwares (NVDA, JAWS, VoiceOver) que narram o conteúdo. Botões e imagens sem nome ficam inacessíveis.
-  {%- elif 'baixa visão' in r or 'baixa visao' in r %}Usuários com visão parcial dependem de alto contraste, fontes grandes e zoom.
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r %}Usuários com dificuldade motora ou navegação móvel. Alvos pequenos causam erros.
-  {%- elif 'cogni' in r %}Usuários com dislexia, TDAH ou autismo precisam de navegação previsível e linguagem clara.
-  {%- elif 'surdo' in r %}Usuários surdos dependem de legendas e transcrições.
-  {%- elif 'estrutura' in r or 'navega' in r %}Usuários que navegam apenas por teclado ou marcos semânticos.
-  {%- else %}{{ raw }}{%- endif %}
-{% endmacro %}
-
 {% macro termo(t) %}
   {%- set s=(t or '')|lower -%}
-  {%- if 'button' in s and 'name' in s %}Botão sem nome — leitor de tela anuncia apenas "botão"
-  {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Alvo de toque pequeno demais — difícil de clicar
-  {%- elif 'contrast' in s or 'contraste' in s %}Contraste insuficiente — texto ilegível para baixa visão
+  {%- if 'button' in s and 'name' in s %}Botão sem nome: leitor de tela anuncia apenas "botão"
+  {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Alvo de toque pequeno demais: difícil de clicar
+  {%- elif 'contrast' in s or 'contraste' in s %}Contraste insuficiente: texto ilegível para baixa visão
   {%- elif 'alt_link' in s or 'imagem_link' in s %}Imagem-link sem texto alternativo
-  {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem descrição — invisível para leitores de tela
+  {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem descrição: invisível para leitores de tela
   {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem identificação
   {%- elif 'aria' in s %}Marcação ARIA incorreta
   {%- elif 'heading' in s %}Estrutura de títulos quebrada
@@ -95,15 +78,15 @@
       <div class="ph-ey">Relatório de Acessibilidade Web</div>
       <div class="ph-title">{{ audit.url|replace('https://','')|replace('http://','')|truncate(60) }}</div>
       <div class="ph-url"><a href="{{ audit.url }}" target="_blank" rel="noopener">{{ audit.url }}</a></div>
-      <div class="ph-meta">Auditoria #{{ audit.id }} &nbsp;·&nbsp; {{ audit.created_at or '—' }} &nbsp;·&nbsp; Meta-Auditor {{ app_version }}{% if report_footer_org %} &nbsp;·&nbsp; {{ report_footer_org }}{% endif %}</div>
+      <div class="ph-meta">Auditoria #{{ audit.id }} &nbsp;·&nbsp; {{ audit.created_at or '–' }} &nbsp;·&nbsp; Meta-Auditor {{ app_version }}{% if report_footer_org %} &nbsp;·&nbsp; {{ report_footer_org }}{% endif %}</div>
     </div>
     <div>
       {% if sr %}
         {% set nv=sr.get('nivel','') %}
         <div class="risco-pill {% if nv=='ALTO' %}r-alto{% elif nv=='MÉDIO' %}r-medio{% elif nv=='BAIXO' %}r-baixo{% else %}r-sem{% endif %}">
-          {% if nv=='ALTO' %}✗ Risco ALTO — {{ sr.get('valor') }}
-          {% elif nv=='MÉDIO' %}⚠ Risco MÉDIO — {{ sr.get('valor') }}
-          {% elif nv=='BAIXO' %}✓ Risco BAIXO — {{ sr.get('valor') }}
+          {% if nv=='ALTO' %}<span class="r-pill-ic" aria-hidden="true">{{ ma_manual_check_svg('falhou')|safe }}</span> Risco ALTO: {{ sr.get('valor') }}
+          {% elif nv=='MÉDIO' %}<span class="r-pill-ic" aria-hidden="true">{{ ma_tag_warn_svg(12)|safe }}</span> Risco MÉDIO: {{ sr.get('valor') }}
+          {% elif nv=='BAIXO' %}<span class="r-pill-ic" aria-hidden="true">{{ ma_tag_ok_svg(12)|safe }}</span> Risco BAIXO: {{ sr.get('valor') }}
           {% else %}Sem barreiras{% endif %}
         </div>
         <div class="r-sub">{{ sr.get('total_barreiras',0) }} barreira{{ 's' if sr.get('total_barreiras',0)!=1 }} · escala 0–3</div>
@@ -127,8 +110,8 @@
       {% elif nv=='BAIXO' %}O site <strong>{{ audit.url }}</strong> apresenta <strong>risco BAIXO</strong> com <strong>{{ nb }} barreira{{ 's' if nb!=1 }}</strong> pontuais. Melhorias podem entrar no ciclo de melhoria contínua.
       {% else %}O site <strong>{{ audit.url }}</strong> <strong>não apresenta barreiras automáticas detectáveis nesta execução</strong>. Validação manual com leitores de tela recomendada para garantia completa.
       {% endif %}
-      {% if lh_pct is not none %} Score Lighthouse <strong>{{ lh_pct }}/100</strong>{% if lh_pct>=90 %} — estrutura técnica adequada.{% elif lh_pct>=75 %} — conformidade parcial.{% else %} — problemas estruturais significativos.{% endif %}{% endif %}
-      {% if wv is not none %} WAVE AIMscore <strong>{{ wv|round(1) }}/10</strong>{% if wv>=7 %} — poucos erros detectados.{% elif wv>=4 %} — nível moderado de erros.{% else %} — muitos erros na página.{% endif %}{% endif %}
+      {% if lh_pct is not none %} Score Lighthouse <strong>{{ lh_pct }}/100</strong>{% if lh_pct>=90 %}: estrutura técnica adequada.{% elif lh_pct>=75 %}: conformidade parcial.{% else %}: problemas estruturais significativos.{% endif %}{% endif %}
+      {% if wv is not none %} WAVE AIMscore <strong>{{ wv|round(1) }}/10</strong>{% if wv>=7 %}: poucos erros detectados.{% elif wv>=4 %}: nível moderado de erros.{% else %}: muitos erros na página.{% endif %}{% endif %}
     {% else %}Auditoria automática combinando Lighthouse (HTML) e WAVE (renderização). Consulte as seções abaixo.{% endif %}
   </div>
 </div>
@@ -146,7 +129,7 @@
     </svg>
     {% if lhcls %}<span class="spill s-{{ lhcls }}">{{ lhlbl }}</span>{% endif %}
     <div class="dc-exp">Código HTML avaliado quanto a boas práticas de acessibilidade</div>
-    {% else %}<div class="dc-big" style="color:var(--ink4);font-size:28px">—</div>{% endif %}
+    {% else %}<div class="dc-big" style="color:var(--ink4);font-size:28px">–</div>{% endif %}
   </div>
 
   <div class="dc dc-wave">
@@ -160,7 +143,7 @@
     </svg>
     {% if wvcls %}<span class="spill s-{{ wvcls }}">{{ wvlbl }}</span>{% endif %}
     <div class="dc-exp">Erros detectados na página renderizada no navegador</div>
-    {% else %}<div class="dc-big" style="color:var(--ink4);font-size:28px">—</div>{% endif %}
+    {% else %}<div class="dc-big" style="color:var(--ink4);font-size:28px">–</div>{% endif %}
   </div>
 
   <div class="dc dc-bar">
@@ -173,7 +156,7 @@
   {% if sr %}
   <div class="dc dc-risk">
     <div class="dc-lbl">Score de Risco</div>
-    <div class="dc-big">{{ sr.get('valor','—') }}<span style="font-size:16px;font-weight:400;color:var(--ink4)">/3</span></div>
+    <div class="dc-big">{{ sr.get('valor', '–') }}<span style="font-size:16px;font-weight:400;color:var(--ink4)">/3</span></div>
     {% set nivr = sr.get('nivel','') %}
     {% if nivr == 'ALTO' %}<span class="spill s-crit">ALTO</span>
     {% elif nivr == 'MÉDIO' %}<span class="spill s-warn">MÉDIO</span>

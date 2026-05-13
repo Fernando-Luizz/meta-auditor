@@ -1,3 +1,4 @@
+{% from '_report_macros.html' import ma_chart_pub_svg, ma_pub_group_svg, ma_cat_chart_svg, ma_dot_svg, ma_tag_ok_svg, ma_manual_check_svg %}
 
 {# ═══ ANALYTICS CHARTS ═══ #}
 {% if nt > 0 %}
@@ -8,13 +9,13 @@
       <div class="chart-ttl">Barreiras por severidade</div>
       <div class="hbar-chart">
         {% if na > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--red)">●</div><div class="hbar-lbl" style="color:var(--red)">Alta prioridade</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (na / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ na }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--red)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--red)">Alta prioridade</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (na / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ na }}</div></div>
         {% endif %}
         {% if nm > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--amber)">●</div><div class="hbar-lbl" style="color:var(--amber)">Média prioridade</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (nm / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nm }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--amber)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--amber)">Média prioridade</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (nm / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nm }}</div></div>
         {% endif %}
         {% if nb > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--green)">●</div><div class="hbar-lbl" style="color:var(--green)">Baixa prioridade</div><div class="hbar-track"><div class="hbar-fill f-green" style="width:{{ (nb / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nb }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--green)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--green)">Baixa prioridade</div><div class="hbar-track"><div class="hbar-fill f-green" style="width:{{ (nb / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nb }}</div></div>
         {% endif %}
         {% if na > 0 %}
         <div style="margin-top:8px;font-size:10px;color:var(--red)"><strong>{{ na }}</strong> {% if na == 1 %}barreira {% else %}barreiras {% endif %} de alta prioridade.</div>
@@ -26,12 +27,13 @@
       <div class="chart-ttl">Grupos de usuários afetados</div>
       <div class="hbar-chart">
         {% set mg_den = mg if mg > 0 else 1 %}
-        {% if cnt.visao > 0 %}<div class="hbar-row"><div class="hbar-ic">👁️</div><div class="hbar-lbl">Baixa visão</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (cnt.visao / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.visao }}</div></div>{% endif %}
-        {% if cnt.cego > 0 %}<div class="hbar-row"><div class="hbar-ic">🦯</div><div class="hbar-lbl">Cegos</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (cnt.cego / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.cego }}</div></div>{% endif %}
-        {% if cnt.motor > 0 %}<div class="hbar-row"><div class="hbar-ic">🖐️</div><div class="hbar-lbl">Mobilidade</div><div class="hbar-track"><div class="hbar-fill f-lh" style="width:{{ (cnt.motor / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.motor }}</div></div>{% endif %}
-        {% if cnt.cogni > 0 %}<div class="hbar-row"><div class="hbar-ic">🧠</div><div class="hbar-lbl">Cognitivo</div><div class="hbar-track"><div class="hbar-fill f-purple" style="width:{{ (cnt.cogni / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.cogni }}</div></div>{% endif %}
-        {% if cnt.surdo > 0 %}<div class="hbar-row"><div class="hbar-ic">👂</div><div class="hbar-lbl">Surdos</div><div class="hbar-track"><div class="hbar-fill f-wave" style="width:{{ (cnt.surdo / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.surdo }}</div></div>{% endif %}
-        {% if cnt.naveg > 0 %}<div class="hbar-row"><div class="hbar-ic">⌨️</div><div class="hbar-lbl">Teclado</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cnt.naveg / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.naveg }}</div></div>{% endif %}
+        {% if cnt.visao > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('visao')|safe }}</div><div class="hbar-lbl">Baixa visão</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (cnt.visao / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.visao }}</div></div>{% endif %}
+        {% if cnt.cego > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('cego')|safe }}</div><div class="hbar-lbl">Cegos</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (cnt.cego / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.cego }}</div></div>{% endif %}
+        {% if cnt.motor > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('motor')|safe }}</div><div class="hbar-lbl">Mobilidade</div><div class="hbar-track"><div class="hbar-fill f-lh" style="width:{{ (cnt.motor / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.motor }}</div></div>{% endif %}
+        {% if cnt.cogni > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('cogni')|safe }}</div><div class="hbar-lbl">Cognitivo</div><div class="hbar-track"><div class="hbar-fill f-purple" style="width:{{ (cnt.cogni / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.cogni }}</div></div>{% endif %}
+        {% if cnt.surdo > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('surdo')|safe }}</div><div class="hbar-lbl">Surdos</div><div class="hbar-track"><div class="hbar-fill f-wave" style="width:{{ (cnt.surdo / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.surdo }}</div></div>{% endif %}
+        {% if cnt.naveg > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('teclado')|safe }}</div><div class="hbar-lbl">Teclado</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cnt.naveg / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.naveg }}</div></div>{% endif %}
+        {% if cnt.estr > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_chart_pub_svg('estrutura')|safe }}</div><div class="hbar-lbl">Estrutura / orientação</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cnt.estr / mg_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cnt.estr }}</div></div>{% endif %}
         {% if mg == 0 %}<p class="empty" style="padding:4px 0">Grupos não identificados automaticamente nos textos público afetado.</p>{% endif %}
       </div>
     </div>
@@ -40,13 +42,13 @@
       <div class="chart-ttl">Tipos de problema</div>
       <div class="hbar-chart">
         {% set mc_den = mc if mc > 0 else 1 %}
-        {% if cats.contraste > 0 %}<div class="hbar-row"><div class="hbar-ic">🎨</div><div class="hbar-lbl">Contraste</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (cats.contraste / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.contraste }}</div></div>{% endif %}
-        {% if cats.botao > 0 %}<div class="hbar-row"><div class="hbar-ic">🔘</div><div class="hbar-lbl">Botões</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (cats.botao / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.botao }}</div></div>{% endif %}
-        {% if cats.imagem > 0 %}<div class="hbar-row"><div class="hbar-ic">🖼️</div><div class="hbar-lbl">Imagens</div><div class="hbar-track"><div class="hbar-fill f-lh" style="width:{{ (cats.imagem / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.imagem }}</div></div>{% endif %}
-        {% if cats.link > 0 %}<div class="hbar-row"><div class="hbar-ic">🔗</div><div class="hbar-lbl">Links</div><div class="hbar-track"><div class="hbar-fill f-wave" style="width:{{ (cats.link / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.link }}</div></div>{% endif %}
-        {% if cats.form > 0 %}<div class="hbar-row"><div class="hbar-ic">📝</div><div class="hbar-lbl">Formulários</div><div class="hbar-track"><div class="hbar-fill f-purple" style="width:{{ (cats.form / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.form }}</div></div>{% endif %}
-        {% if cats.aria > 0 %}<div class="hbar-row"><div class="hbar-ic">♿</div><div class="hbar-lbl">ARIA</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cats.aria / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.aria }}</div></div>{% endif %}
-        {% if cats.outro > 0 %}<div class="hbar-row"><div class="hbar-ic">📋</div><div class="hbar-lbl">Outros</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cats.outro / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.outro }}</div></div>{% endif %}
+        {% if cats.contraste > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('contraste')|safe }}</div><div class="hbar-lbl">Contraste</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (cats.contraste / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.contraste }}</div></div>{% endif %}
+        {% if cats.botao > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('botao')|safe }}</div><div class="hbar-lbl">Botões</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (cats.botao / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.botao }}</div></div>{% endif %}
+        {% if cats.imagem > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('imagem')|safe }}</div><div class="hbar-lbl">Imagens</div><div class="hbar-track"><div class="hbar-fill f-lh" style="width:{{ (cats.imagem / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.imagem }}</div></div>{% endif %}
+        {% if cats.link > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('link')|safe }}</div><div class="hbar-lbl">Links</div><div class="hbar-track"><div class="hbar-fill f-wave" style="width:{{ (cats.link / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.link }}</div></div>{% endif %}
+        {% if cats.form > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('form')|safe }}</div><div class="hbar-lbl">Formulários</div><div class="hbar-track"><div class="hbar-fill f-purple" style="width:{{ (cats.form / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.form }}</div></div>{% endif %}
+        {% if cats.aria > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('aria')|safe }}</div><div class="hbar-lbl">ARIA</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cats.aria / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.aria }}</div></div>{% endif %}
+        {% if cats.outro > 0 %}<div class="hbar-row"><div class="hbar-ic" aria-hidden="true">{{ ma_cat_chart_svg('outro')|safe }}</div><div class="hbar-lbl">Outros</div><div class="hbar-track"><div class="hbar-fill f-ink" style="width:{{ (cats.outro / mc_den * 100)|int }}%"></div></div><div class="hbar-num">{{ cats.outro }}</div></div>{% endif %}
       </div>
     </div>
   </div>
@@ -72,12 +74,12 @@
 
 {# ═══ HUMAN IMPACT ═══ #}
 {% set todos=[
-  {'ic':'👁️','nm':'Baixa visão','desc':'Precisam de alto contraste, fontes grandes ou zoom — texto ilegível se o contraste for baixo.','ex':'Glaucoma, catarata','ms':['baixa visão','baixa visao','low vision','contraste']},
-  {'ic':'🦯','nm':'Cegos / leitor de tela','desc':'NVDA, JAWS ou VoiceOver narram o conteúdo. Sem nomes para botões/imagem, ficam perdidos.','ex':'Cegueira','ms':['leitor de tela','screen reader','ceg']},
-  {'ic':'🖐️','nm':'Mobilidade reduzida','desc':'Teclado, joystick ou uso com polegar no celular — alvos pequenos são problemáticos.','ex':'Parkinson','ms':['motor','tremor','polegar','móvel','movel']},
-  {'ic':'🧠','nm':'Deficiência cognitiva','desc':'Precisam de navegação previsível e linguagem simples.','ex':'Dislexia, TDAH','ms':['cogni','dislexia','tdah']},
-  {'ic':'👂','nm':'Surdos','desc':'Legendas e transcrições para vídeo e áudio.','ex':'Surdez','ms':['surdo','deaf','audio']},
-  {'ic':'⌨️','nm':'Navegação por teclado','desc':'Apenas teclado ou marcos semânticos.','ms':['estrutura','navega','teclado']},
+  {'kind':'visao','nm':'Baixa visão','desc':'Precisam de alto contraste, fontes grandes ou zoom: texto ilegível se o contraste for baixo.','ex':'Glaucoma, catarata','ms':['baixa visão','baixa visao','low vision','contraste']},
+  {'kind':'cego','nm':'Cegos / leitor de tela','desc':'NVDA, JAWS ou VoiceOver narram o conteúdo. Sem nomes para botões/imagem, ficam perdidos.','ex':'Cegueira','ms':['leitor de tela','screen reader','ceg']},
+  {'kind':'motor','nm':'Mobilidade reduzida','desc':'Teclado, joystick ou uso com polegar no celular: alvos pequenos são problemáticos.','ex':'Parkinson','ms':['motor','tremor','polegar','móvel','movel']},
+  {'kind':'cogni','nm':'Deficiência cognitiva','desc':'Precisam de navegação previsível e linguagem simples.','ex':'Dislexia, TDAH','ms':['cogni','dislexia','tdah']},
+  {'kind':'surdo','nm':'Surdos','desc':'Legendas e transcrições para vídeo e áudio.','ex':'Surdez','ms':['surdo','deaf','audio']},
+  {'kind':'teclado','nm':'Navegação por teclado','desc':'Apenas teclado ou marcos semânticos.','ms':['estrutura','navega','teclado']},
 ] %}
 
 <div class="grp-sec">
@@ -91,11 +93,11 @@
       {% endfor %}
       {% set matched = nf.v %}
       <div class="gc {% if matched %}gc-afetado{% else %}gc-ok{% endif %}">
-        <span class="g-ic">{{ p.ic }}</span>
+        <span class="g-ic" aria-hidden="true">{{ ma_pub_group_svg(p.kind, 22)|safe }}</span>
         <div class="g-nm">{{ p.nm }}</div>
         <div class="g-desc">{{ p.desc }}</div>
         <div class="g-ex">Ex: {{ p.ex }}</div>
-        {% if matched %}<div><span class="gtag-af">✗ Afetado</span></div>{% else %}<div><span class="gtag-ok">✓ Sem match automático neste relatório</span></div>{% endif %}
+        {% if matched %}<div><span class="gtag-af"><span class="gtag-af-ic" aria-hidden="true">{{ ma_manual_check_svg('falhou')|safe }}</span> Afetado</span></div>{% else %}<div><span class="gtag-ok"><span class="gtag-ok-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem match automático neste relatório</span></div>{% endif %}
       </div>
     {% endfor %}
   </div>

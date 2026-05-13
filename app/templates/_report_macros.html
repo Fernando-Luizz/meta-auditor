@@ -1,6 +1,6 @@
 {# Macros compartilhados pelo relatório executivo premium #}
 
-{# Ícone MetaAuditor — Logo Kit v2 (meta-árvore + documento). svg_id único por página evita colisão de gradientes. #}
+{# Ícone MetaAuditor: Logo Kit v2 (meta-árvore + documento). svg_id único por página evita colisão de gradientes. #}
 {% macro ma_logo_icon(size=48, svg_id='ma', variant='light') -%}
 <svg width="{{ size }}" height="{{ size }}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 {% if variant == 'on_dark' %}
@@ -53,30 +53,56 @@
 {%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
 {%- endmacro %}
 
+{# Ícones de público afetado / gráficos: família 20×20, stroke 1.4, cores Meta-Auditor #}
+{% macro ma_pub_group_svg(kind, size=22) -%}
+{%- set s = size|string -%}
+{%- if kind == 'estrutura' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="7.5" y="2" width="5" height="3.5" rx="1"/><rect x="2" y="14.5" width="5" height="3.5" rx="1"/><rect x="13" y="14.5" width="5" height="3.5" rx="1"/><path d="M10 5.5v4M4.5 14.5v-4h11v4"/></svg>
+{%- elif kind == 'teclado' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#4B5563" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="16" height="10.5" rx="1.5"/><circle cx="5.5" cy="10.5" r=".7" fill="#4B5563" stroke="none"/><circle cx="8.5" cy="10.5" r=".7" fill="#4B5563" stroke="none"/><circle cx="11.5" cy="10.5" r=".7" fill="#4B5563" stroke="none"/><circle cx="14.5" cy="10.5" r=".7" fill="#4B5563" stroke="none"/><path d="M6.5 13.5h7" stroke-width="1.5"/></svg>
+{%- elif kind == 'cego' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="7.5" cy="3.2" r="1.8"/><path d="M7.5 5V10"/><path d="M5 7.5h5"/><path d="M7.5 10L5.5 14M7.5 10L9.5 14"/><path d="M9.5 11.5Q13 15 14.5 19" stroke-width="2.2"/><circle cx="14.5" cy="19" r="1" fill="#2563EB" stroke="none"/></svg>
+{%- elif kind == 'visao' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#DC2626" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="10" cy="10" r="2.8"/><circle cx="10" cy="10" r="1.2" fill="#DC2626" stroke="none"/></svg>
+{%- elif kind == 'motor' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#D97706" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6.5 10V5.5a1.3 1.3 0 0 1 2.6 0V10"/><path d="M9.1 10V4.5a1.3 1.3 0 0 1 2.6 0V10"/><path d="M11.7 10V5.5a1.3 1.3 0 0 1 2.6 0V10"/><path d="M6.5 10V8.5a1.3 1.3 0 0 0-2.6 0V12a5 5 0 0 0 10 0V9.5a1.3 1.3 0 0 0-2.6 0"/></svg>
+{%- elif kind == 'cogni' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2a5.5 5.5 0 0 0-5.5 5.5c0 1.8.9 3.3 2.3 4.2V14h6.4v-2.3A5.5 5.5 0 0 0 10 2z"/><path d="M7.2 14v2.5h5.6V14"/><path d="M8 8h2M10 6.5v3" opacity=".6"/></svg>
+{%- elif kind == 'surdo' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#0A7B70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 8.5a5 5 0 0 0-10 0c0 2 1.2 3.5 2 4.8l.3 1.7a1 1 0 0 0 2 0v-1.5c0-.5.3-1 .8-1.3"/><circle cx="10" cy="8.5" r="1.5"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke="#DC2626" stroke-width="1.5"/></svg>
+{%- else -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="10" cy="3.5" r="1.8"/><path d="M10 5.3V10.5M7 8h6M10 10.5l-2 4.5M10 10.5l2 4.5"/></svg>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro ma_chart_pub_svg(kind) -%}{{ ma_pub_group_svg(kind, 18) }}{%- endmacro %}
+
 {% macro pub_icon(raw) %}
   {%- set r=(raw or '')|lower -%}
-  {%- if 'ceg' in r or 'leitor de tela' in r %}🦯
-  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'low vision' in r or 'contraste' in r or 'leitura em' in r %}👁️
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r %}🖐️
-  {%- elif 'cogni' in r or 'daltonismo' in r or 'dislexia' in r %}🧠
-  {%- elif 'surdo' in r %}👂
-  {%- else %}♿{%- endif %}
+  {%- if 'estrutura' in r or 'hierarquia' in r or 'orientação' in r or 'orientacao' in r -%}{{ ma_pub_group_svg('estrutura', 22) }}
+  {%- elif 'teclado' in r -%}{{ ma_pub_group_svg('teclado', 22) }}
+  {%- elif 'ceg' in r or ('leitor' in r and 'tela' in r) -%}{{ ma_pub_group_svg('cego', 22) }}
+  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'low vision' in r or 'contraste' in r or 'leitura em' in r -%}{{ ma_pub_group_svg('visao', 22) }}
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r -%}{{ ma_pub_group_svg('motor', 22) }}
+  {%- elif 'cogni' in r or 'daltonismo' in r or 'dislexia' in r -%}{{ ma_pub_group_svg('cogni', 22) }}
+  {%- elif 'surdo' in r -%}{{ ma_pub_group_svg('surdo', 22) }}
+  {%- else -%}{{ ma_pub_group_svg('default', 22) }}{%- endif %}
 {% endmacro %}
 
 {% macro pub_desc(raw) %}
   {%- set r=(raw or '')|lower -%}
-  {%- if 'estrutura' in r or 'orientação' in r or 'hierarquia' in r %}Usuários de leitores de tela navegam pelo conteúdo usando a estrutura de títulos como mapa da página. Quando essa hierarquia está incorreta ou ausente, a orientação e a navegação ficam comprometidas.
-  {%- elif 'ceg' in r or 'leitor de tela' in r %}Usuários cegos utilizam leitores de tela (NVDA, JAWS, VoiceOver) que narram o conteúdo em áudio. Elementos sem nome ficam completamente inacessíveis para essa tecnologia.
-  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r %}Usuários com visão parcial — como quem tem glaucoma ou catarata — dependem de alto contraste, fontes maiores e zoom. Texto sem contraste adequado torna-se ilegível mesmo com amplificação.
-  {%- elif 'voz' in r or 'controle por voz' in r %}Usuários de controle por voz ativam botões e links pronunciando o texto que veem na tela. Quando o nome acessível não coincide com o texto visível, o comando de voz simplesmente não funciona.
-  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r or 'utilizadores' in r %}Usuários com dificuldade motora — como Parkinson ou lesão nos membros superiores — dependem de alvos grandes e espaçados. Botões pequenos ou agrupados causam cliques errados e frustração.
-  {%- elif 'cogni' in r or 'daltonismo' in r %}Usuários com dislexia, TDAH, autismo ou daltonismo precisam de indicadores visuais além da cor, linguagem clara e estrutura consistente.
-  {%- elif 'surdo' in r %}Usuários surdos ou com deficiência auditiva dependem de legendas, transcrições e alertas visuais para acessar conteúdo multimídia.
-  {%- elif 'navega' in r or 'teclado' in r %}Usuários que navegam exclusivamente por teclado — por limitação motora ou preferência — precisam de ordem de foco previsível e indicação visual de onde estão na página.
+  {%- if 'estrutura' in r or 'orientação' in r or 'orientacao' in r or 'hierarquia' in r %}Quem usa leitor de tela navega pelo site pelos títulos: é como folhear um índice em vez de ler tudo do começo. Quando a hierarquia está errada, esse atalho quebra e a pessoa fica presa no início da página sem conseguir pular para o que interessa.
+  {%- elif 'ceg' in r or ('leitor' in r and 'tela' in r) %}Um leitor de tela narra tudo em voz alta: botões, links, imagens, campos. Se um elemento não tem nome ou descrição, o software passa direto sem anunciar nada: para esse usuário, aquele conteúdo simplesmente não existe.
+  {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r %}Quem tem baixa visão trabalha com a tela ampliada e precisa de contraste alto entre texto e fundo para conseguir ler. Quando as cores são parecidas demais, nem o zoom resolve: o texto desaparece no fundo mesmo com a tela no máximo.
+  {%- elif 'voz' in r or 'controle por voz' in r %}Quem usa o site por comando de voz aciona elementos pronunciando o texto que vê na tela. Se o rótulo visível e o nome registrado no código são diferentes, o comando não dispara: como chamar alguém repetidamente pelo nome errado.
+  {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r or 'utilizadores' in r %}Quem tem tremor, Parkinson ou dificuldade nos dedos precisa de áreas de toque grandes e bem espaçadas. Com alvos pequenos, cada clique errado é retrabalho, e em dias difíceis pode tornar o site inutilizável.
+  {%- elif 'cogni' in r or 'daltonismo' in r %}Quem tem dislexia, daltonismo ou TDAH depende de mais de um indicador visual para distinguir links de texto comum, erros de campos normais e botões ativos de inativos. Se a informação depende só de cor, parte desses usuários vai perder a dica.
+  {%- elif 'surdo' in r %}Quem é surdo ou tem baixa audição não acessa o conteúdo em áudio ou vídeo sem legenda ou transcrição. Todo material multimídia precisa de alternativa em texto para que essas pessoas consigam seguir o conteúdo.
+  {%- elif 'teclado' in r %}Quem navega só pelo teclado precisa ver onde está o foco a cada avanço com Tab. Sem esse indicador visual, é como preencher um formulário sem saber em qual campo você está: cada pressionamento de Enter vira uma surpresa.
   {%- else %}{{ raw }}{%- endif %}
 {% endmacro %}
 
-{# Nomenclatura PT — s deve estar em minúsculas; pode concatenar tipo + id + título #}
+{# Nomenclatura PT: s deve estar em minúsculas; pode concatenar tipo + id + título #}
 {% macro _termo_core(s, fallback) %}
   {%- if 'button' in s and 'name' in s %}Botão sem nome acessível
   {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Área de toque insuficiente
@@ -88,6 +114,10 @@
   {%- elif 'aria' in s %}Marcação ARIA incorreta
   {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
   {%- elif 'hierarquia_titulos' in s %}Hierarquia de títulos incorreta
+  {%- elif 'skip_link' in s %}Skip link não focalizável
+  {%- elif 'link_pdf' in s or 'wave_alert_link_pdf' in s %}Link para documento PDF
+  {%- elif 'texto_link_suspeito' in s or 'link_suspicious' in s %}Texto de link suspeito ou genérico
+  {%- elif 'wave_alert_link_redundant' in s or 'link_redundant' in s %}Links redundantes no mesmo destino
   {%- elif 'link_sem_nome' in s or 'link-name' in s or 'link_empty' in s %}Link sem nome acessível
   {%- elif 'link-in-text' in s or ('link' in s and 'text' in s) %}Link pouco distinguível do texto ao redor
   {%- elif 'link' in s %}Link sem destino claro
@@ -97,19 +127,19 @@
 {% endmacro %}
 
 {% macro termo(t) %}
-{{- _termo_core((t or '')|lower, t or '—') -}}
+{{- _termo_core((t or '')|lower, t or '–') -}}
 {% endmacro %}
 
 {# Preferir para barreiras: título repetido entre tipos não mascara o tipo normalizado #}
 {% macro termo_barreira(b) %}
   {%- set s = ((b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('issue_id_original') or '') ~ ' ' ~ (b.get('titulo_tecnico') or ''))|lower -%}
-  {{- _termo_core(s, b.get('titulo_tecnico') or b.get('issue_tipo_normalizado') or '—') -}}
+  {{- _termo_core(s, b.get('titulo_tecnico') or b.get('issue_tipo_normalizado') or '–') -}}
 {% endmacro %}
 
-{# Severidade em maiúsculas com acentuação (ex.: media → MÉDIA) — plano de ação e checklists #}
+{# Severidade em maiúsculas com acentuação (ex.: media → MÉDIA): plano de ação e checklists #}
 {% macro prioridade_exibir_caps(p) %}
 {%- set raw = (p|string)|trim if p is not none else '' -%}
-{%- if raw == '' -%}—
+{%- if raw == '' -%}–
 {%- else -%}
 {%- set lo = raw|lower -%}
 {%- if lo == 'media' -%}MÉDIA
@@ -130,53 +160,59 @@
 
 {% macro esforco_badge(b) %}
   {%- set e=esforco(b)|trim -%}
-  {%- if e=='rapido' %}<span class="ef-badge ef-r" title="Correção simples de código — geralmente menos de 1 dia">⚡ Correção rápida</span>
-  {%- elif e=='medio' %}<span class="ef-badge ef-m" title="Requer ajustes em CSS ou múltiplos elementos — 1 a 5 dias">🛠 Esforço médio</span>
-  {%- else %}<span class="ef-badge ef-s" title="Pode exigir redesenho de componentes ou revisão estrutural">🏗 Projeto estrutural</span>{%- endif %}
+  {%- if e=='rapido' %}<span class="ef-badge ef-r" title="Correção simples de código: geralmente menos de 1 dia"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><path d="M9 2L3 9h6l-2 5 8-8H9l1-4z" fill="#DCFCE7" stroke="#15803D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Correção rápida</span>
+  {%- elif e=='medio' %}<span class="ef-badge ef-m" title="Requer ajustes em CSS ou múltiplos elementos: 1 a 5 dias"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><path d="M12.5 3.5a2.5 2.5 0 0 1-3.5 3.5L4 12a1.5 1.5 0 0 0 2 2l5-5a2.5 2.5 0 0 1 3.5-3.5L13 7a.8.8 0 0 0 0 1.1l.4.4a.8.8 0 0 0 1.1 0L12.5 3.5z" fill="#FEF9C3" stroke="#B45309" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> Esforço médio</span>
+  {%- else %}<span class="ef-badge ef-s" title="Pode exigir redesenho de componentes ou revisão estrutural"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="2.2" stroke="#1D4ED8" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg> Projeto estrutural</span>{%- endif %}
 {% endmacro %}
 
 {% macro correcao_detalhada(b) %}
   {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
   {%- set cor=(b.get('correcao_sugerida') or '') -%}
   {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
-    Os textos e elementos clicáveis do site precisam de cores com contraste suficiente para serem lidos por pessoas com baixa visão. O time de design deve revisar a paleta de cores usada e ajustar os textos e botões que não atingem a legibilidade mínima requerida.
+    Parte dos textos e botões do site usa combinações de cor com contraste baixo demais: em má iluminação ou para quem tem visão reduzida, esse conteúdo some. Pede ao time de design uma varredura na paleta: toda combinação que não atinge o contraste mínimo precisa ser trocada antes da próxima publicação.
   {%- elif 'target-size' in id or 'alvo_interacao' in id -%}
-    Algumas áreas clicáveis estão pequenas demais, dificultando o uso em celulares e por pessoas com limitações motoras. O time de produto deve revisar o tamanho e o espaçamento dos botões e links para que sejam facilmente acionáveis em qualquer dispositivo.
+    Vários botões e links do site têm área de clique menor do que o mínimo para uso em celular. Quem tem tremor ou dedo largo acaba ativando o elemento errado. O time de produto precisa aumentar essas áreas: não é mudança visual grande, mas faz diferença real para quem usa o site em mobilidade ou com dificuldade motora.
   {%- elif 'button-name' in id or 'controle_sem_nome' in id -%}
-    Alguns botões da página não possuem identificação legível para tecnologias assistivas, tornando-os invisíveis para quem usa leitor de tela ou controle por voz. O time de produto deve garantir que todo botão tenha um nome que identifique claramente sua função.
+    Há botões na página sem texto ou rótulo. Para quem usa leitor de tela, esses botões não existem: o software passa em branco sem anunciar nada. O time de produto precisa dar a cada botão um nome que diga o que ele faz, mesmo que esse nome não apareça visualmente na tela.
   {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id -%}
-    O texto visível em um controle não coincide com o que as tecnologias assistivas identificam, fazendo com que comandos de voz falhem. O time de produto deve revisar os rótulos dos controles interativos para que o texto que o usuário vê corresponda exatamente ao que a tecnologia anuncia.
+    O texto que o usuário lê no controle é diferente do nome que o código registrou. Quem usa comando de voz fala o que vê na tela, mas o sistema espera outra palavra: o comando falha em silêncio. O time de produto precisa alinhar o rótulo visível ao nome interno, sem deixar os dois divergirem.
   {%- elif 'alt_link' in id or 'imagem_link' in id -%}
-    Esta imagem funciona como link, mas não tem descrição que identifique o destino para quem não pode visualizá-la. Quem usa leitor de tela não consegue saber aonde o link leva. O time de conteúdo deve adicionar uma descrição que explique claramente o destino de cada imagem-link.
+    Essas imagens funcionam como links, mas nenhuma tem legenda indicando o destino. Para quem usa leitor de tela, ouvir "imagem, link" sem descrição é o mesmo que uma placa sem texto: não dá para saber se vale clicar. O time de conteúdo precisa acrescentar uma frase curta em cada imagem-link dizendo para onde ela leva.
   {%- elif 'link-name' in id or 'link_empty' in id or 'link_sem_nome' in id -%}
-    Alguns links da página não possuem texto ou descrição identificável, tornando-os invisíveis para leitores de tela e navegação por teclado. O time de produto deve garantir que cada link tenha um texto que indique claramente seu destino ou propósito.
+    Há links na página sem nenhum texto. O leitor de tela ou anuncia a URL crua ou pula sem dizer nada: em ambos os casos, impossível saber para onde o link vai. O time de produto precisa colocar um texto descritivo em cada um, indicando claramente o destino.
   {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
-    Links misturados ao texto precisam se diferenciar visualmente além da cor, para que usuários com baixa visão ou daltonismo consigam identificá-los. O time de design deve revisar como os links se destacam do texto ao redor.
+    Links dentro de parágrafos se confundem com o texto ao redor quando a única diferença é a cor. Para quem tem baixa visão ou daltonismo, esses links ficam invisíveis. O time de design precisa acrescentar sublinhado ou outro indicador visual além da cor para diferenciá-los.
+  {%- elif 'link_pdf' in id or 'wave_alert_link_pdf' in id -%}
+    Há links para ficheiros PDF sem deixar claro o formato ou sem garantir que o documento está marcado de forma acessível. O time de conteúdo deve indicar no texto do link que se trata de um PDF e, quando possível, oferecer HTML equivalente ou um PDF com tags e ordem de leitura verificadas.
   {%- elif 'link' in id -%}
-    Alguns links têm texto genérico ou pouco descritivo, dificultando a navegação para quem usa leitor de tela. O time de conteúdo deve revisar os textos dos links e substituir expressões como "clique aqui" por descrições que indiquem claramente o destino.
+    Há links com texto genérico ("clique aqui", "saiba mais") que não dizem nada sobre o destino. Para quem navega saltando entre links com leitor de tela, ouvir "clique aqui" repetido não serve de orientação. O time de conteúdo precisa substituir esses textos por frases que descrevam para onde o link vai.
   {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
-    Imagens informativas da página não possuem descrição para quem não pode visualizá-las. Usuários cegos dependem dessas descrições para entender o conteúdo. O time de conteúdo deve revisar as imagens e solicitar a adição de um texto descritivo que transmita a informação de cada uma.
+    Há imagens na página sem descrição alternativa. O leitor de tela ou ignora a imagem ou lê o nome do arquivo (em geral algo como "banner_home_final2.jpg"). O conteúdo da imagem nunca chega ao usuário. O time de conteúdo precisa revisar cada imagem e escrever uma linha descrevendo o que ela mostra ou que informação transmite.
   {%- elif 'aria' in id -%}
-    A estrutura de acessibilidade de alguns componentes interativos está configurada incorretamente, podendo causar comportamento inesperado em leitores de tela. O time web deve revisar os componentes afetados com foco em como são anunciados pelas tecnologias assistivas.
+    Alguns componentes da página têm a marcação de acessibilidade configurada de forma errada. O leitor de tela pode anunciar uma função enquanto o comportamento real é outro: o que desorienta quem depende desse anúncio para navegar. O time web precisa revisar esses componentes e testar como cada um é lido e anunciado pelo leitor de tela.
   {%- elif 'label' in id -%}
-    Campos de formulário não possuem rótulos visíveis ou identificáveis por tecnologias assistivas. Usuários de leitores de tela não conseguem saber o que preencher em cada campo. O time de produto deve garantir que cada campo tenha um rótulo claramente associado e legível.
+    Campos do formulário estão sem etiqueta. Quem usa leitor de tela chega ao campo e ouve apenas "campo de texto": sem saber o que deve preencher. O time de produto precisa vincular um rótulo a cada campo para que o nome do campo seja anunciado quando o foco chegar nele.
   {%- elif 'heading' in id or 'hierarquia_titulos' in id or 'h1_ausente' in id -%}
-    A organização dos títulos da página está incorreta, dificultando que usuários de leitores de tela naveguem pelo conteúdo. Esses usuários dependem da hierarquia de títulos para se orientar. O time web deve revisar a estrutura de títulos para garantir sequência lógica do início ao fim da página.
+    A hierarquia de títulos da página está fora de ordem: há títulos de nível 4 ou 5 sem que antes exista um nível 1 ou 2. Para quem navega pelo índice de títulos com leitor de tela, a estrutura da página fica incoerente. O time web precisa reorganizar os títulos em sequência lógica, do mais geral para o mais específico.
   {%- elif 'focus' in id -%}
-    Ao navegar pelo site usando apenas o teclado, não há indicação visual de qual elemento está selecionado no momento. Pessoas que não usam o mouse ficam sem referência de onde estão na página. O time de produto deve garantir que o destaque de foco seja sempre visível durante a navegação.
+    Quem navega só pelo teclado não tem como saber onde está: o contorno que marca o elemento ativo sumiu ou está invisível. É como preencher um formulário sem ver em qual campo você está. O time de produto precisa fazer esse contorno aparecer em todo elemento interativo durante a navegação.
   {%- elif 'lang' in id -%}
-    O idioma da página não está declarado, o que pode fazer leitores de tela pronunciarem o conteúdo de forma errada. É um ajuste simples que o time web pode resolver na configuração geral da página.
+    O código da página não declara o idioma. O leitor de tela então aplica as regras de pronúncia padrão, em geral inglês, ao conteúdo em português, produzindo um áudio difícil de entender. O time web resolve isso com uma linha só no código-fonte.
   {%- elif cor %} {{ cor }}
   {%- else -%}
-    Encaminhar para o time responsável com referência ao critério WCAG {% if b.get('wcag_criterio') %}{{ b.get('wcag_criterio') }}{% else %}indicado{% endif %}. Os detalhes técnicos para correção estão no Apêndice Técnico.
+    Encaminhar para o time responsável com referência ao critério WCAG {% if b.get('wcag_criterio') %}{{ b.get('wcag_criterio') }}{% else %}indicado{% endif %}. Os detalhes técnicos estão no Apêndice Técnico.
   {%- endif -%}
 {% endmacro %}
+
+{% macro ma_badge_conv_lh_wave() -%}
+<span class="badge b-conv" title="Detectado por mais de uma fonte: alta confiança"><svg class="b-conv-ic" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Confirmado por LH + WAVE</span>
+{%- endmacro %}
 
 {% macro tool_badges_barrier(b) %}
   {%- set st = b.get('status_deteccao','') -%}
   {%- set cp = (b.get('confirmado_por') or [])|map('lower')|list -%}
   {%- if st == 'automatico_convergente' or cp|length >= 2 -%}
-<span class="badge b-conv" title="Detectado por mais de uma fonte — alta confiança">✓ Confirmado por LH + WAVE</span>
+{{ ma_badge_conv_lh_wave() }}
   {%- elif cp|length == 1 and 'lighthouse' in cp -%}
 <span class="badge b-lh">Lighthouse</span>
   {%- elif cp|length == 1 and 'wave' in cp -%}
@@ -184,19 +220,96 @@
   {%- elif st == 'manual_pendente' or b.get('prioridade')=='revisao_manual' -%}
 <span class="badge b-man">Revisão manual</span>
   {%- else -%}
-<span class="badge b-man">{{ b.get('tool','—') }}</span>
+<span class="badge b-man">{{ b.get('tool', '–') }}</span>
   {%- endif -%}
 {% endmacro %}
 
-{# traduz_desc_tecnica — padrões Lighthouse/WAVE (EN → PT) para o Apêndice Técnico #}
+{# Fases do plano de ação (ícones alinhados a esforco_badge / fase 4) #}
+{% macro ma_phase_svg(n) -%}
+{%- if n == 1 -%}<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><path d="M9 2L3 9h6l-2 5 8-8H9l1-4z" fill="#DCFCE7" stroke="#15803D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- elif n == 2 -%}<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><path d="M12.5 3.5a2.5 2.5 0 0 1-3.5 3.5L4 12a1.5 1.5 0 0 0 2 2l5-5a2.5 2.5 0 0 1 3.5-3.5L13 7a.8.8 0 0 0 0 1.1l.4.4a.8.8 0 0 0 1.1 0L12.5 3.5z" fill="#FEF9C3" stroke="#B45309" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- elif n == 3 -%}<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="2.2" stroke="#1D4ED8" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg>
+{%- else -%}<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.5" stroke="#7C3AED" stroke-width="1.3"/><path d="M15 15l-3.5-3.5" stroke="#7C3AED" stroke-width="1.7" stroke-linecap="round"/></svg>
+{%- endif -%}
+{%- endmacro %}
+
+{# A3 · resultado de checklist manual #}
+{% macro ma_manual_check_svg(res) -%}
+{%- set x = (res or '')|lower -%}
+{%- if x == 'falhou' -%}<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="#C8291E" stroke-width="1.3"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#C8291E" stroke-width="1.4" stroke-linecap="round"/></svg>
+{%- elif x == 'passou' -%}<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="#16764A" stroke-width="1.3"/><path d="M4.5 8.2l2.8 2.8L11.5 5" stroke="#16764A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- else -%}<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M8 2.5L2 13.5h12L8 2.5z" fill="#FEF9C3" stroke="#B45309" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 7v3M8 12v.5" stroke="#92400E" stroke-width="1.3" stroke-linecap="round"/></svg>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro ma_icon_method_limits() -%}
+<svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="#D97706" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2L2 17h16L10 2z" fill="#FEF3C7"/><line x1="10" y1="9" x2="10" y2="13"/><circle cx="10" cy="15.5" r=".8" fill="#D97706" stroke="none"/></svg>
+{%- endmacro %}
+
+{% macro ma_icon_method_next_steps() -%}
+<svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="#0A7B70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 2h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M7.5 8.5l1.5 1.5 3-3"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5"/><line x1="7.5" y1="14.5" x2="11" y2="14.5"/></svg>
+{%- endmacro %}
+
+{% macro ma_tag_ok_svg(sz) -%}
+<svg width="{{ sz }}" height="{{ sz }}" viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro %}
+
+{% macro ma_tag_warn_svg(sz) -%}
+<svg width="{{ sz }}" height="{{ sz }}" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M8 1.5L1.5 14h13L8 1.5z" stroke="currentColor" stroke-width="1.15" fill="currentColor" fill-opacity=".12" stroke-linejoin="round"/><path d="M8 6v3.5M8 11.5v.5" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>
+{%- endmacro %}
+
+{% macro ma_pin_hint_svg() -%}
+<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><path d="M8 1.5a4 4 0 0 0-4 4C4 8.5 8 14.5 8 14.5S12 8.5 12 5.5a4 4 0 0 0-4-4z" fill="#EBF3FD" stroke="#0952A0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="5.5" r="1.5" fill="#0952A0"/></svg>
+{%- endmacro %}
+
+{# Gráficos legados (report_body_part2): categorias técnicas #}
+{% macro ma_dot_svg() -%}
+<svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true" focusable="false"><circle cx="4" cy="4" r="3.5" fill="currentColor"/></svg>
+{%- endmacro %}
+
+{% macro ma_cat_chart_svg(kind) -%}
+{%- if kind == 'contraste' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="5.5" stroke="#DC2626" stroke-width="1.3"/><path d="M2.5 10.5h11" stroke="#B45309" stroke-width="1.2" stroke-linecap="round"/></svg>
+{%- elif kind == 'botao' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#D97706" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="10" height="7" rx="2"/></svg>
+{%- elif kind == 'imagem' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#1464C8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 12l3.5-3 2.5 2.5L14 6v8H2"/></svg>
+{%- elif kind == 'link' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#0A6B60" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6.5 9.5A3 3 0 0 0 10 6h1.5a2.5 2.5 0 0 1 0 5H10"/><path d="M9.5 6.5A3 3 0 0 0 6 10H4.5a2.5 2.5 0 0 1 0-5H6"/></svg>
+{%- elif kind == 'form' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#613D9A" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="10" height="10" rx="1"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="11" y2="9"/><line x1="5" y1="12" x2="9" y2="12"/></svg>
+{%- elif kind == 'aria' -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#4B5563" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 3L3 13M8 3l-1 10M11 3l2 10"/><circle cx="8" cy="14" r="1" fill="#4B5563"/></svg>
+{%- else -%}
+<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="#4A5E6E" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><line x1="4" y1="5" x2="12" y2="5"/><line x1="4" y1="8" x2="12" y2="8"/><line x1="4" y1="11" x2="10" y2="11"/></svg>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro ma_chip_wcag_icon() -%}
+<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#0952A0" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M3 1h8l2 2v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/><line x1="5" y1="6" x2="10" y2="6"/><line x1="5" y1="8.5" x2="9" y2="8.5"/></svg>
+{%- endmacro %}
+
+{% macro ma_chip_hash_icon() -%}
+<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 2.5l-1 9M11 2.5l-1 9M2 5h10M2 9h10"/></svg>
+{%- endmacro %}
+
+{% macro ma_chip_folder_icon() -%}
+<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#0952A0" stroke-width="1.25" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M1.5 4.5h4l1.5 1.5h6.5a1 1 0 0 1 1 1V11a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1z"/></svg>
+{%- endmacro %}
+
+{% macro ma_badge_div_inline() -%}
+<span class="badge b-div" style="display:inline-flex;align-items:center;gap:4px">{{ ma_tag_warn_svg(10) }} DIVERGÊNCIA</span>
+{%- endmacro %}
+
+{# traduz_desc_tecnica: padrões Lighthouse/WAVE (EN → PT) para o Apêndice Técnico #}
 {% macro traduz_desc_tecnica(texto) %}
 {%- set t = (texto or '')|lower -%}
 {%- if 'low contrast' in t or 'color contrast' in t or 'contrast ratio' in t -%}
   Texto com baixo contraste é difícil ou impossível de ler para muitos usuários. A proporção mínima exigida pelo WCAG é 4,5:1 para texto normal e 3:1 para texto grande (≥18pt).
 {%- elif 'missing alternative text' in t or ('alt' in t and 'attribute' in t and 'image' in t) -%}
-  Imagens informativas devem ter texto alternativo curto e descritivo. Para imagens decorativas, use <code>alt=""</code> — o leitor de tela a ignorará. O atributo é obrigatório em qualquer caso.
+  Imagens informativas devem ter texto alternativo curto e descritivo. Para imagens decorativas, use <code>alt=""</code>. O leitor de tela a ignorará. O atributo é obrigatório em qualquer caso.
 {%- elif 'linked image missing' in t or ('alt' in t and 'link' in t) -%}
-  A imagem dentro do link não tem texto alternativo. O <code>alt</code> deve descrever o <em>destino</em> do link, não apenas a imagem.
+  Links sem nome acessível: pode ser uma imagem sem <code>alt</code> dentro do link ou um elemento âncora vazio (por exemplo, só ícone sem rótulo). O leitor de tela não consegue anunciar o destino em nenhum dos casos. Para imagem-link, o <code>alt</code> deve descrever para onde o link leva; para âncora sem texto visível, adicione <code>aria-label</code> ou texto visível equivalente.
 {%- elif 'touch targets' in t or 'target-size' in t or 'sufficient size' in t -%}
   Alvos de toque com tamanho ou espaçamento insuficientes dificultam a interação para usuários com limitações motoras. A área mínima recomendada é 24×24 px (WCAG 2.5.8), idealmente 44×44 px.
 {%- elif 'aria-hidden' in t and 'focusable' in t -%}
@@ -209,6 +322,8 @@
   A hierarquia de cabeçalhos deve ser sequencial sem pular níveis (h1 → h2 → h3…). Leitores de tela usam essa estrutura para navegação rápida pela página.
 {%- elif 'suspicious link' in t -%}
   Texto de link genérico ("clique aqui", "leia mais") não indica o destino para usuários de leitores de tela. Use texto que descreva o conteúdo de destino.
+{%- elif 'pdf' in t and ('link to' in t or 'links to' in t or 'linked to a pdf' in t or 'pdf link' in t or 'pdf file' in t or 'pdf document' in t or '.pdf' in t) -%}
+  Links para PDF devem deixar explícito no texto que o destino é um documento (por exemplo, incluir «PDF» no rótulo) e o ficheiro deve estar corretamente marcado para leitores de tela. Valide tags e ordem de leitura com o verificador de acessibilidade do Adobe Acrobat ou equivalente.
 {%- elif 'nearby image has the same alternative' in t or 'redundant alternative' in t -%}
   Duas imagens próximas com o mesmo <code>alt</code> podem causar confusão. Verifique se os textos alternativos são distintos e descrevem cada imagem individualmente.
 {%- elif 'long alternative text' in t -%}
@@ -219,7 +334,7 @@
   Elemento <code>&lt;noscript&gt;</code> detectado. Verifique se o conteúdo alternativo é equivalente e acessível para usuários sem JavaScript.
 {%- elif 'very small text' in t -%}
   Texto com tamanho inferior a 10px dificulta a leitura. Recomenda-se mínimo de 14px para texto de corpo; nunca use fonte abaixo de 11px.
-{%- elif 'pdf document' in t or 'pdf' in t -%}
+{%- elif 'pdf document' in t or 'untagged pdf' in t or 'tagged pdf' in t or 'pdf tags' in t or 'pdf/ua' in t or ('adobe acrobat' in t and 'pdf' in t) or ('accessibility checker' in t and 'pdf' in t) -%}
   Documentos PDF devem ser marcados com estrutura acessível (tags, ordem de leitura, texto alternativo em imagens). Verifique com o verificador de acessibilidade do Adobe Acrobat.
 {%- elif 'custom controls have associated labels' in t or ('controls' in t and 'labels' in t) -%}
   Controles interativos personalizados devem ter rótulos associados via <code>aria-label</code> ou <code>aria-labelledby</code> para que leitores de tela anunciem seu propósito.
@@ -232,11 +347,11 @@
 {%- elif 'purpose and state' in t or 'affordance' in t -%}
   Elementos interativos devem indicar claramente seu estado (ativo, desativado, expandido, selecionado) e ser distinguíveis de elementos estáticos visualmente e via ARIA.
 {%- elif 'logical tab order' in t -%}
-  A ordem de foco pelo teclado (Tab) deve seguir a ordem visual da página. Verifique pressionando Tab em todos os elementos interativos — o foco deve percorrer o conteúdo de forma previsível.
+  A ordem de foco pelo teclado (Tab) deve seguir a ordem visual da página. Verifique pressionando Tab em todos os elementos interativos: o foco deve percorrer o conteúdo de forma previsível.
 {%- elif 'focus is directed to new content' in t or 'managed-focus' in t -%}
   Quando conteúdo novo é adicionado à página (diálogo, notificação, painel), o foco deve ser direcionado automaticamente para ele e retornar ao elemento de origem ao ser fechado.
 {%- elif 'offscreen content is hidden' in t -%}
-  Conteúdo fora da viewport deve estar oculto para tecnologias assistivas via <code>display:none</code> ou <code>aria-hidden="true"</code> — caso contrário é lido pelo leitor de tela mesmo invisível.
+  Conteúdo fora da viewport deve estar oculto para tecnologias assistivas via <code>display:none</code> ou <code>aria-hidden="true"</code>. Caso contrário, é lido pelo leitor de tela mesmo invisível.
 {%- elif 'landmark elements' in t or 'html5 landmark' in t -%}
   Use elementos HTML5 de marco semântico (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;aside&gt;</code>) para melhorar a navegação por tecnologias assistivas.
 {%- elif 'visual order' in t and 'dom order' in t -%}
@@ -247,3 +362,27 @@
   {{ texto }}
 {%- endif -%}
 {% endmacro %}
+
+{% macro clean_exec_text(texto) -%}
+  {%- set t = ((texto or '') | string | strip_emoji) -%}
+  {{- t
+      | replace(' — ', ': ')
+      | replace(' – ', ': ')
+      | replace('— ', ': ')
+      | replace('– ', ': ')
+      | replace(' —', ':')
+      | replace(' –', ':')
+      | replace('—', ': ')
+      | replace('–', ': ')
+      | replace('  ', ' ')
+  -}}
+{%- endmacro %}
+
+{% macro desc_tecnica_barreira(b) -%}
+  {%- set iid = ((b.get('issue_tipo_normalizado','') ~ ' ' ~ b.get('titulo_tecnico','')) | lower) -%}
+  {%- if 'link' in iid and ('nome' in iid or 'discernible' in iid or 'name' in iid) -%}
+    Links e controles clicáveis precisam ter um nome acessível claro, anunciado corretamente por leitores de tela. Quando esse nome não existe, o usuário não entende o destino do link nem a ação disponível.
+  {%- else -%}
+    {{ traduz_desc_tecnica(b.get('descricao_tecnica') or b.get('descricao_humana') or '') }}
+  {%- endif -%}
+{%- endmacro %}

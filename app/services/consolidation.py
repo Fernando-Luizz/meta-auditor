@@ -130,7 +130,12 @@ def merge_by_normalized_type(issues: list[dict]) -> list[dict]:
         wcag_join = " | ".join(dict.fromkeys(str(w) for w in wcags)) if wcags else ""
 
         pub = [i.get("publico_afetado") for i in group if i.get("publico_afetado")]
-        pub_join = " | ".join(dict.fromkeys(str(p) for p in pub)) if pub else ""
+        lh_pub = [
+            i.get("publico_afetado")
+            for i in group
+            if i.get("publico_afetado") and i.get("tool") in ("lighthouse", "consolidated")
+        ]
+        pub_join = lh_pub[0] if lh_pub else (" | ".join(dict.fromkeys(str(p) for p in pub)) if pub else "")
         cor = [i.get("correcao_sugerida") for i in group if i.get("correcao_sugerida")]
         cor_join = " | ".join(dict.fromkeys(str(c) for c in cor)) if cor else ""
         onde = [i.get("onde_esta") for i in group if i.get("onde_esta")]
@@ -179,7 +184,12 @@ def _merge_barrier_group(group: list[dict]) -> dict:
     wcag_join = " | ".join(dict.fromkeys(str(w) for w in wcags)) if wcags else ""
 
     pubs = [i.get("publico_afetado") for i in group if i.get("publico_afetado")]
-    pub_join = " | ".join(dict.fromkeys(str(p) for p in pubs)) if pubs else ""
+    lh_pubs = [
+        i.get("publico_afetado")
+        for i in group
+        if i.get("publico_afetado") and i.get("tool") in ("lighthouse", "consolidated")
+    ]
+    pub_join = lh_pubs[0] if lh_pubs else (" | ".join(dict.fromkeys(str(p) for p in pubs)) if pubs else "")
     cors = [i.get("correcao_sugerida") for i in group if i.get("correcao_sugerida")]
     cor_join = " | ".join(dict.fromkeys(str(c) for c in cors)) if cors else ""
     ondes = [i.get("onde_esta") for i in group if i.get("onde_esta")]

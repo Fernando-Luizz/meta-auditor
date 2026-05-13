@@ -8,11 +8,16 @@ from urllib.parse import urlparse
 
 import httpx
 
+from app.services.text_clean import strip_emoji
+
 _log = logging.getLogger("uvicorn.error")
 
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
 REQUEST_TIMEOUT = 30.0
+# Nível 2: JSON longo (versao_dev + ticket) — valores baixos truncam e quebram o parse.
+NIVEL2_MAX_TOKENS = 1600
+NIVEL2_REPAIR_MAX_TOKENS = 1000
 
 _cache: dict[str, dict] = {}
 
@@ -86,6 +91,35 @@ def _parse_json(raw: str) -> dict:
     return {}
 
 
+def _normalize_pt_text(text: str) -> str:
+    """Normaliza pontuação e espaços em textos executivos (travessões → dois pontos)."""
+    t = str(text or "").strip()
+    if not t:
+        return ""
+    t = t.replace("—", ": ").replace("–", ": ")
+    t = re.sub(r"[ \t]{2,}", " ", t)
+    t = re.sub(r"\s+\n", "\n", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    t = re.sub(r":\s*:", ": ", t)
+    t = strip_emoji(t)
+    return t.strip()
+
+
+def _nivel2_ticket_normalized(parsed2: dict) -> tuple[str, dict]:
+    """Extrai versao_dev e texto_ticket com chaves canónicas e texto normalizado."""
+    tk = parsed2.get("texto_ticket", {})
+    if not isinstance(tk, dict):
+        tk = {}
+    return (
+        _normalize_pt_text(parsed2.get("versao_dev", "")),
+        {
+            "titulo": _normalize_pt_text(tk.get("titulo", "")),
+            "descricao": _normalize_pt_text(tk.get("descricao", "")),
+            "criterio_de_pronto": _normalize_pt_text(tk.get("criterio_de_pronto", "")),
+        },
+    )
+
+
 async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill: str = "") -> str:
     headers = {
         "x-api-key": api_key,
@@ -100,6 +134,7 @@ async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill
     body = {
         "model": ANTHROPIC_MODEL,
         "max_tokens": max_tokens,
+        "temperature": 0,  # Saída JSON — máxima estabilidade, mínima variação
         "messages": messages,
     }
     try:
@@ -119,9 +154,9 @@ def _context_block(barrier: dict) -> str:
     sels = _selectors(barrier)
     sel_txt = "\n".join(f"  • {s}" for s in sels) if sels else "  (não disponíveis)"
     prio_map = {
-        "alta": "ALTA — corrigir com urgência",
-        "media": "MÉDIA — planejar correção",
-        "baixa": "BAIXA — melhorar oportunisticamente",
+        "alta": "ALTA: corrigir com urgência",
+        "media": "MÉDIA: planejar correção",
+        "baixa": "BAIXA: melhorar oportunisticamente",
         "revisao_manual": "REQUER REVISÃO MANUAL",
     }
     ferr_map = {
@@ -138,7 +173,7 @@ def _context_block(barrier: dict) -> str:
         flags=re.IGNORECASE,
     )
     return (
-        "CONTEXTO DETERMINÍSTICO (fonte de verdade — não alterar):\n"
+        "CONTEXTO DETERMINÍSTICO (fonte de verdade: não alterar):\n"
         f"  Tipo normalizado  : {barrier.get('issue_tipo_normalizado', '—')}\n"
         f"  Título técnico    : {barrier.get('titulo_tecnico', '—')}\n"
         f"  Critério WCAG     : {barrier.get('wcag_criterio', '—')}\n"
@@ -153,9 +188,9 @@ def _context_block(barrier: dict) -> str:
 
 def _prompt_nivel1(barrier: dict) -> str:
     prio_map = {
-        "alta": "ALTA — corrigir com urgência",
-        "media": "MÉDIA — planejar na próxima entrega",
-        "baixa": "BAIXA — melhorar quando possível",
+        "alta": "ALTA: corrigir com urgência",
+        "media": "MÉDIA: planejar na próxima entrega",
+        "baixa": "BAIXA: melhorar quando possível",
     }
     prio_label = prio_map.get(barrier.get("prioridade", ""), "NÃO DEFINIDA")
     return (
@@ -168,7 +203,7 @@ NÃO invente dados. NÃO altere severidade. NÃO afirme conformidade legal.
 REGRAS ABSOLUTAS DE ESCRITA:
 1. Português do Brasil direto. Sem enrolação.
 2. PROIBIDO: travessões (—), reticências (...), ponto-e-vírgula excessivo.
-3. PROIBIDO: "é importante notar", "vale ressaltar", "cabe destacar", "é fundamental", "neste sentido", "portanto", "dessa forma", "assim sendo".
+3. PROIBIDO: "é importante notar", "vale ressaltar", "cabe destacar", "é fundamental", "neste sentido", "portanto", "dessa forma", "desta forma", "assim sendo", "impossibilitando", "possibilitando", "proporcionando", "tecnologias assistivas", "interfaces alternativas".
 4. PROIBIDO em justificativa_gerencial e acao_gerencial: IDs de critérios WCAG (ex: 1.4.3, 2.5.8), siglas técnicas (HTML, CSS, ARIA, DOM), nomes de ferramentas (Lighthouse, WAVE), números de pixels ou proporções de contraste.
 5. PROIBIDO em como_corrigir_claro e acao_gerencial: nomes de atributos HTML/CSS/ARIA, seletores CSS, código, siglas técnicas.
 6. PROIBIDO em qualquer campo: mencionar número exato de ocorrências ou elementos afetados — esses dados já aparecem nos campos técnicos do relatório.
@@ -315,7 +350,7 @@ def _prompt_executive(
         prio = b.get("prioridade", "")
         tipo = b.get("issue_tipo_normalizado") or b.get("titulo_tecnico") or "barreira não nomeada"
         urgencia = "URGENTE" if prio == "alta" else "IMPORTANTE" if prio == "media" else "OPCIONAL"
-        return f"  • [{urgencia}] {tipo} — afeta: {pub}"
+        return f"  • [{urgencia}] {tipo}: afeta {pub}"
 
     lista = "\n".join(_barrier_line(b) for b in barriers)
     n_alta, n_media = len(alta), len(media)
@@ -363,7 +398,7 @@ def _prompt_executive(
         "4. NUNCA faça projeção de score futuro.\n"
         "5. NUNCA mencione IDs de critérios WCAG (ex: 1.4.3, 2.5.8).\n"
         "6. NUNCA use: 'Utilizadores' — escreva sempre 'Usuários'.\n"
-        "7. NUNCA use: travessões (—), 'é importante notar', 'vale ressaltar', 'dessa forma', 'assim sendo'.\n"
+        "7. NUNCA use: travessões (—), 'é importante notar', 'vale ressaltar', 'dessa forma', 'desta forma', 'assim sendo', 'impossibilitando', 'possibilitando', 'tecnologias assistivas'.\n"
         "8. NUNCA mencione deficiências ou públicos fora da lista acima. A lista é completa e fechada.\n"
         "9. NUNCA use 'estrutura técnica' — substitua por 'funcionamento do site' ou 'organização das páginas'.\n"
         "10. Parágrafo 1: MÁXIMO 3 frases. Não escreva uma frase por barreira — agrupe os públicos afetados.\n"
@@ -394,10 +429,47 @@ def _prompt_repair(raw: str) -> str:
     )
 
 
+def _looks_valid_dev_text(text: str) -> bool:
+    """Rejeita versao_dev que seja um placeholder curto ou texto inútil."""
+    t = (text or "").strip()
+    if len(t) < 40:
+        return False
+    if t.lower() in {"1.0", "v1", "v1.0", "versão 1.0", "versao 1.0"}:
+        return False
+    return True
+
+
+def _validate_nivel1(parsed: dict) -> tuple[bool, str]:
+    required = (
+        "justificativa_gerencial",
+        "explicacao_usuario",
+        "como_corrigir_claro",
+        "acao_gerencial",
+    )
+    missing = [k for k in required if not str(parsed.get(k, "")).strip()]
+    if missing:
+        return False, f"campos ausentes: {', '.join(missing)}"
+    return True, ""
+
+
+def _prompt_repair_nivel1(raw: str) -> str:
+    return (
+        "A resposta abaixo deveria ser um JSON válido com exatamente esta estrutura:\n\n"
+        '{"justificativa_gerencial":"...",'
+        '"explicacao_usuario":"...",'
+        '"como_corrigir_claro":"...",'
+        '"acao_gerencial":"..."}\n\n'
+        "Reformate o conteúdo abaixo nessa estrutura JSON. "
+        "NÃO altere o conteúdo — corrija apenas a formatação. "
+        "Responda SOMENTE com JSON válido, sem markdown:\n\n"
+        f"{raw}"
+    )
+
+
 def _validate_nivel2(parsed: dict) -> tuple[bool, str]:
     """Returns (ok, motivo). ok=True means all required fields are present and non-empty."""
-    if not parsed.get("versao_dev"):
-        return False, "campo versao_dev ausente ou vazio"
+    if not _looks_valid_dev_text(str(parsed.get("versao_dev", ""))):
+        return False, "campo versao_dev ausente, vazio ou inválido"
     tk = parsed.get("texto_ticket")
     if not isinstance(tk, dict):
         return False, "campo texto_ticket ausente ou não é objeto"
@@ -408,26 +480,70 @@ def _validate_nivel2(parsed: dict) -> tuple[bool, str]:
 
 
 async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
-    cache_key = f"{barrier.get('issue_tipo_normalizado', '?')},{barrier.get('prioridade', '?')},{level}"
+    cache_key = json.dumps(
+        {
+            "tipo": barrier.get("issue_tipo_normalizado", ""),
+            "titulo": barrier.get("titulo_tecnico", ""),
+            "wcag": barrier.get("wcag_criterio", ""),
+            "prioridade": barrier.get("prioridade", ""),
+            "publico": barrier.get("publico_afetado", ""),
+            "ocorrencias": int(barrier.get("ocorrencias_count") or 0),
+            "onde": barrier.get("onde_esta", ""),
+            "level": level,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+    )
     if cache_key in _cache:
         barrier.update(_cache[cache_key])
         return
 
     result: dict = {}
 
-    raw1 = await _call_claude(_prompt_nivel1(barrier), api_key, max_tokens=1000)
+    # ── Nível 1: camada gerencial ─────────────────────────────────────────────
+    raw1 = await _call_claude(_prompt_nivel1(barrier), api_key, max_tokens=1000, prefill="{")
     parsed1 = _parse_json(raw1)
+
+    if not parsed1 and raw1:
+        _log.info(
+            "ai_enhancer: nivel1 repair-retry para '%s'",
+            barrier.get("issue_tipo_normalizado", "?"),
+        )
+        raw1_repair = await _call_claude(
+            _prompt_repair_nivel1(raw1), api_key, max_tokens=500, prefill="{"
+        )
+        parsed1 = _parse_json(raw1_repair)
+
+    ok1, motivo1 = _validate_nivel1(parsed1) if parsed1 else (False, "JSON inválido")
+
+    if not raw1:
+        result["ai_nivel1_status"] = "falhou"
+        result["ai_nivel1_motivo"] = "timeout ou erro de API na chamada do nível 1"
+    elif not parsed1:
+        result["ai_nivel1_status"] = "falhou"
+        result["ai_nivel1_motivo"] = "resposta não produziu JSON válido nem após repair-retry"
+    elif not ok1:
+        result["ai_nivel1_status"] = "parcial"
+        result["ai_nivel1_motivo"] = f"JSON válido mas incompleto — {motivo1}"
+    else:
+        result["ai_nivel1_status"] = "ok"
+        result["ai_nivel1_motivo"] = ""
+
     result.update(
         {
-            "justificativa_gerencial": parsed1.get("justificativa_gerencial", ""),
-            "explicacao_usuario": parsed1.get("explicacao_usuario", ""),
-            "como_corrigir_claro": parsed1.get("como_corrigir_claro", ""),
-            "acao_gerencial": parsed1.get("acao_gerencial", ""),
+            "justificativa_gerencial": _normalize_pt_text(parsed1.get("justificativa_gerencial", ""))
+            if parsed1
+            else "",
+            "explicacao_usuario": _normalize_pt_text(parsed1.get("explicacao_usuario", "")) if parsed1 else "",
+            "como_corrigir_claro": _normalize_pt_text(parsed1.get("como_corrigir_claro", "")) if parsed1 else "",
+            "acao_gerencial": _normalize_pt_text(parsed1.get("acao_gerencial", "")) if parsed1 else "",
         }
     )
 
     if level >= 2:
-        raw2 = await _call_claude(_prompt_nivel2(barrier), api_key, max_tokens=900, prefill="{")
+        raw2 = await _call_claude(
+            _prompt_nivel2(barrier), api_key, max_tokens=NIVEL2_MAX_TOKENS, prefill="{"
+        )
         parsed2 = _parse_json(raw2)
 
         # Repair-retry: if raw came back non-empty but JSON parse failed,
@@ -439,9 +555,39 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
                 barrier.get("issue_tipo_normalizado", "?"),
             )
             raw2_repair = await _call_claude(
-                _prompt_repair(raw2), api_key, max_tokens=600, prefill="{"
+                _prompt_repair(raw2),
+                api_key,
+                max_tokens=NIVEL2_REPAIR_MAX_TOKENS,
+                prefill="{",
             )
             parsed2 = _parse_json(raw2_repair)
+
+        # Nova geração completa: se ainda não há JSON (ex.: truncamento na 1ª resposta),
+        # uma segunda chamada ao prompt nível 2 costuma recuperar; em seguida repair no novo bruto.
+        if not parsed2 and raw2:
+            _log.info(
+                "ai_enhancer: nivel2 full-retry (nova geração) para '%s'",
+                barrier.get("issue_tipo_normalizado", "?"),
+            )
+            raw2_retry = await _call_claude(
+                _prompt_nivel2(barrier),
+                api_key,
+                max_tokens=NIVEL2_MAX_TOKENS,
+                prefill="{",
+            )
+            parsed2 = _parse_json(raw2_retry)
+            if not parsed2 and raw2_retry:
+                _log.info(
+                    "ai_enhancer: nivel2 repair-retry (após full-retry) para '%s'",
+                    barrier.get("issue_tipo_normalizado", "?"),
+                )
+                raw2_retry_repair = await _call_claude(
+                    _prompt_repair(raw2_retry),
+                    api_key,
+                    max_tokens=NIVEL2_REPAIR_MAX_TOKENS,
+                    prefill="{",
+                )
+                parsed2 = _parse_json(raw2_retry_repair)
 
         # Evaluate outcome: first check if JSON parsed, then validate required fields.
         # Partial fields are preserved so the appendix can still show what came through.
@@ -452,21 +598,53 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             result["texto_ticket"] = {}
         elif not parsed2:
             result["ai_nivel2_status"] = "falhou"
-            result["ai_nivel2_motivo"] = "resposta não produziu JSON válido nem após repair-retry"
+            result["ai_nivel2_motivo"] = (
+                "resposta não produziu JSON válido após repair-retry, "
+                "nova geração completa e segundo repair-retry"
+            )
             result["versao_dev"] = ""
             result["texto_ticket"] = {}
         else:
             ok, motivo = _validate_nivel2(parsed2)
             if not ok:
+                _log.info(
+                    "ai_enhancer: nivel2 full-retry (validação falhou) para '%s' — %s",
+                    barrier.get("issue_tipo_normalizado", "?"),
+                    motivo,
+                )
+                raw2_val = await _call_claude(
+                    _prompt_nivel2(barrier),
+                    api_key,
+                    max_tokens=NIVEL2_MAX_TOKENS,
+                    prefill="{",
+                )
+                parsed2_alt = _parse_json(raw2_val)
+                if not parsed2_alt and raw2_val:
+                    raw2_val_rep = await _call_claude(
+                        _prompt_repair(raw2_val),
+                        api_key,
+                        max_tokens=NIVEL2_REPAIR_MAX_TOKENS,
+                        prefill="{",
+                    )
+                    parsed2_alt = _parse_json(raw2_val_rep)
+                if parsed2_alt:
+                    ok2, motivo2 = _validate_nivel2(parsed2_alt)
+                    if ok2:
+                        parsed2 = parsed2_alt
+                        ok, motivo = True, ""
+
+            if not ok:
                 result["ai_nivel2_status"] = "falhou"
                 result["ai_nivel2_motivo"] = f"JSON válido mas incompleto — {motivo}"
-                result["versao_dev"] = parsed2.get("versao_dev", "")
-                result["texto_ticket"] = parsed2.get("texto_ticket", {})
+                vd, tk_norm = _nivel2_ticket_normalized(parsed2)
+                result["versao_dev"] = vd
+                result["texto_ticket"] = tk_norm
             else:
                 result["ai_nivel2_status"] = "ok"
                 result["ai_nivel2_motivo"] = ""
-                result["versao_dev"] = parsed2.get("versao_dev", "")
-                result["texto_ticket"] = parsed2.get("texto_ticket", {})
+                vd, tk_norm = _nivel2_ticket_normalized(parsed2)
+                result["versao_dev"] = vd
+                result["texto_ticket"] = tk_norm
 
     # Só cacheia se a IA gerou ao menos um campo não vazio.
     # Evita guardar resultados de timeout/parse-error e bloquear re-tentativas.
@@ -497,7 +675,7 @@ async def _enrich_executive(
         max_tokens=600,
     )
     parsed = _parse_json(raw)
-    texto = parsed.get("resumo_executivo_ai", "")
+    texto = _normalize_pt_text(parsed.get("resumo_executivo_ai", ""))
     if texto:
         report["resumo_executivo_ai"] = texto
 

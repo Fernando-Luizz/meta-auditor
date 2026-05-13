@@ -59,5 +59,5 @@ try:
     REPORT_HTML_EVIDENCE_MAX = max(1, int(os.getenv("REPORT_HTML_EVIDENCE_MAX", "20")))
 except ValueError:
     REPORT_HTML_EVIDENCE_MAX = 20
-REPORT_FOOTER_ORG = os.getenv("REPORT_FOOTER_ORG", "UEA — Escola Superior de Tecnologia").strip()
+REPORT_FOOTER_ORG = os.getenv("REPORT_FOOTER_ORG", "UEA · Escola Superior de Tecnologia").strip()
 REPORT_FOOTER_AUTHOR = os.getenv("REPORT_FOOTER_AUTHOR", "").strip()
