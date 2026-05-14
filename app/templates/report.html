@@ -255,7 +255,7 @@ strong{font-weight:700}
 .ma-pour-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ma-alta); margin-top: 4px; flex-shrink: 0; }
 .ma-pour-dot.amber { background: var(--amber); }
 .ma-pour-dot.purple { background: var(--purple); }
-.ma-pour-scope { font-size: 10px; color: var(--ma-ink-400); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ma-border); line-height: 1.45; }
+.ma-pour-scope { font-size: 10px; color: var(--ma-ink-400); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ma-border); line-height: 1.45; overflow-wrap: anywhere; word-break: break-word; }
 .ma-pour-ok-text { font-size: 11px; color: var(--ma-ink-400); font-style: italic; }
 
 .ma-bc { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 14px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 14px; }
@@ -948,9 +948,11 @@ strong{font-weight:700}
   text-transform:uppercase;white-space:nowrap;flex-shrink:0;
 }
 .cf-value{
-  flex:1;padding:14px 22px;
+  flex:1;min-width:0;padding:14px 22px;
   font-size:14px;font-weight:700;color:var(--ink);
   background:var(--white);
+  overflow-wrap:anywhere;
+  word-break:break-word;
 }
 .cf-value span{font-weight:400;color:var(--ink3);font-size:13px;margin-left:8px}
 .cf-badge{
@@ -1672,6 +1674,10 @@ details[open] summary::before{transform:rotate(90deg)}
 .tk-val{
   color:var(--ink2);
   line-height:1.6;
+}
+
+.tk-val.tk-preline{
+  white-space:pre-line;
 }
 
 .tk-titulo{

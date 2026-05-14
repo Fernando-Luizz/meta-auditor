@@ -8,13 +8,14 @@ from urllib.parse import urlparse
 
 import httpx
 
-from app.services.text_clean import strip_emoji
+from app.config import AI_ANTHROPIC_CONCURRENCY, AI_ANTHROPIC_REQUEST_TIMEOUT
+from app.services.text_clean import normalize_barrier_ai_texts, normalize_executive_plaintext
 
 _log = logging.getLogger("uvicorn.error")
 
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
-REQUEST_TIMEOUT = 30.0
+REQUEST_TIMEOUT = AI_ANTHROPIC_REQUEST_TIMEOUT
 # Nível 2: JSON longo (versao_dev + ticket) — valores baixos truncam e quebram o parse.
 NIVEL2_MAX_TOKENS = 1600
 NIVEL2_REPAIR_MAX_TOKENS = 1000
@@ -92,17 +93,23 @@ def _parse_json(raw: str) -> dict:
 
 
 def _normalize_pt_text(text: str) -> str:
-    """Normaliza pontuação e espaços em textos executivos (travessões → dois pontos)."""
-    t = str(text or "").strip()
-    if not t:
-        return ""
-    t = t.replace("—", ": ").replace("–", ": ")
-    t = re.sub(r"[ \t]{2,}", " ", t)
-    t = re.sub(r"\s+\n", "\n", t)
-    t = re.sub(r"\n{3,}", "\n\n", t)
-    t = re.sub(r":\s*:", ": ", t)
-    t = strip_emoji(t)
-    return t.strip()
+    """Normaliza pontuação, espaços e quebras de linha em textos executivos."""
+    return normalize_executive_plaintext(text)
+
+
+def _strip_br_literals(s: str) -> str:
+    """Converte marcas <br> comuns do modelo em quebras antes da normalização completa."""
+    t = str(s or "")
+    for a, b in (
+        ("<br />", "\n"),
+        ("<br/>", "\n"),
+        ("<BR />", "\n"),
+        ("<BR/>", "\n"),
+        ("<br>", "\n"),
+        ("<BR>", "\n"),
+    ):
+        t = t.replace(a, b)
+    return t
 
 
 def _nivel2_ticket_normalized(parsed2: dict) -> tuple[str, dict]:
@@ -115,7 +122,7 @@ def _nivel2_ticket_normalized(parsed2: dict) -> tuple[str, dict]:
         {
             "titulo": _normalize_pt_text(tk.get("titulo", "")),
             "descricao": _normalize_pt_text(tk.get("descricao", "")),
-            "criterio_de_pronto": _normalize_pt_text(tk.get("criterio_de_pronto", "")),
+            "criterio_de_pronto": _normalize_pt_text(_strip_br_literals(str(tk.get("criterio_de_pronto", "")))),
         },
     )
 
@@ -496,6 +503,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
     )
     if cache_key in _cache:
         barrier.update(_cache[cache_key])
+        normalize_barrier_ai_texts(barrier)
         return
 
     result: dict = {}
@@ -655,9 +663,11 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
         "acao_gerencial",
         "versao_dev",
     )
+    normalize_barrier_ai_texts(result)
     if any(result.get(f) for f in _ai_fields):
         _cache[cache_key] = result
     barrier.update(result)
+    normalize_barrier_ai_texts(barrier)
 
 
 async def _enrich_executive(
@@ -714,7 +724,17 @@ async def enhance_report(
         except Exception as exc:
             _log.warning("ai_enhancer: resumo executivo falhou — %s", exc)
 
-    await asyncio.gather(*[_safe_barrier(b) for b in barriers], _safe_exec())
+    sem = asyncio.Semaphore(AI_ANTHROPIC_CONCURRENCY)
+
+    async def _safe_barrier_limited(b: dict) -> None:
+        async with sem:
+            await _safe_barrier(b)
+
+    async def _safe_exec_limited() -> None:
+        async with sem:
+            await _safe_exec()
+
+    await asyncio.gather(*[_safe_barrier_limited(b) for b in barriers], _safe_exec_limited())
 
     report["ai_enhanced"] = True
     report["ai_enhancement_level"] = level

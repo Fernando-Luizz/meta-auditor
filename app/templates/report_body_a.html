@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg %}
+{% from '_report_macros.html' import pub_icon, pub_desc, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg %}
 {% set _u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set audit_domain = _u.split('/')[0] if _u else '–' %}
 {% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
@@ -219,7 +219,7 @@
         <span class="ma-pour-badge pb-warn" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.p|length }} tipo{{ 's' if pour.p|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de percepção">
           {% for item in pour.p[:4] %}
-          <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ termo(item) }}</div>
+          <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ item }}</div>
           {% endfor %}
           {% if pour.p|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.p|length - 4 }} outros</div>{% endif %}
         </div>
@@ -227,7 +227,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">{% if pour.p|length > 0 %}{% set _sc=[] %}{% for x in pour.p %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Contraste, texto alternativo, imagens{% endif %}</div>
+      <div class="ma-pour-scope">{% if pour.p|length > 0 %}{% set _sc=[] %}{% for x in pour.p %}{% set _=_sc.append(x) %}{% endfor %}{{ _sc|join(", ") }}{% else %}Contraste, texto alternativo, imagens{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.o|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.o|length > 0 %} red{% endif %}">O</div>
@@ -236,7 +236,7 @@
         <span class="ma-pour-badge pb-warn" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.o|length }} tipo{{ 's' if pour.o|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de operabilidade">
           {% for item in pour.o[:4] %}
-          <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ termo(item) }}</div>
+          <div class="ma-pour-item"><span class="ma-pour-dot" aria-hidden="true"></span>{{ item }}</div>
           {% endfor %}
           {% if pour.o|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.o|length - 4 }} outros</div>{% endif %}
         </div>
@@ -244,7 +244,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">{% if pour.o|length > 0 %}{% set _sc=[] %}{% for x in pour.o %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Teclado, foco, controles{% endif %}</div>
+      <div class="ma-pour-scope">{% if pour.o|length > 0 %}{% set _sc=[] %}{% for x in pour.o %}{% set _=_sc.append(x) %}{% endfor %}{{ _sc|join(", ") }}{% else %}Teclado, foco, controles{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.u|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.u|length > 0 %} red{% endif %}">U</div>
@@ -253,7 +253,7 @@
         <span class="ma-pour-badge pb-warn-amber" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.u|length }} tipo{{ 's' if pour.u|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de compreensão">
           {% for item in pour.u[:4] %}
-          <div class="ma-pour-item"><span class="ma-pour-dot amber" aria-hidden="true"></span>{{ termo(item) }}</div>
+          <div class="ma-pour-item"><span class="ma-pour-dot amber" aria-hidden="true"></span>{{ item }}</div>
           {% endfor %}
           {% if pour.u|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.u|length - 4 }} outros</div>{% endif %}
         </div>
@@ -261,7 +261,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">{% if pour.u|length > 0 %}{% set _sc=[] %}{% for x in pour.u %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}Formulários, idioma, títulos{% endif %}</div>
+      <div class="ma-pour-scope">{% if pour.u|length > 0 %}{% set _sc=[] %}{% for x in pour.u %}{% set _=_sc.append(x) %}{% endfor %}{{ _sc|join(", ") }}{% else %}Formulários, idioma, títulos{% endif %}</div>
     </div>
     <div class="ma-pour-card{% if pour.r|length > 0 %} has-issues{% endif %}" role="listitem">
       <div class="ma-pour-letter{% if pour.r|length > 0 %} red{% endif %}">R</div>
@@ -270,7 +270,7 @@
         <span class="ma-pour-badge pb-warn-purple" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> {{ pour.r|length }} tipo{{ 's' if pour.r|length!=1 }}</span>
         <div class="ma-pour-items" aria-label="Problemas de robustez">
           {% for item in pour.r[:4] %}
-          <div class="ma-pour-item"><span class="ma-pour-dot purple" aria-hidden="true"></span>{{ termo(item) }}</div>
+          <div class="ma-pour-item"><span class="ma-pour-dot purple" aria-hidden="true"></span>{{ item }}</div>
           {% endfor %}
           {% if pour.r|length > 4 %}<div class="ma-pour-item" style="font-size:10px;color:var(--ma-ink-400)">+ {{ pour.r|length - 4 }} outros</div>{% endif %}
         </div>
@@ -278,7 +278,7 @@
         <span class="ma-pour-badge pb-ok" role="status"><span class="ma-pour-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Sem achados agrupados aqui</span>
         <p class="ma-pour-ok-text">Nenhum tipo automatizado foi classificado neste princípio pelo critério heurístico.</p>
       {% endif %}
-      <div class="ma-pour-scope">{% if pour.r|length > 0 %}{% set _sc=[] %}{% for x in pour.r %}{% set _=_sc.append(termo(x)) %}{% endfor %}{{ _sc|join(", ")|truncate(72, true, "…") }}{% else %}ARIA, HTML semântico{% endif %}</div>
+      <div class="ma-pour-scope">{% if pour.r|length > 0 %}{% set _sc=[] %}{% for x in pour.r %}{% set _=_sc.append(x) %}{% endfor %}{{ _sc|join(", ") }}{% else %}ARIA, HTML semântico{% endif %}</div>
     </div>
   </div>
 </section>
@@ -333,13 +333,13 @@
   <div class="cf-label">Escopo · WCAG 2.1 AA (automático)</div>
   <div class="cf-value">
     {% if nt==0 %}
-      <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30–40%</strong> dos critérios AA: não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
+      <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30-40%</strong> dos critérios AA: não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
     {% elif sr_nivel=='ALTO' %}
-      <span>O mesmo limite de cobertura (~30–40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade precisa de validação humana para ter peso.</span>
+      <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade precisa de validação humana para ter peso.</span>
     {% elif sr_nivel=='MÉDIO' %}
-      <span>Cobertura automática parcial (~30–40% AA). Use as barreiras listadas como fila de trabalho priorizada; feche lacunas típicas de contraste e semântica e reserve tempo para revisar navegação por teclado e leitores de tela nos fluxos principais.</span>
+      <span>Cobertura automática parcial (~30-40% AA). Use as barreiras listadas como fila de trabalho priorizada; feche lacunas típicas de contraste e semântica e reserve tempo para revisar navegação por teclado e leitores de tela nos fluxos principais.</span>
     {% else %}
-      <span>Cobertura automática limitada (~30–40% AA). Mesmo com severidade predominantemente baixa neste relatório, confirme com checagens assistivas após as correções: especialmente onde há formulários, modais ou conteúdo inserido via script.</span>
+      <span>Cobertura automática limitada (~30-40% AA). Mesmo com severidade predominantemente baixa neste relatório, confirme com checagens assistivas após as correções: especialmente onde há formulários, modais ou conteúdo inserido via script.</span>
     {% endif %}
   </div>
   <div class="cf-badge {% if nt==0 %}cf-conform{% elif sr_nivel=='ALTO' %}cf-nc{% else %}cf-partial{% endif %}">

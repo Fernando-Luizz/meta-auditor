@@ -198,12 +198,12 @@
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
       <span class="ma-approved-title-text">O que está correto</span>
-      {% if sb_passed > 0 and sb_scored > 0 %}
-      <span class="ma-approved-count">{{ sb_passed }}/{{ sb_scored }} critérios Lighthouse aprovados</span>
-      {% elif aprovados|length > 0 %}
-      <span class="ma-approved-count">{{ aprovados|length }} itens aprovados</span>
+      {% if aprovados|length > 0 %}
+      <span class="ma-approved-count">{{ aprovados|length }} itens com verificação positiva (Lighthouse)</span>
+      {% elif sb_passed > 0 and sb_scored > 0 %}
+      <span class="ma-approved-count">{{ sb_passed }} de {{ sb_scored }} verificações ponderadas passaram no score Lighthouse</span>
       {% elif _lh_ran %}
-      <span class="ma-approved-count">Lighthouse · resumo no Apêndice A4</span>
+      <span class="ma-approved-count">Lighthouse executado · detalhes no Apêndice A4</span>
       {% endif %}
     </div>
     <div class="ma-approved-body">
@@ -212,20 +212,20 @@
         {% for item in aprovados[:10] %}
         <li class="ma-approved-item">
           <span class="ma-approved-check" aria-hidden="true"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span class="ma-approved-text">{{ item.get('title', '–') }}</span>
+          <span class="ma-approved-text">{{ clean_exec_text(item.get('title', '–')) }}</span>
         </li>
         {% endfor %}
         {% if aprovados|length > 10 %}
         <li class="ma-approved-item ma-approved-more">
           <span class="ma-approved-check" aria-hidden="true">+</span>
-          <span class="ma-approved-text">{% if a4_tabela_lh %}e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }}: ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>{% else %}e mais {{ aprovados|length - 10 }} critério{{ 's' if aprovados|length - 10 > 1 else '' }} aprovado{{ 's' if aprovados|length - 10 > 1 else '' }} (nesta execução o A4 não traz tabela detalhada; só os dez primeiros aparecem acima).{% endif %}</span>
+          <span class="ma-approved-text">{% set _n = aprovados|length - 10 %}Mais {{ _n }} {% if _n == 1 %}item{% else %}itens{% endif %}{% if a4_tabela_lh %}: ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %} além dos listados (tabela A4 não exportada nesta execução).{% endif %}</span>
         </li>
         {% endif %}
       </ul>
       {% elif sb_passed > 0 %}
-      <p class="ma-approved-empty">{{ sb_passed }} critério{{ 's' if sb_passed > 1 else '' }} aprovado{{ 's' if sb_passed > 1 else '' }} pelo Lighthouse.{% if a4_tabela_lh %} Detalhes no <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %} O <a href="#apendice-a4-lighthouse">Apêndice A4</a> está reservado na numeração, mas nesta execução não há tabela item a item exportada.{% endif %}</p>
+      <p class="ma-approved-empty">{% if sb_passed == 1 %}Uma verificação passou{% else %}{{ sb_passed }} verificações passaram{% endif %} no cálculo do score Lighthouse.{% if a4_tabela_lh %} Ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %} Lista item a item não exportada nesta execução.{% endif %}</p>
       {% else %}
-      <p class="ma-approved-empty">{% if a4_tabela_lh %}Itens Lighthouse: ver <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %}Lighthouse executado: o <a href="#apendice-a4-lighthouse">Apêndice A4</a> não inclui lista detalhada nesta execução.{% endif %}</p>
+      <p class="ma-approved-empty">{% if a4_tabela_lh %}Ver itens Lighthouse no <a href="#apendice-a4-lighthouse">Apêndice A4</a>.{% else %}Lighthouse executado; lista detalhada indisponível nesta execução.{% endif %}</p>
       {% endif %}
     </div>
   </div>
@@ -247,7 +247,7 @@
     <div class="ma-eval-row"><span class="ma-eval-lbl">URL avaliada</span><span class="ma-eval-val" style="word-break:break-all">{{ audit.url }}</span></div>
     <div class="ma-eval-row"><span class="ma-eval-lbl">Escopo da amostra</span><span class="ma-eval-val">{% if r.get('multi_page') %}Múltiplas páginas{% else %}Página única (homepage / URL declarada){% endif %}: sem autenticação</span></div>
     <div class="ma-eval-row"><span class="ma-eval-lbl">Ferramentas</span><span class="ma-eval-val">Google Lighthouse{% if _lh_ver3 %} v{{ _lh_ver3 }}{% endif %} (via PSI) · WebAIM WAVE API v3</span></div>
-    <div class="ma-eval-row"><span class="ma-eval-lbl">Cobertura / aviso</span><span class="ma-eval-val">~30–40% WCAG 2.1 AA: <strong>não substitui auditoria humana especializada</strong></span></div>
+    <div class="ma-eval-row"><span class="ma-eval-lbl">Cobertura / aviso</span><span class="ma-eval-val">~30-40% WCAG 2.1 AA: <strong>não substitui auditoria humana especializada</strong></span></div>
   </div>
 </div>
 
@@ -285,7 +285,7 @@
     {% set sev_badge = 'ma-b-alta' if bprio=='alta' else ('ma-b-media' if bprio=='media' else ('ma-b-man' if bprio=='revisao_manual' else 'ma-b-baixa')) %}
     {% set effort_lbl = 'Correção rápida' if ef=='rapido' else ('Esforço médio' if ef=='medio' else 'Projeto estrutural') %}
     {% set phase_lbl = 'Correção rápida (menos de 1 dia)' if ef=='rapido' else ('Esforço médio (1–5 dias)' if ef=='medio' else 'Projeto estrutural (maior esforço)') %}
-    {% set publico_label = (b.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}
+    {% set publico_label = (b.get('publico_afetado') or '') | normalize_report_dashes %}
     <article class="ma-bc" aria-labelledby="bar-title-{{ loop.index }}">
       <div class="ma-bc-strip {{ strip_cls }}" role="presentation"></div>
       <div class="ma-bc-head">
@@ -801,7 +801,7 @@
 <section class="method-sec" aria-labelledby="method-heading">
   <div class="sec-ey">Transparência metodológica</div>
   <h2 style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px" id="method-heading">Como esta auditoria foi realizada</h2>
-  <p style="font-size:12px;color:var(--ink3);line-height:1.6">Dois pipelines complementares: Lighthouse (estrutura do DOM PSI) + WAVE (página perceptível). Cobertura automática típica: ~30–40% AA.</p>
+  <p style="font-size:12px;color:var(--ink3);line-height:1.6">Dois pipelines complementares: Lighthouse (estrutura do DOM PSI) + WAVE (página perceptível). Cobertura automática típica: ~30-40% AA.</p>
   <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Os <strong>parâmetros formais</strong> desta avaliação (data, URL, ferramentas, escopo e aviso legal) estão na seção <strong>Parâmetros da avaliação</strong> antes das barreiras automáticas.</p>
 
   <div class="method-grid">
@@ -869,7 +869,7 @@
     <h3 class="ap-block-title">A1 · Localização técnica e backlog por barreira</h3>
     {% for b in bars %}
     {% set evcodes=b.get('evidencia_localizacao') or [] %}
-    {% set publico_label = (b.get('publico_afetado') or '') | replace(' — ', ': ') | replace(' – ', ': ') %}
+    {% set publico_label = (b.get('publico_afetado') or '') | normalize_report_dashes %}
     <div class="ap-barrier-block" id="apendice-tecnico-barreira-{{ loop.index }}">
       <div class="ap-barrier-title">
         <span class="ap-barrier-num">Barreira #{{ loop.index }}</span>
@@ -966,7 +966,7 @@
               {% if tk.get('titulo') %}
               <div class="tk-row">
                 <div class="tk-lbl">Título</div>
-                <div class="tk-val tk-titulo">{{ tk.get('titulo') }}</div>
+                <div class="tk-val tk-titulo">{{ (tk.get('titulo') or '')|normalize_executive_plaintext }}</div>
               </div>
               {% endif %}
 
@@ -980,21 +980,21 @@
               {% if b.get('versao_dev') %}
               <div class="tk-row">
                 <div class="tk-lbl">Versão dev</div>
-                <div class="tk-val">{{ clean_exec_text(b.get('versao_dev')) }}</div>
+                <div class="tk-val tk-preline">{{ clean_exec_text((b.get('versao_dev') or '')|normalize_executive_plaintext) }}</div>
               </div>
               {% endif %}
 
               {% if tk.get('descricao') %}
               <div class="tk-row">
                 <div class="tk-lbl">Descrição</div>
-                <div class="tk-val">{{ clean_exec_text(tk.get('descricao')) }}</div>
+                <div class="tk-val tk-preline">{{ clean_exec_text((tk.get('descricao') or '')|normalize_executive_plaintext) }}</div>
               </div>
               {% endif %}
 
               {% if tk.get('criterio_de_pronto') %}
               <div class="tk-row">
                 <div class="tk-lbl">Critério de pronto</div>
-                <div class="tk-val">{{ clean_exec_text(tk.get('criterio_de_pronto')) | replace('\n', '<br>') | safe }}</div>
+                <div class="tk-val tk-preline">{{ clean_exec_text((tk.get('criterio_de_pronto') or '')|normalize_executive_plaintext) }}</div>
               </div>
               {% endif %}
             </div>

@@ -16,6 +16,8 @@ from __future__ import annotations
 import hashlib
 from collections import defaultdict
 
+from app.services.display_labels import attach_display_fields
+
 
 def _location_fingerprint(iss: dict) -> str:
     """
@@ -485,7 +487,7 @@ def build_report(
         if a.get("title")
     ][:20]
 
-    return {
+    out = {
         "barreiras_automaticas": _apply_page_labels(barreiras, page_map),
         "alertas_revisao": _apply_page_labels(alertas, page_map),
         "informativos_wave": _apply_page_labels(informativos, page_map),
@@ -503,3 +505,9 @@ def build_report(
         "page_map": {label: url for url, label in page_map.items()},
         "itens_aprovados": itens_aprovados,
     }
+    attach_display_fields(out["barreiras_automaticas"])
+    attach_display_fields(out["alertas_revisao"])
+    attach_display_fields(out["informativos_wave"])
+    attach_display_fields(out["checks_manuais"])
+    attach_display_fields(out["divergencias"])
+    return out

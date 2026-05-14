@@ -54,7 +54,13 @@ from app.database import (
 )
 from app.models.request_models import AuditRequest
 from app.services.consolidation import build_report
-from app.services.text_clean import strip_emoji
+from app.services.display_labels import attach_display_fields, issue_display_label
+from app.services.text_clean import (
+    normalize_barrier_ai_texts,
+    normalize_executive_plaintext,
+    normalize_report_dashes,
+    strip_emoji,
+)
 from app.services.extractors import (
     extract_lighthouse_issues,
     extract_passed_tipo_set,
@@ -71,6 +77,21 @@ _jinja_env = Environment(
     autoescape=select_autoescape(["html", "xml"]),
 )
 _jinja_env.filters["strip_emoji"] = strip_emoji
+_jinja_env.filters["normalize_report_dashes"] = normalize_report_dashes
+
+
+def _filter_issue_display_label(b: object) -> str:
+    if not isinstance(b, dict):
+        return str(b or "")
+    return issue_display_label(
+        b.get("issue_tipo_normalizado"),
+        b.get("titulo_tecnico"),
+        b.get("issue_id_original"),
+    )
+
+
+_jinja_env.filters["issue_display_label"] = _filter_issue_display_label
+_jinja_env.filters["normalize_executive_plaintext"] = normalize_executive_plaintext
 
 
 def _embed_evidence_into_row(audit_row: dict) -> dict:
@@ -91,6 +112,13 @@ def _embed_evidence_into_row(audit_row: dict) -> dict:
 
     row = copy.deepcopy(audit_row)
     report = row.get("report")
+    if isinstance(report, dict):
+        attach_display_fields(report.get("barreiras_automaticas"))
+        attach_display_fields(report.get("alertas_revisao"))
+        attach_display_fields(report.get("informativos_wave"))
+        attach_display_fields(report.get("checks_manuais"))
+        attach_display_fields(report.get("divergencias"))
+
     if not isinstance(report, dict):
         return row
     bars = report.get("barreiras_automaticas")
@@ -111,6 +139,7 @@ def _embed_evidence_into_row(audit_row: dict) -> dict:
     for idx, b in enumerate(bars):
         if not isinstance(b, dict):
             continue
+        normalize_barrier_ai_texts(b)
 
         # 1) EMBEDDED
         evidencias = b.get("evidencias")

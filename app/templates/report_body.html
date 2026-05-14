@@ -17,15 +17,25 @@
 
 {% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
 {% for bb in bars %}
-  {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
   {% set occ=(bb.get('ocorrencias_count') or 1)|int %}
-  {% if 'contrast' in tp or 'contraste' in tp %}{% set cats.contraste = cats.contraste + occ %}
-  {% elif 'button' in tp or 'botao' in tp or 'controle_sem_nome' in tp %}{% set cats.botao = cats.botao + occ %}
-  {% elif 'image' in tp or 'img' in tp or 'alt' in tp or 'imagem_sem' in tp %}{% set cats.imagem = cats.imagem + occ %}
-  {% elif 'link' in tp %}{% set cats.link = cats.link + occ %}
-  {% elif 'form' in tp or 'label' in tp or 'input' in tp or 'formulario' in tp %}{% set cats.form = cats.form + occ %}
-  {% elif 'aria' in tp %}{% set cats.aria = cats.aria + occ %}
-  {% else %}{% set cats.outro = cats.outro + occ %}
+  {% set cg=((bb.get('categoria_grafico') or '')|lower)|trim %}
+  {% if cg == 'contraste' %}{% set cats.contraste = cats.contraste + occ %}
+  {% elif cg == 'botao' %}{% set cats.botao = cats.botao + occ %}
+  {% elif cg == 'imagem' %}{% set cats.imagem = cats.imagem + occ %}
+  {% elif cg == 'link' %}{% set cats.link = cats.link + occ %}
+  {% elif cg == 'form' %}{% set cats.form = cats.form + occ %}
+  {% elif cg == 'aria' %}{% set cats.aria = cats.aria + occ %}
+  {% elif cg == 'outro' %}{% set cats.outro = cats.outro + occ %}
+  {% else %}
+    {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
+    {% if 'contrast' in tp or 'contraste' in tp %}{% set cats.contraste = cats.contraste + occ %}
+    {% elif 'button' in tp or 'botao' in tp or 'controle_sem_nome' in tp %}{% set cats.botao = cats.botao + occ %}
+    {% elif 'image' in tp or 'img' in tp or 'alt' in tp or 'imagem_sem' in tp %}{% set cats.imagem = cats.imagem + occ %}
+    {% elif 'link' in tp %}{% set cats.link = cats.link + occ %}
+    {% elif 'form' in tp or 'label' in tp or 'input' in tp or 'formulario' in tp %}{% set cats.form = cats.form + occ %}
+    {% elif 'aria' in tp %}{% set cats.aria = cats.aria + occ %}
+    {% else %}{% set cats.outro = cats.outro + occ %}
+    {% endif %}
   {% endif %}
 {% endfor %}
 {% set mc=[cats.contraste,cats.botao,cats.imagem,cats.link,cats.form,cats.aria,cats.outro,1]|max %}
@@ -33,7 +43,7 @@
 {% set pour=namespace(p=[],o=[],u=[],r=[]) %}
 {% for bb in bars %}
   {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
-  {% set nm_cur=bb.get('issue_tipo_normalizado') or bb.get('titulo_tecnico') or tp %}
+  {% set nm_cur=(bb.get('categoria_executiva') or '')|trim or bb.get('rotulo_exibicao') or bb.get('issue_tipo_normalizado') or bb.get('titulo_tecnico') or tp %}
   {% if 'contrast' in tp or 'contraste' in tp or 'alt' in tp or 'imagem' in tp or 'image' in tp %}
     {% if nm_cur not in pour.p %}{% set _ = pour.p.append(nm_cur) %}{% endif %}
   {% elif 'target' in tp or 'focus' in tp or 'button' in tp or 'link' in tp or 'keyboard' in tp or 'controle' in tp or 'alvo' in tp %}

@@ -55,18 +55,7 @@
 
 {# Normaliza texto executivo: travessões → dois-pontos, emoji opcional #}
 {% macro clean_exec_text(texto) -%}
-  {%- set t = ((texto or '') | string | strip_emoji) -%}
-  {{- t
-      | replace(' — ', ': ')
-      | replace(' – ', ': ')
-      | replace('— ', ': ')
-      | replace('– ', ': ')
-      | replace(' —', ':')
-      | replace(' –', ':')
-      | replace('—', ': ')
-      | replace('–', ': ')
-      | replace('  ', ' ')
-  -}}
+  {{- ((texto or '') | string | strip_emoji | normalize_report_dashes) -}}
 {%- endmacro %}
 
 {# Ícones de público afetado / gráficos: família 20×20, stroke 1.4, cores Meta-Auditor #}
@@ -109,11 +98,11 @@
   {%- set r=(raw or '')|lower -%}
 
   {%- if 'estrutura' in r or 'títulos' in r or 'titulos' in r or 'heading' in r -%}
-    Usuários que navegam pela estrutura da página — especialmente com leitores de tela e lista de títulos — dependem de hierarquia semântica correta para localizar conteúdo e se orientar rapidamente.
+    Usuários que navegam pela estrutura da página (em especial com leitores de tela e lista de títulos) dependem de hierarquia semântica correta para localizar conteúdo e se orientar rapidamente.
   {%- elif 'teclado' in r -%}
     Usuários que navegam apenas por teclado dependem de foco visível, ordem lógica de navegação e controles acionáveis sem uso do mouse.
   {%- elif 'ceg' in r or 'leitor de tela' in r or 'screen reader' in r -%}
-    Usuários cegos utilizam leitores de tela como NVDA, JAWS ou VoiceOver, que anunciam nomes, estados e estrutura. Elementos sem nome acessível ou descrição tornam-se invisíveis para essa tecnologia.
+    Usuários cegos utilizam leitores de tela como NVDA, JAWS ou VoiceOver. Quando um elemento não tem nome ou descrição, ele simplesmente não existe para esse usuário: o software passa direto sem anunciar nada.
   {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r -%}
     Usuários com baixa visão dependem de contraste adequado, zoom e tipografia legível. Quando texto e fundo têm pouca diferença visual, o conteúdo pode desaparecer mesmo com ampliação.
   {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'movel' in r or 'usuários móveis' in r or 'usuarios moveis' in r -%}
@@ -125,13 +114,14 @@
   {%- elif 'surdo' in r or 'auditiv' in r -%}
     Usuários surdos ou com deficiência auditiva dependem de legendas, transcrições e alternativas visuais para compreender conteúdos multimídia.
   {%- else -%}
-    {{ raw }}
+    {{ (raw or '') | normalize_report_dashes }}
   {%- endif %}
 {% endmacro %}
 
 {# Nomenclatura PT: s deve estar em minúsculas; pode concatenar tipo + id + título #}
 {% macro _termo_core(s, fallback) %}
-  {%- if 'button' in s and 'name' in s %}Botão sem nome acessível
+  {%- if 'botao_completamente_vazio' in s or 'button_empty' in s %}Botão sem texto
+  {%- elif 'button' in s and 'name' in s %}Botão sem nome acessível
   {%- elif 'target-size' in s or 'touch target' in s or 'alvo_interacao' in s %}Área de toque insuficiente
   {%- elif 'contrast' in s or 'contraste' in s %}Contraste de texto insuficiente
   {%- elif 'alt_link' in s or 'imagem_link' in s %}Imagem-link sem texto alternativo
@@ -139,8 +129,9 @@
   {%- elif 'rotulo_difere' in s or 'label-in-name' in s or 'label-content-name-mismatch' in s %}Rótulo visível não coincide com o nome acessível
   {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem rótulo
   {%- elif 'aria' in s %}Marcação ARIA incorreta
+  {%- elif 'heading_sem_conteudo' in s or 'heading_empty' in s or 'empty heading' in s or 'empty-heading' in s %}Cabeçalho sem texto
+  {%- elif 'hierarquia_titulos' in s or 'heading-order' in s %}Hierarquia de títulos incorreta
   {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
-  {%- elif 'hierarquia_titulos' in s %}Hierarquia de títulos incorreta
   {%- elif 'skip_link' in s %}Skip link não focalizável
   {%- elif 'link_pdf' in s or 'wave_alert_link_pdf' in s %}Link para documento PDF
   {%- elif 'texto_link_suspeito' in s or 'link_suspicious' in s %}Texto de link suspeito ou genérico
@@ -157,10 +148,12 @@
 {{- _termo_core((t or '')|lower, t or '–') -}}
 {% endmacro %}
 
-{# Preferir para barreiras: título repetido entre tipos não mascara o tipo normalizado #}
+{# Barreiras: rótulo humano (rotulo_exibicao) ou mapa central via filtro issue_display_label #}
 {% macro termo_barreira(b) %}
-  {%- set s = ((b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('issue_id_original') or '') ~ ' ' ~ (b.get('titulo_tecnico') or ''))|lower -%}
-  {{- _termo_core(s, b.get('titulo_tecnico') or b.get('issue_tipo_normalizado') or '–') -}}
+  {%- if b is mapping and (b.get('rotulo_exibicao') or '')|trim -%}{{ (b.get('rotulo_exibicao') or '')|trim }}
+  {%- elif b is mapping -%}{{ b | issue_display_label }}
+  {%- else -%}–
+  {%- endif -%}
 {% endmacro %}
 
 {# Severidade em maiúsculas com acentuação (ex.: media → MÉDIA): plano de ação e checklists #}
@@ -180,7 +173,7 @@
 
 {% macro esforco(b) %}
   {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
-  {%- if 'image-alt' in id or 'imagem_sem' in id or 'lang' in id or 'button-name' in id or 'controle_sem_nome' in id or 'label' in id or 'heading' in id %}rapido
+  {%- if 'image-alt' in id or 'imagem_sem' in id or 'lang' in id or 'button-name' in id or 'controle_sem_nome' in id or 'button_empty' in id or 'botao_completamente_vazio' in id or 'label' in id or 'heading' in id %}rapido
   {%- elif 'contrast' in id or 'contraste' in id or 'target-size' in id or 'alvo_interacao' in id or 'link' in id %}medio
   {%- else %}estrutural{%- endif %}
 {% endmacro %}
@@ -194,14 +187,16 @@
 
 {% macro correcao_detalhada(b) %}
   {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set tipo=(b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set wg=((b.get('wcag_criterio') or '')|lower) -%}
   {%- set cor=(b.get('correcao_sugerida') or '') -%}
   {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
     Parte dos textos e botões do site usa combinações de cor com contraste baixo demais: em má iluminação ou para quem tem visão reduzida, esse conteúdo some. Pede ao time de design uma varredura na paleta: toda combinação que não atinge o contraste mínimo precisa ser trocada antes da próxima publicação.
   {%- elif 'target-size' in id or 'alvo_interacao' in id -%}
     Vários botões e links do site têm área de clique menor do que o mínimo para uso em celular. Quem tem tremor ou dedo largo acaba ativando o elemento errado. O time de produto precisa aumentar essas áreas: não é mudança visual grande, mas faz diferença real para quem usa o site em mobilidade ou com dificuldade motora.
-  {%- elif 'button-name' in id or 'controle_sem_nome' in id -%}
-    Há botões na página sem texto ou rótulo. Para quem usa leitor de tela, esses botões não existem: o software passa em branco sem anunciar nada. O time de produto precisa dar a cada botão um nome que diga o que ele faz, mesmo que esse nome não apareça visualmente na tela.
-  {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id -%}
+  {%- elif 'button_empty' in id or 'botao_completamente_vazio' in id or 'button-name' in id or 'controle_sem_nome' in id -%}
+    Há botões na página sem texto ou rótulo. Para quem usa leitor de tela, esses botões não existem: o software não anuncia a função do controle e o usuário não sabe se deve clicar. O time de produto precisa dar a cada botão um nome acessível que diga claramente o que ele faz, usando texto visível, aria-label ou aria-labelledby.
+  {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id or 'label-in-name' in id or '2.5.3' in wg -%}
     O texto que o usuário lê no controle é diferente do nome que o código registrou. Quem usa comando de voz fala o que vê na tela, mas o sistema espera outra palavra: o comando falha em silêncio. O time de produto precisa alinhar o rótulo visível ao nome interno, sem deixar os dois divergirem.
   {%- elif 'alt_link' in id or 'imagem_link' in id -%}
     Essas imagens funcionam como links, mas nenhuma tem legenda indicando o destino. Para quem usa leitor de tela, ouvir "imagem, link" sem descrição é o mesmo que uma placa sem texto: não dá para saber se vale clicar. O time de conteúdo precisa acrescentar uma frase curta em cada imagem-link dizendo para onde ela leva.
@@ -211,15 +206,27 @@
     Links dentro de parágrafos se confundem com o texto ao redor quando a única diferença é a cor. Para quem tem baixa visão ou daltonismo, esses links ficam invisíveis. O time de design precisa acrescentar sublinhado ou outro indicador visual além da cor para diferenciá-los.
   {%- elif 'link_pdf' in id or 'wave_alert_link_pdf' in id -%}
     Há links para ficheiros PDF sem deixar claro o formato ou sem garantir que o documento está marcado de forma acessível. O time de conteúdo deve indicar no texto do link que se trata de um PDF e, quando possível, oferecer HTML equivalente ou um PDF com tags e ordem de leitura verificadas.
+  {%- elif 'skip_link' in tipo or 'ausencia_landmark' in tipo or 'wave_alert_accesskey' in tipo or 'accesskey' in id -%}
+    A navegação por teclado e por leitor de tela fica presa a blocos repetidos (menus, cabeçalhos) ou sem um destino principal claro. Quem depende de atalhos para saltar ao conteúdo perde tempo a cada página. O time web precisa expor um link de pular visível ao foco, garantir um landmark de conteúdo principal e evitar accesskeys que conflituem com atalhos do sistema.
+  {%- elif 'viewport_meta' in tipo or 'meta-viewport' in id -%}
+    O meta viewport restringe zoom ou redimensionamento de texto no telemóvel. Quem tem baixa visão e precisa ampliar a página deixa de conseguir ler confortavelmente. O time web precisa remover restrições como user-scalable=no ou maximum-scale=1 e testar o site com zoom a 200%.
+  {%- elif 'lista_filhos_invalidos' in tipo or 'item_lista_fora' in tipo -%}
+    A estrutura de listas HTML está incorreta: itens de lista aparecem fora do elemento de lista ou a lista contém filhos inválidos. O leitor de tela deixa de anunciar a contagem e a hierarquia corretamente. O time web precisa corrigir a marcação para que cada item fique dentro de um ul, ol ou menu e só com filhos permitidos.
+  {%- elif 'formulario_so_title' in tipo or 'label_orfao' in tipo -%}
+    Campos de formulário estão sem rótulo associado ou só com dica frágil (por exemplo, apenas title). Quem usa leitor de tela ou cognição reduzida não recebe instrução clara sobre o que preencher. O time de produto precisa associar label visível com for/id, instruções próximas ao campo e mensagens de erro compreensíveis.
   {%- elif 'link' in id -%}
     Há links com texto genérico ("clique aqui", "saiba mais") que não dizem nada sobre o destino. Para quem navega saltando entre links com leitor de tela, ouvir "clique aqui" repetido não serve de orientação. O time de conteúdo precisa substituir esses textos por frases que descrevam para onde o link vai.
   {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
     Há imagens na página sem descrição alternativa. O leitor de tela ou ignora a imagem ou lê o nome do arquivo (em geral algo como "banner_home_final2.jpg"). O conteúdo da imagem nunca chega ao usuário. O time de conteúdo precisa revisar cada imagem e escrever uma linha descrevendo o que ela mostra ou que informação transmite.
   {%- elif 'aria' in id -%}
     Alguns componentes da página têm a marcação de acessibilidade configurada de forma errada. O leitor de tela pode anunciar uma função enquanto o comportamento real é outro: o que desorienta quem depende desse anúncio para navegar. O time web precisa revisar esses componentes e testar como cada um é lido e anunciado pelo leitor de tela.
+  {%- elif 'error_label' in id or 'error_suggestion' in id or 'error_identificacao' in id or 'error_identificação' in id or 'error_label' in tipo or 'error_suggestion' in tipo or 'error_identificacao' in tipo or 'error_identificação' in tipo -%}
+    Campos do formulário não fornecem instruções claras ou não identificam erros de forma acessível. Quem usa leitor de tela ou tem dificuldade cognitiva precisa que o erro seja descrito em texto junto ao campo, não só por cor ou ícone. O time precisa associar cada mensagem de erro ao campo via <code>aria-describedby</code> (ou equivalente) e garantir que o texto diga o que está errado e como corrigir.
   {%- elif 'label' in id -%}
     Campos do formulário estão sem etiqueta. Quem usa leitor de tela chega ao campo e ouve apenas "campo de texto": sem saber o que deve preencher. O time de produto precisa vincular um rótulo a cada campo para que o nome do campo seja anunciado quando o foco chegar nele.
-  {%- elif 'heading' in id or 'hierarquia_titulos' in id or 'h1_ausente' in id -%}
+  {%- elif 'heading_sem_conteudo' in id or 'heading_empty' in id or 'empty-heading' in id -%}
+    Há um título na página sem texto. Para quem navega por leitores de tela ou pela lista de títulos, isso cria uma seção sem nome e quebra a orientação pelo conteúdo. O time web precisa preencher esse título com texto real ou remover a tag de heading se ela estiver sendo usada apenas para aparência visual.
+  {%- elif 'hierarquia_titulos' in id or 'heading-order' in id or 'h1_ausente' in id or ('heading' in id and 'heading_sem_conteudo' not in id and 'heading_empty' not in id and 'empty-heading' not in id) -%}
     A hierarquia de títulos da página está fora de ordem: há títulos de nível 4 ou 5 sem que antes exista um nível 1 ou 2. Para quem navega pelo índice de títulos com leitor de tela, a estrutura da página fica incoerente. O time web precisa reorganizar os títulos em sequência lógica, do mais geral para o mais específico.
   {%- elif 'focus' in id -%}
     Quem navega só pelo teclado não tem como saber onde está: o contorno que marca o elemento ativo sumiu ou está invisível. É como preencher um formulário sem ver em qual campo você está. O time de produto precisa fazer esse contorno aparecer em todo elemento interativo durante a navegação.

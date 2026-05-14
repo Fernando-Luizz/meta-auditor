@@ -126,6 +126,18 @@ def test_build_report_runs_end_to_end():
     assert "controle_sem_nome_acessivel" in tipos
     assert "contraste_insuficiente" in tipos
     assert rep.get("itens_aprovados") == []
+    for row in b:
+        assert row.get("rotulo_exibicao")
+        assert row.get("categoria_executiva")
+        assert row.get("categoria_grafico") in (
+            "contraste",
+            "botao",
+            "imagem",
+            "link",
+            "form",
+            "aria",
+            "outro",
+        )
 
 
 def test_build_report_itens_aprovados_limita_e_filtra():
@@ -363,3 +375,10 @@ def test_divergencia_nao_listada_quando_mesmo_tipo_ja_falhou_no_lh():
     assert len(rows) == 1
     assert rows[0]["status_deteccao"] == "automatico_convergente"
     assert "lighthouse" in rows[0]["confirmado_por"] and "wave" in rows[0]["confirmado_por"]
+
+
+def test_display_labels_link_sem_nome_familia_executiva():
+    from app.services.display_labels import executive_group_for, issue_display_label
+
+    assert executive_group_for("link_sem_nome_acessivel") == "Links e controles sem nome"
+    assert issue_display_label("controle_sem_nome_acessivel", None, None) == "Controle sem nome acessível"

@@ -33,6 +33,15 @@ try:
     AI_ENHANCE_LEVEL = int(os.getenv("AI_ENHANCE_LEVEL", "2"))
 except ValueError:
     AI_ENHANCE_LEVEL = 2
+# Chamadas Anthropic em paralelo (semáforo no ai_enhancer); 5 equilibra throughput e timeouts.
+try:
+    AI_ANTHROPIC_CONCURRENCY = max(1, min(20, int(os.getenv("AI_ANTHROPIC_CONCURRENCY", "5"))))
+except ValueError:
+    AI_ANTHROPIC_CONCURRENCY = 5
+try:
+    AI_ANTHROPIC_REQUEST_TIMEOUT = float(os.getenv("AI_ANTHROPIC_REQUEST_TIMEOUT", "60"))
+except ValueError:
+    AI_ANTHROPIC_REQUEST_TIMEOUT = 60.0
 WAVE_BASE_URL = "https://wave.webaim.org/api/request"
 # 4 = itens + seletores CSS (3 créditos); 3 = XPath; 2 = só contagens (2 créditos).
 try:
