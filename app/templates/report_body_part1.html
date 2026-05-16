@@ -59,6 +59,8 @@
   {%- elif 'image-alt' in s or 'imagem_sem' in s %}Imagem sem descrição: invisível para leitores de tela
   {%- elif 'label' in s or 'formulario_sem' in s %}Campo de formulário sem identificação
   {%- elif 'aria' in s %}Marcação ARIA incorreta
+  {%- elif 'heading_sem_conteudo' in s or 'heading_empty' in s or 'empty-heading' in s or 'empty heading' in s %}Cabeçalho sem texto
+  {%- elif 'hierarquia_titulos' in s or 'heading-order' in s %}Hierarquia de títulos incorreta
   {%- elif 'heading' in s %}Estrutura de títulos quebrada
   {%- elif 'link_sem_nome' in s or 'link-name' in s or 'link_empty' in s %}Link sem nome acessível
   {%- elif 'link-in-text' in s or ('link' in s and 'text' in s) %}Link pouco distinguível do texto ao redor
@@ -94,11 +96,6 @@
     </div>
   </div>
 </div>
-
-<button class="pbtn" type="button" onclick="window.print()" aria-label="Salvar relatório como PDF">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-  Salvar como PDF
-</button>
 
 {# ═══ EXECUTIVE SUMMARY ═══ #}
 <div class="exec-box">

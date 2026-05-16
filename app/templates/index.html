@@ -866,9 +866,10 @@ function renderResult(data) {
         <a href="/audits/${auditId}/report.html" target="_blank" rel="noopener" class="btn btn-primary" title="Abrir relatório no navegador">
           📄 Abrir relatório
         </a>
-        <a href="/audits/${auditId}/export.zip" class="btn" title="ZIP: brutos LH+WAVE, relatório JSON e HTML" download>⬇ ZIP (testes)</a>
+        <a href="/audits/${auditId}/report.html?print=1" target="_blank" rel="noopener" class="btn" title="Abrir relatório e salvar como PDF (impressão do navegador)">⬇ PDF</a>
         <a href="/audits/${auditId}/export.html" class="btn" title="Baixar relatório em HTML" download>⬇ HTML</a>
         <a href="/audits/${auditId}/export.json" class="btn" title="Baixar registro (JSON) com relatório consolidado" download>⬇ JSON</a>
+        <a href="/audits/${auditId}/export.zip" class="btn" title="ZIP: brutos LH+WAVE, relatório JSON e HTML" download>⬇ ZIP</a>
         <a href="/audits/${auditId}" target="_blank" rel="noopener" class="btn" title="Ver JSON no navegador (sem baixar)">Ver JSON</a>
       </div>
     </div>
@@ -1117,9 +1118,10 @@ async function loadHistory() {
           <span class="history-meta">${escHtml(ts)}</span>
           <div class="history-actions">
             <a href="/audits/${a.id}/report.html" target="_blank" rel="noopener" class="history-btn" title="Abrir relatório">Abrir</a>
-            <a href="/audits/${a.id}/export.zip" class="history-btn" title="ZIP (brutos + relatório)" download>⬇Z</a>
-            <a href="/audits/${a.id}/export.html" class="history-btn" title="Baixar HTML" download>⬇H</a>
-            <a href="/audits/${a.id}/export.json" class="history-btn" title="Baixar JSON" download>⬇J</a>
+            <a href="/audits/${a.id}/report.html?print=1" target="_blank" rel="noopener" class="history-btn" title="Salvar PDF">PDF</a>
+            <a href="/audits/${a.id}/export.html" class="history-btn" title="Baixar HTML" download>HTML</a>
+            <a href="/audits/${a.id}/export.json" class="history-btn" title="Baixar JSON" download>JSON</a>
+            <a href="/audits/${a.id}/export.zip" class="history-btn" title="ZIP completo" download>ZIP</a>
           </div>
         </div>`;
     }).join('');

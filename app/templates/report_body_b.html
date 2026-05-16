@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, impacto_descricao_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
 
 {# Lighthouse: tabela A4 (usada cedo em «O que está correto» para não prometer detalhes inexistentes) #}
 {% set lh_appendix = r.get('lighthouse_items') or [] %}
@@ -335,7 +335,7 @@
         <div class="ma-bc-aud-icon" aria-hidden="true">{{ pub_icon(b.get('publico_afetado',''))|safe }}</div>
         <div class="ma-bc-aud-text">
           <span class="ma-bc-aud-label">Público afetado: {{ publico_label or '–' }}</span>
-          <span class="ma-bc-aud-desc">{{ clean_exec_text(pub_desc(b.get('publico_afetado',''))) }}</span>
+          <span class="ma-bc-aud-desc">{{ clean_exec_text(pub_desc(b.get('publico_afetado',''), b)) }}</span>
         </div>
       </div>
 
@@ -476,16 +476,14 @@
               </svg>
               Impacto
             </div>
-            <p class="ma-bc-impact-text">
-              {% if b.get('impacto_descricao') %}{{ clean_exec_text(b.get('impacto_descricao')) }}
-              {% elif bprio=='alta' %}Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+            <div class="ma-bc-impact-text">
+              <p>{% if b.get('impacto_descricao') %}{{ clean_exec_text(b.get('impacto_descricao')) }}
               {% elif bprio=='revisao_manual' %}Precisa de confirmação manual antes de classificar como problema ou falso positivo da ferramenta.
-              {% else %}Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.{% endif %}
-              <br><br>
-              {{ clean_exec_text(pub_desc(b.get('publico_afetado',''))) }}
+              {% else %}{{ clean_exec_text(impacto_descricao_det(b)) }}{% endif %}</p>
+              <p>{{ clean_exec_text(pub_desc(b.get('publico_afetado',''), b)) }}</p>
               {# Mostrar apenas descrição em português; texto em inglês das ferramentas vai para o Apêndice Técnico #}
-              {% if b.get('descricao_humana') %}<br><br>{{ clean_exec_text(b.get('descricao_humana')) }}{% endif %}
-            </p>
+              {% if b.get('descricao_humana') %}<p>{{ clean_exec_text(b.get('descricao_humana')) }}</p>{% endif %}
+            </div>
           </div>
           <div class="ma-bc-col">
             <div class="ma-bc-col-label fix">

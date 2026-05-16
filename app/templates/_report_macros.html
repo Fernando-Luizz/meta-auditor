@@ -94,10 +94,28 @@
   {%- else -%}{{ ma_pub_group_svg('default', 22) }}{%- endif %}
 {% endmacro %}
 
-{% macro pub_desc(raw) %}
+{# b opcional: texto por tipo normalizado para barreiras estruturais quando «público afetado» não casa com palavras-chave #}
+{% macro pub_desc(raw, b=None) %}
   {%- set r=(raw or '')|lower -%}
-
-  {%- if 'estrutura' in r or 'títulos' in r or 'titulos' in r or 'heading' in r -%}
+  {%- set hay = '' -%}
+  {%- if b is mapping -%}
+    {%- set tipo=(b.get('issue_tipo_normalizado') or '')|lower -%}
+    {%- set oid=(b.get('issue_id_original') or '')|lower -%}
+    {%- set hay = tipo ~ ' ' ~ oid -%}
+  {%- endif -%}
+  {%- if b is mapping and ('ausencia_landmark_main' in hay or 'landmark_main' in hay or ('landmark' in hay and 'main' in hay)) -%}
+    Usuários que navegam por estrutura ou só por teclado dependem de uma região principal bem identificada para saltar direto ao conteúdo central. Sem um main semântico claro, perdem uma referência básica de orientação na página.
+  {%- elif b is mapping and ('skip_link' in hay or 'skip-link' in hay) -%}
+    Quem navega só por teclado conta com o link de pular para não repetir menus e cabeçalhos em cada página. Quando esse atalho não funciona ou não leva ao foco ao conteúdo certo, essa economia desaparece e a navegação fica mais longa e repetitiva.
+  {%- elif b is mapping and ('lista_filhos_invalidos' in hay or 'item_lista_fora' in hay or 'item_lista_fora_de_lista' in hay) -%}
+    Usuários de leitor de tela ouvem listas pela semântica: quantidade de itens, aninhamento e sequência. Quando a marcação está incorreta, essa informação fica errada ou confusa, ainda que visualmente pareça uma lista.
+  {%- elif b is mapping and ('heading_sem_conteudo' in hay or 'heading_empty' in hay or 'empty-heading' in hay) -%}
+    Quem navega pela lista de títulos depende de cada heading ter texto real. Um heading vazio cria uma entrada sem nome e quebra a sensação de onde começa ou termina cada secção.
+  {%- elif b is mapping and ('hierarquia_titulos' in hay or 'h1_ausente' in hay or 'heading-order' in oid) -%}
+    Usuários que saltam de título em título com leitor de tela precisam de uma sequência lógica (do geral ao específico). Níveis saltados ou ausência de h1 desorientam e tornam a página mais difícil de explorar.
+  {%- elif b is mapping and ('wave_alert_accesskey' in hay or 'accesskey_duplicado' in hay or 'accesskeys' in oid) -%}
+    Atalhos de teclado na página podem colidir com atalhos do sistema ou do próprio leitor de tela. Quem depende desses atalhos precisa de comportamento previsível, sem combinações ambíguas.
+  {%- elif 'estrutura' in r or 'títulos' in r or 'titulos' in r or 'heading' in r -%}
     Usuários que navegam pela estrutura da página (em especial com leitores de tela e lista de títulos) dependem de hierarquia semântica correta para localizar conteúdo e se orientar rapidamente.
   {%- elif 'teclado' in r -%}
     Usuários que navegam apenas por teclado dependem de foco visível, ordem lógica de navegação e controles acionáveis sem uso do mouse.
@@ -132,7 +150,11 @@
   {%- elif 'heading_sem_conteudo' in s or 'heading_empty' in s or 'empty heading' in s or 'empty-heading' in s %}Cabeçalho sem texto
   {%- elif 'hierarquia_titulos' in s or 'heading-order' in s %}Hierarquia de títulos incorreta
   {%- elif 'heading' in s %}Estrutura de cabeçalhos incorreta
-  {%- elif 'skip_link' in s %}Skip link não focalizável
+  {%- elif 'skip_link' in s or 'skip-link' in s %}Skip link não focalizável
+  {%- elif 'wave_alert_accesskey' in s or 'accesskey_duplicado' in s or 'accesskeys' in s %}Atalho accesskey conflitante
+  {%- elif 'ausencia_landmark_main' in s or 'landmark_main' in s or ('landmark' in s and 'main' in s) %}Ausência da região principal
+  {%- elif 'lista_filhos_invalidos' in s %}Lista com estrutura inválida
+  {%- elif 'item_lista_fora' in s %}Item de lista fora de lista
   {%- elif 'link_pdf' in s or 'wave_alert_link_pdf' in s %}Link para documento PDF
   {%- elif 'texto_link_suspeito' in s or 'link_suspicious' in s %}Texto de link suspeito ou genérico
   {%- elif 'wave_alert_link_redundant' in s or 'link_redundant' in s %}Links redundantes no mesmo destino
@@ -148,10 +170,12 @@
 {{- _termo_core((t or '')|lower, t or '–') -}}
 {% endmacro %}
 
-{# Barreiras: rótulo humano (rotulo_exibicao) ou mapa central via filtro issue_display_label #}
+{# Barreiras: rotulo_exibicao, depois _termo_core (tipo+id), depois issue_display_label #}
 {% macro termo_barreira(b) %}
   {%- if b is mapping and (b.get('rotulo_exibicao') or '')|trim -%}{{ (b.get('rotulo_exibicao') or '')|trim }}
-  {%- elif b is mapping -%}{{ b | issue_display_label }}
+  {%- elif b is mapping -%}
+    {%- set s=((b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('issue_id_original') or ''))|lower -%}
+    {{- _termo_core(s, b | issue_display_label) -}}
   {%- else -%}–
   {%- endif -%}
 {% endmacro %}
@@ -185,9 +209,73 @@
   {%- else %}<span class="ef-badge ef-s" title="Pode exigir redesenho de componentes ou revisão estrutural"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="2.2" stroke="#1D4ED8" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M13 3l-1.4 1.4M4.4 11.6L3 13" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg> Projeto estrutural</span>{%- endif %}
 {% endmacro %}
 
+{# impacto_descricao_det: impacto determinístico por família (camada executiva). #}
+{% macro impacto_descricao_det(b) %}
+  {%- set oid_raw=(b.get('issue_id_original') or '')|lower -%}
+  {%- set tipo_raw=(b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set id = oid_raw if oid_raw else tipo_raw -%}
+  {%- set prio=(b.get('prioridade') or '')|lower -%}
+  {%- if 'image-alt' in id or 'imagem_sem' in id or 'alt_link' in id or 'imagem_link' in id or 'input_imagem_sem_alt' in id or 'objeto_embed' in id -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira remove informação da experiência de quem usa leitura assistida. Quando a página depende de imagem para comunicar conteúdo ou ação, o usuário deixa de receber parte da informação necessária para entender ou concluir a tarefa.
+    {%- else -%}
+      Esta barreira não impede necessariamente toda a navegação, mas faz com que parte do conteúdo deixe de chegar a quem usa leitura assistida. Isso reduz compreensão, autonomia e confiança no uso da página.
+    {%- endif -%}
+  {%- elif 'ausencia_landmark_main' in id or 'landmark_main' in id or ('landmark' in id and 'main' in id) or 'ausencia_landmark_main' in tipo_raw or 'hierarquia_titulos' in id or 'hierarquia_titulos' in tipo_raw or 'heading-order' in id or 'h1_ausente' in id or ('heading' in id and 'heading_sem_conteudo' not in id and 'heading_empty' not in id and 'empty-heading' not in id and 'heading_sem_conteudo' not in tipo_raw) or 'lista_filhos_invalidos' in id or 'lista_filhos_invalidos' in tipo_raw or 'item_lista_fora' in id or 'item_lista_fora_de_lista' in id or 'item_lista_fora' in tipo_raw or 'item_lista_fora_de_lista' in tipo_raw -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira compromete a orientação dentro da página. Quem depende de navegação por estrutura, atalhos semânticos ou lista de títulos perde referências importantes para localizar conteúdo e avançar com segurança.
+    {%- else -%}
+      Esta barreira não necessariamente bloqueia a tarefa, mas torna a navegação menos previsível e mais cansativa. A pessoa até pode continuar, porém com mais esforço, mais tentativa e maior risco de se perder no conteúdo.
+    {%- endif -%}
+  {%- elif 'heading_sem_conteudo' in id or 'heading_sem_conteudo' in tipo_raw or 'heading_empty' in id or 'empty-heading' in id or 'empty-heading' in tipo_raw -%}
+    {%- if prio == 'alta' -%}
+      Há um ponto de navegação na página sem nome. Quem usa leitor de tela salta para esse título e ouve silêncio: não sabe o que a seção contém nem se deve continuar lendo ou avançar para a próxima.
+    {%- else -%}
+      A seção existe na estrutura da página, mas sem nome. Quem navega por lista de títulos encontra uma entrada vazia que não ajuda a localizar conteúdo nem a entender a organização da página.
+    {%- endif -%}
+  {%- elif 'skip_link' in id or 'skip-link' in id or 'skip_link_nao_focalizavel' in id or 'skip_link_nao_focalizavel' in tipo_raw or 'bypass' in id -%}
+    {%- if prio == 'alta' -%}
+      O atalho de navegação existe mas não funciona: quem usa só o teclado é obrigado a percorrer todos os menus e cabeçalhos da página antes de chegar ao conteúdo, a cada nova página visitada.
+    {%- else -%}
+      O atalho de navegação não leva ao conteúdo correto. Quem usa teclado perde eficiência, mas ainda consegue navegar com mais esforço.
+    {%- endif -%}
+  {%- elif 'wave_alert_accesskey' in id or 'wave_alert_accesskey' in tipo_raw or 'accesskey_duplicado' in id or 'accesskey_duplicado' in tipo_raw or ('accesskey' in id and 'skip' not in id) -%}
+    {%- if prio == 'alta' -%}
+      A página define atalhos de teclado que podem sequestrar combinações usadas pelo leitor de tela ou pelo navegador. Quem depende dessas ferramentas perde o controle da navegação sem conseguir identificar o motivo.
+    {%- else -%}
+      Os atalhos de teclado definidos na página podem interferir com os atalhos do leitor de tela ou do navegador em alguns ambientes. O risco varia conforme o sistema operacional e a tecnologia assistiva usada.
+    {%- endif -%}
+  {%- elif 'aria' in id -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira torna o componente semanticamente incoerente para tecnologias assistivas. O elemento existe visualmente, mas pode ser anunciado de forma errada, incompleta ou contraditória, prejudicando entendimento e operação.
+    {%- else -%}
+      Esta barreira reduz a confiabilidade da interface para quem usa tecnologia assistiva. O componente pode até continuar acessível em parte, mas sua leitura fica menos precisa e mais sujeita a erro de interpretação.
+    {%- endif -%}
+  {%- elif 'button' in id or 'botao' in id or 'controle_sem_nome' in id or 'link_sem_nome' in id or 'link-name' in id or 'link_empty' in id or 'label' in id or 'formulario' in id -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira bloqueia a identificação correta do controle. Quem depende de leitor de tela ou navegação assistida não consegue entender com clareza o que o elemento faz, o que impede ou compromete a execução da tarefa.
+    {%- else -%}
+      Esta barreira reduz a clareza da interface e aumenta a chance de erro durante a navegação. O usuário encontra o controle, mas não recebe informação suficiente para agir com confiança.
+    {%- endif -%}
+  {%- elif 'contraste' in id or 'color-contrast' in id or 'target-size' in id or 'alvo_interacao' in id or 'rotulo_difere' in id or 'label-content-name-mismatch' in id or 'link-in-text' in id -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+    {%- else -%}
+      Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.
+    {%- endif -%}
+  {%- else -%}
+    {%- if prio == 'alta' -%}
+      Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+    {%- else -%}
+      Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.
+    {%- endif -%}
+  {%- endif -%}
+{% endmacro %}
+
 {% macro correcao_detalhada(b) %}
-  {%- set id=(b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set oid=(b.get('issue_id_original') or '')|lower -%}
   {%- set tipo=(b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set id = oid if oid else tipo -%}
   {%- set wg=((b.get('wcag_criterio') or '')|lower) -%}
   {%- set cor=(b.get('correcao_sugerida') or '') -%}
   {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
@@ -199,34 +287,54 @@
   {%- elif 'label-content-name-mismatch' in id or 'rotulo_difere_do_nome_acessivel' in id or 'label-in-name' in id or '2.5.3' in wg -%}
     O texto que o usuário lê no controle é diferente do nome que o código registrou. Quem usa comando de voz fala o que vê na tela, mas o sistema espera outra palavra: o comando falha em silêncio. O time de produto precisa alinhar o rótulo visível ao nome interno, sem deixar os dois divergirem.
   {%- elif 'alt_link' in id or 'imagem_link' in id -%}
-    Essas imagens funcionam como links, mas nenhuma tem legenda indicando o destino. Para quem usa leitor de tela, ouvir "imagem, link" sem descrição é o mesmo que uma placa sem texto: não dá para saber se vale clicar. O time de conteúdo precisa acrescentar uma frase curta em cada imagem-link dizendo para onde ela leva.
+    Há links representados apenas por imagem sem texto alternativo que indique o destino. Para quem usa leitor de tela, ouvir "imagem, link" sem descrição é o mesmo que uma placa sem texto. O time de conteúdo e desenvolvimento precisa garantir que cada imagem-link tenha um texto alternativo que explique a ação ou o destino — não apenas o que a imagem mostra visualmente.
   {%- elif 'link-name' in id or 'link_empty' in id or 'link_sem_nome' in id -%}
     Há links na página sem nenhum texto. O leitor de tela ou anuncia a URL crua ou pula sem dizer nada: em ambos os casos, impossível saber para onde o link vai. O time de produto precisa colocar um texto descritivo em cada um, indicando claramente o destino.
   {%- elif 'link-in-text' in id or ('link' in id and 'text' in id) -%}
     Links dentro de parágrafos se confundem com o texto ao redor quando a única diferença é a cor. Para quem tem baixa visão ou daltonismo, esses links ficam invisíveis. O time de design precisa acrescentar sublinhado ou outro indicador visual além da cor para diferenciá-los.
   {%- elif 'link_pdf' in id or 'wave_alert_link_pdf' in id -%}
     Há links para ficheiros PDF sem deixar claro o formato ou sem garantir que o documento está marcado de forma acessível. O time de conteúdo deve indicar no texto do link que se trata de um PDF e, quando possível, oferecer HTML equivalente ou um PDF com tags e ordem de leitura verificadas.
-  {%- elif 'skip_link' in tipo or 'ausencia_landmark' in tipo or 'wave_alert_accesskey' in tipo or 'accesskey' in id -%}
-    A navegação por teclado e por leitor de tela fica presa a blocos repetidos (menus, cabeçalhos) ou sem um destino principal claro. Quem depende de atalhos para saltar ao conteúdo perde tempo a cada página. O time web precisa expor um link de pular visível ao foco, garantir um landmark de conteúdo principal e evitar accesskeys que conflituem com atalhos do sistema.
+  {%- elif 'ausencia_landmark_main' in id or 'ausencia_landmark_main' in tipo or 'landmark_main' in id or 'landmark_main' in tipo or ('landmark' in id and 'main' in id) or ('landmark' in tipo and 'main' in tipo) -%}
+    Sem uma região principal bem definida, quem navega por teclado ou leitor de tela perde um dos atalhos mais importantes para chegar diretamente ao conteúdo central da página. O time web deve marcar a área principal com um único elemento <main>, garantir que ela represente de fato o conteúdo central e alinhar eventuais links de atalho para essa região.
+  {%- elif 'lista_filhos_invalidos' in id or 'lista_filhos_invalidos' in tipo -%}
+    Quando uma lista é montada com estrutura semântica incorreta, o leitor de tela deixa de anunciar corretamente quantidade, sequência e relação entre os itens. O time web precisa reconstruir a lista usando marcação semântica válida, com <ul> ou <ol> contendo apenas <li> como filhos diretos, preservando a hierarquia do conteúdo e não apenas sua aparência visual.
+  {%- elif 'item_lista_fora_de_lista' in id or 'item_lista_fora_de_lista' in tipo or 'item_lista_fora' in id or 'item_lista_fora' in tipo -%}
+    Há itens marcados como elementos de lista fora de uma lista semântica válida. Isso quebra a leitura estrutural do conteúdo e pode fazer o leitor de tela anunciar a informação de forma incompleta ou incoerente. O time web deve garantir que cada <li> esteja contido em uma lista apropriada, como <ul> ou <ol>.
+  {%- elif 'heading_sem_conteudo' in id or 'heading_sem_conteudo' in tipo or 'heading_empty' in id or 'empty-heading' in id or 'empty-heading' in tipo -%}
+    Há um título na página sem conteúdo textual. Para quem navega pela lista de títulos do leitor de tela, isso cria uma seção sem nome e quebra a orientação pelo conteúdo. O time web deve preencher esse heading com texto real e significativo ou remover a tag de título se ela estiver sendo usada apenas para efeito visual.
+  {%- elif 'skip_link' in id or 'skip-link' in id or 'skip_link' in tipo or 'skip_link_nao_focalizavel' in id or 'skip_link_nao_focalizavel' in tipo or 'bypass' in id -%}
+    O link de pular ao conteúdo existe, mas não funciona: ao ser ativado pelo teclado, o foco não chega ao conteúdo principal. Para quem navega sem mouse, é como pressionar um elevador e ele não se mover. O time web precisa garantir que o elemento destino do skip link seja focalizável e que o foco realmente se mova para ele ao ativar o atalho.
+  {%- elif 'wave_alert_accesskey' in id or 'wave_alert_accesskey' in tipo or 'accesskey_duplicado' in id or 'accesskey_duplicado' in tipo or ('accesskey' in id and 'skip' not in id) -%}
+    A página usa atalhos de teclado baseados em accesskey, que podem conflitar com atalhos já existentes do navegador, do sistema operacional ou do leitor de tela. Isso torna a navegação menos previsível e pode acionar funções inesperadas. O time web deve evitar accesskey como solução principal de navegação e priorizar mecanismos mais compatíveis, como estrutura semântica correta, landmarks e links de atalho visíveis.
   {%- elif 'viewport_meta' in tipo or 'meta-viewport' in id -%}
     O meta viewport restringe zoom ou redimensionamento de texto no telemóvel. Quem tem baixa visão e precisa ampliar a página deixa de conseguir ler confortavelmente. O time web precisa remover restrições como user-scalable=no ou maximum-scale=1 e testar o site com zoom a 200%.
-  {%- elif 'lista_filhos_invalidos' in tipo or 'item_lista_fora' in tipo -%}
-    A estrutura de listas HTML está incorreta: itens de lista aparecem fora do elemento de lista ou a lista contém filhos inválidos. O leitor de tela deixa de anunciar a contagem e a hierarquia corretamente. O time web precisa corrigir a marcação para que cada item fique dentro de um ul, ol ou menu e só com filhos permitidos.
   {%- elif 'formulario_so_title' in tipo or 'label_orfao' in tipo -%}
     Campos de formulário estão sem rótulo associado ou só com dica frágil (por exemplo, apenas title). Quem usa leitor de tela ou cognição reduzida não recebe instrução clara sobre o que preencher. O time de produto precisa associar label visível com for/id, instruções próximas ao campo e mensagens de erro compreensíveis.
   {%- elif 'link' in id -%}
     Há links com texto genérico ("clique aqui", "saiba mais") que não dizem nada sobre o destino. Para quem navega saltando entre links com leitor de tela, ouvir "clique aqui" repetido não serve de orientação. O time de conteúdo precisa substituir esses textos por frases que descrevam para onde o link vai.
-  {%- elif 'image-alt' in id or 'imagem_sem' in id -%}
-    Há imagens na página sem descrição alternativa. O leitor de tela ou ignora a imagem ou lê o nome do arquivo (em geral algo como "banner_home_final2.jpg"). O conteúdo da imagem nunca chega ao usuário. O time de conteúdo precisa revisar cada imagem e escrever uma linha descrevendo o que ela mostra ou que informação transmite.
+  {%- elif 'image-alt' in id or 'imagem_sem' in id or 'input_imagem_sem_alt' in id or 'objeto_embed' in id -%}
+    Há imagens com informação útil sem descrição alternativa. Para quem usa leitor de tela, esse conteúdo simplesmente não chega. O time de conteúdo e desenvolvimento deve revisar cada imagem e decidir: quando ela transmite informação, escrever um texto alternativo curto e claro; quando for apenas decorativa, usar alt vazio para que ela seja ignorada corretamente.
+  {%- elif 'aria_referencia_quebrada' in tipo or 'aria_idref' in tipo or 'aria-labelledby' in id or ('aria' in id and ('referencia' in id or 'idref' in id or 'labelledby' in id or 'describedby' in id)) -%}
+    Há atributos ARIA apontando para identificadores ausentes, inválidos ou desconectados do elemento correto. Com isso, o leitor de tela procura nomes ou descrições que não encontra, e o componente fica incoerente. O time deve revisar referências de rótulo e descrição, garantindo que cada identificador exista, seja único e esteja ligado ao elemento certo.
+  {%- elif 'aria_filhos_obrigatorios' in tipo or 'aria-required-children' in id or ('aria' in id and 'children' in id) -%}
+    Alguns componentes usam papéis ARIA que exigem estrutura interna específica, mas essa hierarquia está incompleta. O leitor de tela reconhece o papel do componente, mas não encontra as partes necessárias para anunciá-lo corretamente. O time deve completar a estrutura exigida ou substituir o componente por HTML nativo equivalente, que já traz semântica correta por padrão.
+  {%- elif 'aria_atributo_nao_permitido' in tipo or 'aria-allowed-attr' in id or ('aria' in id and ('allowed' in id or 'nao_permitido' in id or 'not_allowed' in id)) -%}
+    Há atributos ARIA aplicados em elementos ou papéis que não os aceitam. Isso introduz ruído semântico e pode levar tecnologias assistivas a anunciar informação incorreta ou ignorar o componente. O time deve remover atributos ARIA inválidos e manter apenas os que forem compatíveis com o papel e a função real do elemento.
+  {%- elif 'aria_atributo_obrigatorio_ausente' in tipo or 'aria-required-attr' in id -%}
+    Há componentes com papel ARIA declarado, mas sem os atributos obrigatórios que definem o estado ou o valor do elemento. O leitor de tela anuncia o papel sem conseguir descrever o estado atual, deixando o usuário sem informação para agir. O time deve adicionar os atributos obrigatórios para cada papel ARIA usado.
+  {%- elif 'aria_valor_invalido' in tipo or 'aria-valid-attr-value' in id -%}
+    Atributos ARIA estão presentes, mas com valores que não são aceitos para aquele atributo. O comportamento do leitor de tela fica imprevisível: pode ignorar o atributo ou interpretar de forma errada. O time deve corrigir os valores para os aceitos pela especificação ARIA.
+  {%- elif 'aria_atributo_invalido' in tipo or 'aria-valid-attr' in id -%}
+    Há atributos ARIA usados que não existem na especificação. Tecnologias assistivas ignoram atributos desconhecidos, tornando o componente menos previsível. O time deve substituir pelos atributos corretos ou remover os inválidos.
+  {%- elif 'aria_papel_invalido' in tipo or 'aria-roles' in id -%}
+    Há elementos com role ARIA inválido ou inexistente. O leitor de tela não consegue categorizar o elemento corretamente, o que compromete navegação e interação. O time deve substituir por um role válido compatível com a função do elemento ou remover o atributo quando HTML nativo já oferece a semântica necessária.
   {%- elif 'aria' in id -%}
     Alguns componentes da página têm a marcação de acessibilidade configurada de forma errada. O leitor de tela pode anunciar uma função enquanto o comportamento real é outro: o que desorienta quem depende desse anúncio para navegar. O time web precisa revisar esses componentes e testar como cada um é lido e anunciado pelo leitor de tela.
   {%- elif 'error_label' in id or 'error_suggestion' in id or 'error_identificacao' in id or 'error_identificação' in id or 'error_label' in tipo or 'error_suggestion' in tipo or 'error_identificacao' in tipo or 'error_identificação' in tipo -%}
     Campos do formulário não fornecem instruções claras ou não identificam erros de forma acessível. Quem usa leitor de tela ou tem dificuldade cognitiva precisa que o erro seja descrito em texto junto ao campo, não só por cor ou ícone. O time precisa associar cada mensagem de erro ao campo via <code>aria-describedby</code> (ou equivalente) e garantir que o texto diga o que está errado e como corrigir.
   {%- elif 'label' in id -%}
     Campos do formulário estão sem etiqueta. Quem usa leitor de tela chega ao campo e ouve apenas "campo de texto": sem saber o que deve preencher. O time de produto precisa vincular um rótulo a cada campo para que o nome do campo seja anunciado quando o foco chegar nele.
-  {%- elif 'heading_sem_conteudo' in id or 'heading_empty' in id or 'empty-heading' in id -%}
-    Há um título na página sem texto. Para quem navega por leitores de tela ou pela lista de títulos, isso cria uma seção sem nome e quebra a orientação pelo conteúdo. O time web precisa preencher esse título com texto real ou remover a tag de heading se ela estiver sendo usada apenas para aparência visual.
-  {%- elif 'hierarquia_titulos' in id or 'heading-order' in id or 'h1_ausente' in id or ('heading' in id and 'heading_sem_conteudo' not in id and 'heading_empty' not in id and 'empty-heading' not in id) -%}
+  {%- elif 'hierarquia_titulos' in id or 'hierarquia_titulos' in tipo or 'heading-order' in id or 'h1_ausente' in id or ('heading' in id and 'heading_sem_conteudo' not in id and 'heading_empty' not in id and 'empty-heading' not in id and 'heading_sem_conteudo' not in tipo) -%}
     A hierarquia de títulos da página está fora de ordem: há títulos de nível 4 ou 5 sem que antes exista um nível 1 ou 2. Para quem navega pelo índice de títulos com leitor de tela, a estrutura da página fica incoerente. O time web precisa reorganizar os títulos em sequência lógica, do mais geral para o mais específico.
   {%- elif 'focus' in id -%}
     Quem navega só pelo teclado não tem como saber onde está: o contorno que marca o elemento ativo sumiu ou está invisível. É como preencher um formulário sem ver em qual campo você está. O time de produto precisa fazer esse contorno aparecer em todo elemento interativo durante a navegação.

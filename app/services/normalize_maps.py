@@ -82,6 +82,12 @@ LIGHTHOUSE_NORMALIZATION: dict[str, NormalizedMeta] = {
         "wcag_criterio": "1.3.1 Info and Relationships, 2.4.6 Headings and Labels",
         "publico_afetado": "Navegação por estrutura e leitores de tela",
     },
+    "empty-heading": {
+        "issue_tipo_normalizado": "heading_sem_conteudo",
+        "titulo_tecnico": "Cabeçalho sem texto",
+        "wcag_criterio": "1.3.1 Info and Relationships, 2.4.6 Headings and Labels",
+        "publico_afetado": "Navegação por estrutura e leitores de tela",
+    },
     "html-xml-lang-mismatch": {
         "issue_tipo_normalizado": "idioma_html_xml_inconsistente",
         "titulo_tecnico": "Atributos de idioma inconsistentes",
@@ -489,26 +495,145 @@ WAVE_NORMALIZATION: dict[tuple[str, str], NormalizedMeta] = {
 
 
 DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
-    "controle_sem_nome_acessivel": "Adicionar atributo aria-label ou texto visível ao botão/controle.",
-    "contraste_insuficiente": "Aumentar contraste para razão mínima de 4,5:1 (texto normal) ou 3:1 (texto grande).",
-    "imagem_sem_texto_alternativo": "Adicionar atributo alt descritivo. Para imagens decorativas usar alt=\"\".",
-    "imagem_link_sem_texto_alternativo": (
-        "Adicione alt descritivo à imagem dentro do link. "
-        "O alt deve indicar o destino do link, não apenas o conteúdo visual. "
-        "Exemplo: <img src='banner.jpg' alt='Acesse a página de inscrição'>. "
-        "O atributo alt é obrigatório mesmo quando vazio."
+    # ── Ativação e controle ──────────────────────────────────────────────────
+    "controle_sem_nome_acessivel": (
+        "Há botões na página sem texto ou rótulo. Para quem usa leitor de tela, esses botões não existem: "
+        "o software não anuncia a função do controle e o usuário não sabe se deve clicar. "
+        "O time de produto precisa dar a cada botão um nome acessível que diga claramente o que ele faz, "
+        "usando texto visível, aria-label ou aria-labelledby."
     ),
     "link_sem_nome_acessivel": (
-        "Adicione texto descritivo dentro do <a> ou use aria-label com o destino ou ação. "
-        "Links com apenas ícone ou imagem sem alt são invisíveis para leitores de tela. "
-        "Exemplo: <a href='/sobre' aria-label='Conheça nossa equipe'>...</a>."
+        "Há links na página sem nenhum texto. O leitor de tela ou anuncia a URL crua ou pula sem dizer nada: "
+        "em ambos os casos, impossível saber para onde o link vai. "
+        "O time de produto precisa colocar um texto descritivo em cada um, indicando claramente o destino."
     ),
-    "formulario_sem_rotulo": "Associar campo a um <label for='id'> ou usar aria-label/aria-labelledby.",
-    "campo_select_sem_label": "Adicionar label associado ao select ou aria-label descrevendo o campo.",
-    "rotulo_difere_do_nome_acessivel": "Garantir que o nome acessível contenha o texto visível do controle (Label in Name).",
-    "iframe_sem_titulo": "Adicionar atributo title descritivo em todo iframe/frame.",
-    "idioma_documento_ausente": "Definir atributo lang no elemento <html>, por exemplo lang='pt-BR'.",
-    "titulo_pagina_ausente_ou_vazio": "Definir um <title> único e descritivo para cada página.",
+    "formulario_sem_rotulo": (
+        "Campos do formulário estão sem etiqueta. Quem usa leitor de tela chega ao campo e ouve apenas "
+        '"campo de texto": sem saber o que deve preencher. '
+        "O time de produto precisa vincular um rótulo a cada campo para que o nome do campo "
+        "seja anunciado quando o foco chegar nele."
+    ),
+    "rotulo_difere_do_nome_acessivel": (
+        "O texto que o usuário lê no controle é diferente do nome que o código registrou. "
+        "Quem usa comando de voz fala o que vê na tela, mas o sistema espera outra palavra: o comando falha em silêncio. "
+        "O time de produto precisa alinhar o rótulo visível ao nome interno, sem deixar os dois divergirem."
+    ),
+    "contraste_insuficiente": (
+        "Parte dos textos e botões usa combinações de cor com contraste baixo demais. "
+        "Em má iluminação ou para quem tem visão reduzida, esse conteúdo some. "
+        "O time de design deve revisar a paleta e garantir contraste mínimo AA antes da próxima publicação."
+    ),
+    # ── Perda de conteúdo (imagens) ─────────────────────────────────────────
+    "imagem_sem_texto_alternativo": (
+        "Há imagens com informação útil sem descrição alternativa. Para quem usa leitor de tela, "
+        "esse conteúdo simplesmente não chega. "
+        "O time de conteúdo e desenvolvimento deve revisar cada imagem e decidir: quando ela transmite informação, "
+        "escrever um texto alternativo curto e claro; quando for apenas decorativa, "
+        "usar alt vazio para que ela seja ignorada corretamente."
+    ),
+    "imagem_link_sem_texto_alternativo": (
+        "Há links representados apenas por imagem sem texto alternativo que indique o destino. "
+        "Para quem usa leitor de tela, ouvir 'imagem, link' sem descrição é o mesmo que uma placa sem texto. "
+        "O time de conteúdo e desenvolvimento precisa garantir que cada imagem-link tenha um texto alternativo "
+        "que explique a ação ou o destino — não apenas o que a imagem mostra visualmente."
+    ),
+    "input_imagem_sem_alt": (
+        "Há botões de imagem (input type=image) sem texto alternativo. "
+        "Para quem usa leitor de tela, esses controles ficam sem nome e a ação associada fica invisível. "
+        "O time precisa adicionar um atributo alt que descreva claramente a ação do botão, não apenas a imagem."
+    ),
+    "objeto_embed_sem_alternativa": (
+        "Há objetos incorporados (flash, embed, object) sem conteúdo alternativo em texto. "
+        "Quando o objeto não carrega ou não é suportado, o usuário não recebe nenhuma informação equivalente. "
+        "O time deve fornecer um equivalente em texto acessível ou substituir o objeto por tecnologia nativa do navegador."
+    ),
+    # ── Desorientação estrutural ─────────────────────────────────────────────
+    "ausencia_landmark_main": (
+        "Sem uma região principal bem definida, quem navega por teclado ou leitor de tela perde um dos atalhos "
+        "mais importantes para chegar diretamente ao conteúdo central da página. "
+        "O time web deve marcar a área de conteúdo principal com um único elemento de região principal "
+        "e garantir que eventuais links de atalho apontem para ela."
+    ),
+    "lista_filhos_invalidos": (
+        "Quando uma lista é montada com estrutura semântica incorreta, o leitor de tela deixa de anunciar "
+        "corretamente a quantidade, a sequência e a relação entre os itens. "
+        "O time web precisa reconstruir a lista usando marcação válida, "
+        "preservando a hierarquia do conteúdo — não apenas sua aparência visual."
+    ),
+    "heading_sem_conteudo": (
+        "Há um título na página sem conteúdo textual. Para quem navega pela lista de títulos do leitor de tela, "
+        "isso cria uma seção sem nome e quebra a orientação pelo conteúdo. "
+        "O time web deve preencher esse heading com texto real e significativo "
+        "ou remover a tag de título se ela estiver sendo usada apenas para efeito visual."
+    ),
+    "hierarquia_titulos_incorreta": (
+        "A hierarquia de títulos da página está fora de ordem: há títulos de nível 4 ou 5 sem que antes exista "
+        "um nível 1 ou 2. Para quem navega pelo índice de títulos com leitor de tela, a estrutura da página fica incoerente. "
+        "O time web precisa reorganizar os títulos em sequência lógica, do mais geral para o mais específico."
+    ),
+    # ── Família ARIA ─────────────────────────────────────────────────────────
+    "aria_atributo_nao_permitido": (
+        "Há atributos ARIA aplicados em elementos ou papéis que não os aceitam. "
+        "Isso introduz ruído semântico e pode levar tecnologias assistivas a anunciar informação incorreta "
+        "ou ignorar o componente. "
+        "O time deve remover atributos ARIA inválidos e manter apenas os que forem compatíveis "
+        "com o papel e a função real do elemento."
+    ),
+    "aria_atributo_obrigatorio_ausente": (
+        "Há componentes com papel ARIA declarado, mas sem os atributos obrigatórios que definem o estado "
+        "ou o valor do elemento. O leitor de tela anuncia o papel sem conseguir descrever o estado atual, "
+        "deixando o usuário sem informação para agir. "
+        "O time deve adicionar os atributos obrigatórios para cada papel ARIA usado."
+    ),
+    "aria_valor_invalido": (
+        "Atributos ARIA estão presentes, mas com valores que não são aceitos para aquele atributo. "
+        "O comportamento do leitor de tela fica imprevisível: pode ignorar o atributo ou interpretar de forma errada. "
+        "O time deve corrigir os valores para os aceitos pela especificação ARIA."
+    ),
+    "aria_atributo_invalido": (
+        "Há atributos ARIA usados que não existem na especificação. "
+        "Tecnologias assistivas ignoram atributos desconhecidos, tornando o componente menos previsível. "
+        "O time deve substituir pelos atributos corretos ou remover os inválidos."
+    ),
+    "aria_papel_invalido": (
+        "Há elementos com role ARIA inválido ou inexistente. O leitor de tela não consegue categorizar "
+        "o elemento corretamente, o que compromete navegação e interação. "
+        "O time deve substituir por um role válido compatível com a função do elemento "
+        "ou remover o atributo quando HTML nativo já oferece a semântica necessária."
+    ),
+    "aria_filhos_obrigatorios_ausentes": (
+        "Alguns componentes usam papéis ARIA que exigem estrutura interna específica, "
+        "mas essa hierarquia está incompleta. O leitor de tela reconhece o papel do componente, "
+        "mas não encontra as partes necessárias para anunciá-lo corretamente. "
+        "O time deve completar a estrutura exigida ou substituir o componente por HTML nativo equivalente, "
+        "que já traz semântica correta por padrão."
+    ),
+    "aria_pai_obrigatorio_ausente": (
+        "Alguns elementos com papel ARIA foram colocados fora do elemento pai esperado pela especificação. "
+        "O leitor de tela pode anunciar o elemento de forma isolada, sem o contexto necessário para entendê-lo. "
+        "O time deve reestruturar o componente para que os elementos filhos estejam dentro do pai correto."
+    ),
+    # ── Outros ──────────────────────────────────────────────────────────────
+    "campo_select_sem_label": (
+        "Há campos de seleção sem rótulo associado. "
+        "Quem usa leitor de tela chega ao campo e ouve apenas 'caixa de seleção', sem saber o que está escolhendo. "
+        "O time de produto precisa vincular um rótulo descritivo a cada campo de seleção."
+    ),
+    "iframe_sem_titulo": (
+        "Há frames ou iframes sem título descritivo. Para quem usa leitor de tela, "
+        "entrar num frame sem nome é como abrir uma janela anônima sem saber o que contém. "
+        "O time web precisa adicionar um atributo title claro em cada frame, descrevendo seu conteúdo ou função."
+    ),
+    "idioma_documento_ausente": (
+        "O código da página não declara o idioma. O leitor de tela então aplica as regras de pronúncia padrão, "
+        "em geral inglês, ao conteúdo em português, produzindo um áudio difícil de entender. "
+        "O time web resolve isso com uma linha só no código-fonte."
+    ),
+    "titulo_pagina_ausente_ou_vazio": (
+        "A página não tem título definido ou o título está vazio. "
+        "Quem navega entre abas ou usa leitor de tela perde a referência de onde está. "
+        "O time web precisa definir um título único e descritivo para cada página."
+    ),
 }
 
 
@@ -519,7 +644,17 @@ def _resolve_correcao(meta: NormalizedMeta, fallback_tipo: str = "") -> str:
     tipo = (meta.get("issue_tipo_normalizado") or fallback_tipo or "").strip()
     if tipo and tipo in DEFAULT_CORRECAO_BY_TIPO:
         return DEFAULT_CORRECAO_BY_TIPO[tipo]
-    return "Corrigir o elemento conforme o critério WCAG indicado e validar novamente com Lighthouse/WAVE."
+    wcag = (meta.get("wcag_criterio") or "").strip()
+    if wcag:
+        return (
+            f"Esta barreira viola o critério {wcag}. "
+            "O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico "
+            "e corrigir conforme as diretrizes do critério correspondente."
+        )
+    return (
+        "O time técnico deve revisar os elementos indicados no Apêndice Técnico "
+        "e corrigir conforme as diretrizes WCAG do critério correspondente."
+    )
 
 
 def normalize_lighthouse_audit(audit_id: str, title: str, description: str) -> NormalizedMeta:

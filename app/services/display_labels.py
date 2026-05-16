@@ -15,8 +15,15 @@ DISPLAY_LABEL_OVERRIDES: dict[str, str] = {
     "ausencia_landmark_main": "Ausência da região principal <main>",
     "viewport_meta_problematico": "Viewport impede ampliação ou zoom",
     "botao_completamente_vazio": "Botão sem texto",
+    "button_empty": "Botão sem texto",
     "heading_sem_conteudo": "Cabeçalho sem texto",
+    "empty-heading": "Cabeçalho sem texto",
     "hierarquia_titulos_incorreta": "Hierarquia de títulos incorreta",
+    "lista_filhos_invalidos": "Lista com estrutura inválida",
+    "item_lista_fora_de_lista": "Item de lista fora de lista",
+    "skip_link_nao_focalizavel": "Skip link não focalizável",
+    "wave_alert_accesskey": "Atalho accesskey conflitante",
+    "accesskey_duplicado": "Atalho accesskey duplicado",
 }
 
 

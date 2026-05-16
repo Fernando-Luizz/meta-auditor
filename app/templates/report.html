@@ -132,9 +132,13 @@ code{
 strong{font-weight:700}
 .wrap{max-width:1020px;margin:0 auto;padding:32px 22px 100px}
 
-/* ── Print button ─────────────────────────────────────── */
-.pbtn{
+/* ── Exportar relatório (PDF via impressão · HTML arquivo) ── */
+.ma-export-bar{
   position:fixed;top:18px;right:18px;z-index:999;
+  display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;
+  max-width:min(100vw - 36px, 420px);
+}
+.pbtn{
   display:inline-flex;align-items:center;gap:7px;
   padding:10px 18px;
   background:var(--ink);color:#fff;
@@ -145,9 +149,13 @@ strong{font-weight:700}
   box-shadow:var(--shmd);
   font-family:inherit;
   transition:background .15s;
+  text-decoration:none;
 }
-.pbtn:hover{background:var(--ink2)}
+a.pbtn:hover{background:var(--ink2);color:#fff}
+button.pbtn:hover{background:var(--ink2)}
 .pbtn:focus{outline:3px solid var(--amber);outline-offset:2px}
+.pbtn--html{background:var(--ma-primary)}
+.pbtn--html:hover,a.pbtn--html:hover{background:var(--ma-primary-dark)}
 
 /*,: Relatório: header executivo, scorecard, faixa legal,: */
 .ma-header { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 16px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 16px; }
@@ -217,6 +225,8 @@ strong{font-weight:700}
 .ma-exec-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ma-ink-400); }
 .ma-exec-title { font-size: 20px; font-weight: 800; color: var(--ma-ink-900); letter-spacing: -0.02em; line-height: 1.25; }
 .ma-exec-body-text { font-size: 14px; line-height: 1.75; color: var(--ma-ink-700); padding: 16px 20px; background: var(--ma-ink-50); border-radius: 10px; border-left: 3px solid var(--ma-primary); margin-bottom: 22px; }
+.ma-exec-body-text p { margin: 0 0 12px; }
+.ma-exec-body-text p:last-child { margin-bottom: 0; }
 .ma-exec-body-text strong { color: var(--ma-ink-900); font-weight: 700; }
 .ma-exec-body-text em { color: var(--ma-primary); font-style: normal; font-weight: 600; }
 .ma-exec-counters { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; margin-bottom: 22px; }
@@ -524,6 +534,8 @@ strong{font-weight:700}
 .ma-bc-col-label.impact { color: var(--ma-alta); }
 .ma-bc-col-label.fix { color: var(--ma-primary); }
 .ma-bc-impact-text { font-size: 13px; color: var(--ma-ink-700); line-height: 1.6; }
+.ma-bc-impact-text p { margin: 0 0 10px; }
+.ma-bc-impact-text p:last-child { margin-bottom: 0; }
 .ma-bc-impact-text strong { color: var(--ma-ink-900); font-weight: 700; }
 .ma-bc-fix-steps { display: flex; flex-direction: column; gap: 8px; }
 .ma-bc-fix-step { font-size: 12px; color: var(--ma-ink-700); line-height: 1.6; }
@@ -1876,7 +1888,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 @media print{
   body{background:#fff!important;font-size:11px}
   .wrap{max-width:100%!important;padding:0!important}
-  .pbtn{display:none!important}
+  .ma-export-bar,.pbtn{display:none!important}
   .bc,.dc,.leg-block,.grp-sec,.charts-sec,.action-plan,
   .pour-sec,.legal-sec,.method-sec,.ma-exec-card,.ma-principles-card,.ma-bc,.ma-plan-card,.ma-check-card{box-shadow:none!important}
   .ma-plan-card,.ma-check-card{break-inside:avoid-page}
@@ -2209,6 +2221,16 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 </head>
 <body>
 {% from '_report_macros.html' import ma_logo_icon %}
+<div class="ma-export-bar no-print" role="toolbar" aria-label="Exportar relatório">
+  <button type="button" class="pbtn" onclick="window.print()" aria-label="Salvar relatório como PDF">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Salvar PDF
+  </button>
+  <a href="/audits/{{ audit.id }}/export.html" class="pbtn pbtn--html" download="relatorio-acessibilidade-{{ audit.id }}.html" title="Baixar relatório completo em HTML">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Baixar HTML
+  </a>
+</div>
 {% set _print_u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set print_domain = _print_u.split('/')[0] if _print_u else '–' %}
 {% set print_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
@@ -2277,5 +2299,13 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 
 {% include 'report_body.html' %}
 </div>
+<script>
+(function () {
+  if (new URLSearchParams(window.location.search).get('print') !== '1') return;
+  window.addEventListener('load', function () {
+    setTimeout(function () { window.print(); }, 400);
+  });
+})();
+</script>
 </body>
 </html>

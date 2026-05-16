@@ -149,26 +149,22 @@
       </div>
     </div>
     <div class="ma-exec-body-text">
-      Esta auditoria automatizada identificou <strong>{{ nt }} barreira{{ 's' if nt!=1 }} de acessibilidade</strong>
-      neste portal: sendo <strong>{{ na }} {{ 'barreira' if na==1 else 'barreiras' }} de alta prioridade</strong>{% if nm %}, {{ nm }} {{ 'barreira' if nm==1 else 'barreiras' }} de média prioridade{% endif %}{% if nb %} e {{ nb }} {{ 'barreira' if nb==1 else 'barreiras' }} de baixa prioridade{% endif %}.
+      <p>Esta auditoria automatizada identificou <strong>{{ nt }} barreira{{ 's' if nt!=1 }} de acessibilidade</strong>
+      neste portal: sendo <strong>{{ na }} {{ 'barreira' if na==1 else 'barreiras' }} de alta prioridade</strong>{% if nm %}, {{ nm }} {{ 'barreira' if nm==1 else 'barreiras' }} de média prioridade{% endif %}{% if nb %} e {{ nb }} {{ 'barreira' if nb==1 else 'barreiras' }} de baixa prioridade{% endif %}.</p>
       {% if na > 0 %}
-        <br><br>
         {%- set grupos_crit=[] %}
         {%- if cnt.cego > 0 %}{% set _ = grupos_crit.append('usuários de leitor de tela (cegos)') %}{% endif %}
         {%- if cnt.visao > 0 %}{% set _ = grupos_crit.append('pessoas com baixa visão') %}{% endif %}
         {%- if cnt.motor > 0 %}{% set _ = grupos_crit.append('usuários com mobilidade reduzida') %}{% endif %}
         {%- if cnt.cogni > 0 %}{% set _ = grupos_crit.append('pessoas com dificuldades cognitivas') %}{% endif %}
-        As barreiras críticas afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.
+        <p>As barreiras críticas afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.</p>
       {% else %}
-        <br><br>
-        Nenhuma barreira foi consolidada como alta prioridade nesta execução. Trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.
+        <p>Nenhuma barreira foi consolidada como alta prioridade nesta execução. Trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.</p>
       {% endif %}
       {% if rapidas|length > 0 %}
-        <br><br>
-        <em>{{ rapidas|length }} {% if rapidas|length == 1 %}problema pode ser corrigido{% else %}problemas podem ser corrigidos{% endif %} em menos de 1 dia</em> pela equipe técnica, com impacto imediato na qualidade da experiência.
+        <p><em>{{ rapidas|length }} {% if rapidas|length == 1 %}problema pode ser corrigido{% else %}problemas podem ser corrigidos{% endif %} em menos de 1 dia</em> pela equipe técnica, com impacto imediato na qualidade da experiência.</p>
       {% endif %}
-      <br><br>
-      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando o site tem barreiras de acesso.
+      <p>Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando o site tem barreiras de acesso.</p>
     </div>
     <div class="ma-exec-counters" role="list" aria-label="Indicadores do resumo executivo">
       <div class="ma-counter" role="listitem">
@@ -300,10 +296,9 @@
       </div>
     </div>
     <div class="ma-exec-body-text">
-      Este portal não apresentou barreiras catalogadas automaticamente pelas ferramentas utilizadas. Resultado positivo na camada automatizada:
-      recomenda-se ainda testes manuais, leitor de tela e, quando possível, participação de usuários com deficiência.
-      <br><br>
-      Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando há barreiras não detectadas por crawlers.
+      <p>Este portal não apresentou barreiras catalogadas automaticamente pelas ferramentas utilizadas. Resultado positivo na camada automatizada:
+      recomenda-se ainda testes manuais, leitor de tela e, quando possível, participação de usuários com deficiência.</p>
+      <p>Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando há barreiras não detectadas por crawlers.</p>
     </div>
     <div class="ma-exec-legal">
       <p class="ma-exec-legal-note">
@@ -320,11 +315,6 @@
   </div>
 </div>
 {% endif %}
-
-<button class="pbtn no-print" type="button" onclick="window.print()" aria-label="Salvar relatório como PDF">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-  Salvar como PDF
-</button>
 
 <main id="main-content">
 

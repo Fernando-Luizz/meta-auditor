@@ -9,7 +9,11 @@ from urllib.parse import urlparse
 import httpx
 
 from app.config import AI_ANTHROPIC_CONCURRENCY, AI_ANTHROPIC_REQUEST_TIMEOUT
-from app.services.text_clean import normalize_barrier_ai_texts, normalize_executive_plaintext
+from app.services.text_clean import (
+    normalize_barrier_ai_texts,
+    normalize_executive_plaintext,
+    normalize_html_breaks,
+)
 
 _log = logging.getLogger("uvicorn.error")
 
@@ -98,18 +102,8 @@ def _normalize_pt_text(text: str) -> str:
 
 
 def _strip_br_literals(s: str) -> str:
-    """Converte marcas <br> comuns do modelo em quebras antes da normalização completa."""
-    t = str(s or "")
-    for a, b in (
-        ("<br />", "\n"),
-        ("<br/>", "\n"),
-        ("<BR />", "\n"),
-        ("<BR/>", "\n"),
-        ("<br>", "\n"),
-        ("<BR>", "\n"),
-    ):
-        t = t.replace(a, b)
-    return t
+    """Converte marcas <br> (incl. entidades escapadas) em quebras antes da normalização completa."""
+    return normalize_html_breaks(s)
 
 
 def _nivel2_ticket_normalized(parsed2: dict) -> tuple[str, dict]:

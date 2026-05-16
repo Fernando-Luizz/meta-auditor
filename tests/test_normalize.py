@@ -47,6 +47,7 @@ def test_unmapped_wave_falls_back_empty_wcag():
         ("listitem", "item_lista_fora_de_lista"),
         ("link-in-text-block", "link_distinguivel_somente_por_cor"),
         ("html-lang-valid", "idioma_html_invalido"),
+        ("empty-heading", "heading_sem_conteudo"),
         ("skip-link", "skip_link_nao_focalizavel"),
         ("accesskeys", "accesskey_duplicado"),
         ("tabindex", "tabindex_positivo"),

@@ -382,3 +382,6 @@ def test_display_labels_link_sem_nome_familia_executiva():
 
     assert executive_group_for("link_sem_nome_acessivel") == "Links e controles sem nome"
     assert issue_display_label("controle_sem_nome_acessivel", None, None) == "Controle sem nome acessível"
+    assert issue_display_label("heading_sem_conteudo", None, None) == "Cabeçalho sem texto"
+    assert issue_display_label("empty-heading", None, "empty-heading") == "Cabeçalho sem texto"
+    assert issue_display_label("botao_completamente_vazio", None, None) == "Botão sem texto"

@@ -846,7 +846,7 @@ async def api_info():
         "health": "/health",
         "audit": "POST /audit com body {\"url\": \"https://...\"}",
         "audits": "GET /audits?limit=50 | GET /audits/{id} | GET /audits/{id}/report.html",
-        "export": "GET /audits/{id}/export.html | export.json | export.zip (Content-Disposition: attachment)",
+        "export": "GET /audits/{id}/export.html | export.json | export.zip (attachment); PDF via report.html?print=1",
     }
 
 
