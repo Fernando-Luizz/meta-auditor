@@ -61,11 +61,19 @@ def test_report_body_uses_clean_report_text_not_format_html_tags():
     assert "|safe" not in body.split("correcao_detalhada")[1][:2000]
 
 
-def test_print_css_a1_tickets_allow_natural_break_in_pdf():
+def test_print_css_a1_tickets_keep_sub_cards_intact_in_pdf():
     block = _final_print_block(REPORT_HTML.read_text(encoding="utf-8"))
     idx = block.index(".ap-block--a1 .ap-ticket-sub,")
-    section = block[idx : idx + 380]
-    assert "break-inside: auto !important" in section
+    section = block[idx : idx + 420]
+    assert "break-inside: avoid !important" in section
+    assert "overflow: visible !important" in section
+
+
+def test_print_css_a1_outer_stack_allows_page_break():
+    css = REPORT_HTML.read_text(encoding="utf-8")
+    assert ".ap-block--a1 .ap-ticket-stack" in css
+    stack_section = css.split(".ap-block--a1 .ap-ticket-stack", 1)[1][:200]
+    assert "break-inside: auto !important" in stack_section
 
 
 def test_report_html_has_no_window_print():

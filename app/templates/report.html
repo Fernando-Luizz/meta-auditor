@@ -2389,7 +2389,33 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     text-decoration: none;
     color: var(--ink3);
   }
-  .ap-barrier-block {
+  /* A1: stack quebra entre barreiras; cada card de ticket permanece íntegro */
+  .ap-block.ap-block--a1,
+  .ap-block--a1 .ap-barrier-block,
+  .ap-block--a1 .ap-ticket-block,
+  .ap-block--a1 .ap-ticket-stack {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+  .ap-block--a1 .ap-ticket-sub,
+  .ap-block--a1 .ap-ticket-rows {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    overflow: visible !important;
+  }
+  .ap-block--a1 .tk-row {
+    display: block !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .ap-block--a1 .ap-barrier-title,
+  .ap-block--a1 .ap-ctx-strip,
+  .ap-block--a1 .ap-ticket-subhead {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+  .ap-barrier-block:not(.ap-barrier-block--a1) {
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -2429,9 +2455,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ap-barrier-block,
   .ap-ticket-block,
   .ap-ticket-stack,
-  .ap-ticket-sub,
-  .ap-ticket-rows,
-  .tk-row,
   .tk-val,
   .ap-field,
   .ap-field-val,
@@ -2448,12 +2471,19 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-bc,
   .ap-block,
   .ap-barrier-block,
-  .ap-ticket-block,
-  .ap-ticket-sub {
+  .ap-ticket-block {
     break-before: auto !important;
     page-break-before: auto !important;
     break-after: auto !important;
     page-break-after: auto !important;
+  }
+
+  .ap-ticket-sub,
+  .ap-ticket-rows,
+  .tk-row {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    overflow: visible !important;
   }
 
   h1,
@@ -2557,13 +2587,14 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   }
   .ap-block--a1 .ap-ticket-sub,
   .ap-block--a1 .ap-ticket-rows {
-    break-inside: avoid-page !important;
-    page-break-inside: avoid-page !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
     overflow: visible !important;
   }
   .ap-block--a1 .tk-row {
-    break-inside: avoid-page !important;
-    page-break-inside: avoid-page !important;
+    display: block !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
   .ap-block--a1 .ap-barrier-title,
   .ap-block--a1 .ap-ctx-strip,
@@ -2604,18 +2635,19 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     padding: 0 !important;
   }
 
+  /* Reforço final (vence qualquer override anterior): cards de ticket íntegros no PDF */
   .ap-block--a1 .ap-ticket-sub,
   .ap-block--a1 .ap-ticket-rows,
-  .ap-block--a1 .tk-row,
   .ap-ticket-sub,
   .ap-ticket-rows,
-  .tk-row,
-  .tk-val,
-  .ap-field,
-  .ap-field-val {
-    break-inside: auto !important;
-    page-break-inside: auto !important;
+  .tk-row {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
     overflow: visible !important;
+  }
+  .ap-block--a1 .tk-row,
+  .tk-row {
+    display: block !important;
   }
 
   .ap-ticket-subhead,

@@ -307,7 +307,7 @@
   {%- elif 'wave_alert_accesskey' in id or 'wave_alert_accesskey' in tipo or 'accesskey_duplicado' in id or 'accesskey_duplicado' in tipo or ('accesskey' in id and 'skip' not in id) -%}
     A página usa atalhos de teclado baseados em accesskey, que podem conflitar com atalhos já existentes do navegador, do sistema operacional ou do leitor de tela. Isso torna a navegação menos previsível e pode acionar funções inesperadas. O time web deve evitar accesskey como solução principal de navegação e priorizar mecanismos mais compatíveis, como estrutura semântica correta, landmarks e links de atalho visíveis.
   {%- elif 'viewport_meta' in tipo or 'meta-viewport' in id -%}
-    O meta viewport restringe zoom ou redimensionamento de texto no telemóvel. Quem tem baixa visão e precisa ampliar a página deixa de conseguir ler confortavelmente. O time web precisa remover restrições como user-scalable=no ou maximum-scale=1 e testar o site com zoom a 200%.
+    O meta viewport restringe zoom ou redimensionamento de texto no celular. Quem tem baixa visão e precisa ampliar a página deixa de conseguir ler confortavelmente. O time web precisa remover restrições como user-scalable=no ou maximum-scale=1 e testar o site com zoom a 200%.
   {%- elif 'formulario_so_title' in tipo or 'label_orfao' in tipo -%}
     Campos de formulário estão sem rótulo associado ou só com dica frágil (por exemplo, apenas title). Quem usa leitor de tela ou cognição reduzida não recebe instrução clara sobre o que preencher. O time de produto precisa associar label visível com for/id, instruções próximas ao campo e mensagens de erro compreensíveis.
   {%- elif 'link' in id -%}
