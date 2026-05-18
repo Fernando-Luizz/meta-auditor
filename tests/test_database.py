@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from app.database import count_audits, get_audit, init_db, list_audits, save_audit
+from app.database import count_audits, get_audit, init_db, list_audits, save_audit, update_report
 
 
 @pytest.fixture
@@ -111,6 +111,31 @@ def test_get_audit_deserializes_json(db_path: Path):
     assert row["report"] == rep
     assert row["score_breakdown"] == sb
     assert isinstance(row["report"], dict)
+
+
+def test_update_report_persists_json(db_path: Path):
+    _run(init_db(db_path))
+    rep = {"barreiras_automaticas": [{"versao_dev": ""}]}
+    _run(
+        save_audit(
+            db_path,
+            url="https://upd.example/",
+            lh_score=0.9,
+            wave_aim_score=8.0,
+            lh_failed_count=0,
+            wave_error_count=0,
+            wave_contrast_count=0,
+            barreiras_count=1,
+            divergencias_count=0,
+            score_breakdown=None,
+            report=rep,
+        )
+    )
+    rep["barreiras_automaticas"][0]["versao_dev"] = "Instrução técnica preenchida no re-export."
+    _run(update_report(db_path, 1, rep))
+    row = _run(get_audit(db_path, 1))
+    assert row is not None
+    assert row["report"]["barreiras_automaticas"][0]["versao_dev"].startswith("Instrução")
 
 
 def test_get_audit_not_found(db_path: Path):

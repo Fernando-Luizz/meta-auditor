@@ -1,7 +1,36 @@
 """Normalização Lighthouse / WAVE -> tipos e metadados WCAG."""
 import pytest
 
-from app.services.normalize_maps import normalize_lighthouse_audit, normalize_wave_item
+from app.services.normalize_maps import (
+    LIGHTHOUSE_NORMALIZATION,
+    WAVE_NORMALIZATION,
+    normalize_lighthouse_audit,
+    normalize_wave_item,
+)
+
+
+def _all_publico_afetado_values() -> list[str]:
+    vals: list[str] = []
+    for meta in LIGHTHOUSE_NORMALIZATION.values():
+        pub = (meta.get("publico_afetado") or "").strip()
+        if pub:
+            vals.append(pub)
+    for meta in WAVE_NORMALIZATION.values():
+        pub = (meta.get("publico_afetado") or "").strip()
+        if pub:
+            vals.append(pub)
+    return vals
+
+
+def test_publico_afetado_are_short_categories_not_explanations():
+    """Rótulos curtos para resumo executivo — sem sintomas nem frases explicativas."""
+    for pub in _all_publico_afetado_values():
+        assert ":" not in pub, f"público verboso (dois-pontos): {pub!r}"
+        assert len(pub) <= 55, f"público longo demais ({len(pub)} chars): {pub!r}"
+        lower = pub.lower()
+        assert "não conseguem" not in lower, pub
+        assert "impede " not in lower, pub
+        assert "verificar" not in lower, pub
 
 
 def test_lighthouse_link_name_aligns_with_wave_link_empty():
@@ -78,6 +107,7 @@ def test_lighthouse_new_and_preventive_maps(audit_id, expected_tipo):
         ("alert", "link_pdf", "wave_alert_link_pdf"),
         ("alert", "youtube_video", "wave_alert_youtube_video"),
         ("alert", "html5_video_audio", "wave_alert_video_audio_html5"),
+        ("error", "title_invalid", "titulo_pagina_invalido"),
     ],
 )
 def test_wave_new_items_map(cat, item_id, expected_tipo):
@@ -85,3 +115,10 @@ def test_wave_new_items_map(cat, item_id, expected_tipo):
     assert m["issue_tipo_normalizado"] == expected_tipo
     assert m["wcag_criterio"].strip()
     assert m["publico_afetado"].strip()
+
+
+def test_wave_title_invalid_mapeia_wcag_page_titled():
+    m = normalize_wave_item("error", "title_invalid", "d")
+    assert m["issue_tipo_normalizado"] == "titulo_pagina_invalido"
+    assert m["wcag_criterio"] == "2.4.2 Page Titled"
+    assert m["publico_afetado"] == "Navegação e orientação"

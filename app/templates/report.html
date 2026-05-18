@@ -1847,7 +1847,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 /* ══ FOOTER ════════════════════════════════════════════════ */
 .footer{
   text-align:center;font-size:11px;color:var(--ink4);
-  margin-top:56px;padding-top:20px;
+  margin-top:24px;padding-top:16px;
   border-top:1px solid var(--border);
   line-height:1.7;
 }
@@ -1891,10 +1891,10 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-export-bar,.pbtn{display:none!important}
   .bc,.dc,.leg-block,.grp-sec,.charts-sec,.action-plan,
   .pour-sec,.legal-sec,.method-sec,.ma-exec-card,.ma-principles-card,.ma-bc,.ma-plan-card,.ma-check-card{box-shadow:none!important}
-  .ma-plan-card,.ma-check-card{break-inside:avoid-page}
+  .ma-plan-card,.ma-check-card{break-inside:auto;page-break-inside:auto}
   .ma-check-box{border:1.5px solid #888!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ma-fase-tag,.ma-phase-pill,.ma-sev-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .ma-bc{break-inside:avoid-page}
+  .ma-bc{break-inside:auto;page-break-inside:auto}
   .ma-bc-copy-btn{display:none!important}
   .ma-copy-ticket-btn{display:none!important}
   .ma-approved-sec{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -1906,8 +1906,8 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-ticket-card{display:block!important;border:1.5px solid #16764a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ma-ticket-card-head{background:#16764a!important;color:#fff!important;display:flex!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ticket-body{display:block!important}
-  .ma-eval-declaration{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid-page}
-  .ma-eval-declaration--top{break-inside:avoid-page}
+  .ma-eval-declaration{-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:auto;page-break-inside:auto}
+  .ma-eval-declaration--top{break-inside:auto;page-break-inside:auto}
   .ma-eval-decl-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .ma-header{border-radius:0!important;margin:0 0 16px!important;box-shadow:none!important}
   .ma-legal{box-shadow:none!important;margin-bottom:16px!important}
@@ -1969,24 +1969,52 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 
   @page {
     size: A4 portrait;
-    margin: 72px 48px 56px 48px;
-  }
-  @page :first {
-    margin-top: 48px;
+    /* margin-top em todas as páginas: cabeçalho fixo não sobrepõe o conteúdo */
+    margin: 22mm 8mm 12mm 8mm;
   }
 
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
   body {
-    padding-top: 52px !important;
+    padding-top: 0 !important;
+    padding-bottom: 12px !important;
     background: #fff !important;
     font-size: 12px;
     color: #2E3A4E;
     font-family: "Sora", system-ui, -apple-system, Segoe UI, sans-serif;
   }
 
+  /* Capa executiva (logo, domínio, meta, risco) — não ocultar no PDF */
   .ma-header {
-    display: none !important;
+    display: block !important;
+    margin-top: 0 !important;
+    margin-bottom: 16px;
+    overflow: visible !important;
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .ma-scorecard {
+    display: grid !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .ma-score-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .ma-legal {
+    display: flex !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .ma-print-header {
@@ -2010,18 +2038,9 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-ph-center { font-size: 9px; color: #6E8098; text-align: center; flex: 1; padding: 0 12px; }
   .ma-ph-right  { font-size: 9px; color: #6E8098; text-align: right; line-height: 1.5; }
 
+  /* Rodapé fixo sobrepunha o texto (conformance, resumo) — oculto no PDF; aviso legal fica no .footer final */
   .ma-print-footer {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 32px;
-    padding: 0 48px;
-    background: #F5F7FA;
-    border-top: 1px solid #E4E9EF;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    display: none !important;
   }
   .ma-pf-left   { font-size: 8px; color: #6E8098; }
   .ma-pf-center { font-size: 8px; color: #6E8098; text-align: center; flex: 1; padding: 0 8px; }
@@ -2033,19 +2052,157 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     padding: 0 !important;
   }
 
+  .ma-card,
+  .ma-card-metric,
+  .ma-check-item,
+  .ma-pour-card { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Containers grandes: podem quebrar entre filhos, não no meio de caixas estilizadas */
+  .ma-exec-card,
+  .ma-principles-card,
+  .charts-sec,
+  .legal-sec,
+  .conformance-bar {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+
+  .ma-exec-card {
+    overflow: visible !important;
+  }
+
+  .ma-exec-top,
+  .ma-exec-counters,
+  .ma-exec-legal,
+  .exec-ai-header,
+  .conformance-bar,
+  .cf-label {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .ma-exec-top { break-after: avoid; page-break-after: avoid; }
+
+  .ma-exec-body-text,
+  .chart-info-box,
+  .exec-ai-box {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-before: auto;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    overflow: visible !important;
+  }
+
+  .ma-exec-body-text {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .ma-exec-counters {
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+
+  .ma-exec-body-text p,
+  .exec-ai-body p {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .exec-ai-foot {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+
+  .charts-row > div {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .hbar-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .ma-pour-grid {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Impacto humano: quebra entre cards, não no meio do card */
+  .grp-sec {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+  .grp-grid {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+  .grp-grid .gc {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .legal-sec {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+  .legal-inner,
+  .risk-meter {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Barreiras longas (A1): permitir quebra interna */
   .ma-bc,
   .ma-bc-exec-layer,
   .ma-bc-ai-layer,
-  .ma-card,
-  .ma-card-metric,
-  .ma-exec-card,
-  .ma-principles-card,
+  .ma-bc-body,
+  .ma-bc-col,
   .ma-plan-card,
-  .ma-check-card,
-  .ma-check-item,
-  .ma-score-card,
-  .ma-legal,
-  .ma-pour-card { break-inside: avoid; page-break-inside: avoid; }
+  .ma-check-card {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+
+  .ma-bc-head,
+  .ma-bc-strip,
+  .ma-bc-location,
+  .ma-bc-meta,
+  .ma-bc-audience,
+  .ma-bc-layer-subhead,
+  .ev-figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .ma-bc-head,
+  .ma-bc-layer-subhead {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .ma-bc-appendix-ref,
+  .ma-bc-appendix-ref--quiet {
+    display: none !important;
+  }
+
+  .ma-bc .ev-wrap,
+  .ma-bc .sem-compare {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
 
   h1, h2, h3,
   .ma-bc-num,
@@ -2054,11 +2211,15 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-exec-eyebrow,
   .ma-check-phase-label { break-after: avoid; page-break-after: avoid; }
 
-  .ma-bc { break-before: auto; margin-bottom: 16px; }
+  .ma-bc { break-before: auto; margin-bottom: 12px; }
 
-  .ma-plan-card { break-before: page; page-break-before: always; }
+  .ma-plan-card { break-before: auto; page-break-before: auto; }
 
-  .ma-check-card { break-before: page; page-break-before: always; }
+  .ma-check-card { break-before: auto; page-break-before: auto; }
+
+  .ma-header-body { padding-bottom: 12px; }
+  .ma-scorecard { margin-bottom: 10px; }
+  .ma-legal { margin-bottom: 10px; }
 
   .ma-bc,
   .ma-card,
@@ -2158,7 +2319,15 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-pour-grid  { grid-template-columns: repeat(4, 1fr) !important; }
   .ma-grid-4     { grid-template-columns: repeat(4, 1fr) !important; }
 
-  .ma-bc-body { grid-template-columns: 1fr 1fr !important; }
+  .ma-bc-body {
+    grid-template-columns: 1fr !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+  .ma-bc-col:first-child {
+    border-right: none !important;
+    border-bottom: 1px solid #C2CBD6 !important;
+  }
 
   .ma-bc-copy { padding: 8px 22px; }
 }
@@ -2175,9 +2344,18 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     page-break-before: always;
   }
   .ap-block {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
     box-shadow: none !important;
+  }
+  .ap-block + .ap-block {
+    break-before: auto !important;
+    page-break-before: auto !important;
+    margin-top: 14px;
+  }
+  .ap-block-title {
+    break-after: avoid;
+    page-break-after: avoid;
   }
   .ev-img-main {
     max-height: 300px;
@@ -2216,21 +2394,280 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     page-break-inside: avoid;
   }
 }
+
+/* ============================================================
+   META-AUDITOR: FIX DEFINITIVO DE PDF (Playwright page.pdf)
+   Blocos longos: quebra natural. Cards pequenos: avoid-page.
+   ============================================================ */
+@media print {
+  html,
+  body {
+    overflow: visible !important;
+  }
+
+  .wrap,
+  .ma-page,
+  main,
+  section,
+  article,
+  details,
+  details.sc,
+  details[open],
+  .sc,
+  .ma-bc,
+  .ma-bc-body,
+  .ma-bc-exec-layer,
+  .ma-bc-ai-layer,
+  .ma-bc-copy,
+  .ma-bc-impact,
+  .ma-bc-fix,
+  .ma-bc-ai,
+  .ticket-body,
+  .ticket-details,
+  .ap-section,
+  .ap-block,
+  .ap-barrier-block,
+  .ap-ticket-block,
+  .ap-ticket-stack,
+  .ap-ticket-sub,
+  .ap-ticket-rows,
+  .tk-row,
+  .tk-val,
+  .ap-field,
+  .ap-field-val,
+  .bd-t,
+  .bd-t tbody,
+  .bd-t tr,
+  .bd-t td,
+  .bd-t th {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+
+  .ma-bc,
+  .ap-block,
+  .ap-barrier-block,
+  .ap-ticket-block,
+  .ap-ticket-sub {
+    break-before: auto !important;
+    page-break-before: auto !important;
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .ma-bc-title,
+  .ma-bc-num,
+  .ma-bc-meta,
+  .ap-block-title,
+  .ap-barrier-title,
+  .ap-field-label,
+  .ap-ticket-subhead,
+  .ma-plan-eyebrow,
+  .ma-section-eyebrow,
+  .ma-exec-eyebrow,
+  .ma-check-phase-label {
+    break-after: avoid-page !important;
+    page-break-after: avoid !important;
+  }
+
+  .ma-score-card,
+  .ma-card-metric,
+  .ma-pour-card,
+  .gc,
+  .ma-check-item,
+  .ma-eval-row,
+  .ma-approved-item {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+  }
+
+  table,
+  thead,
+  tbody,
+  tr,
+  td,
+  th,
+  code,
+  pre,
+  .tk-preline,
+  .ma-bc-copy-code,
+  .ap-field-val,
+  .tk-val {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  .tk-row {
+    display: block !important;
+    border-bottom: 1px solid #E4E9EF !important;
+    padding: 6px 0 !important;
+  }
+
+  .tk-lbl {
+    display: block !important;
+    width: auto !important;
+    margin-bottom: 3px !important;
+  }
+
+  .tk-val {
+    display: block !important;
+    width: auto !important;
+  }
+
+  .ev-wrap,
+  .ev-card,
+  .ev-unavail,
+  .ev-img-main {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    max-width: 100% !important;
+  }
+
+  .ev-img-main {
+    max-height: 220px !important;
+    object-fit: contain !important;
+  }
+
+  .ma-plan-card,
+  .ma-check-card {
+    break-before: auto !important;
+    page-break-before: auto !important;
+  }
+
+  .ma-export-bar,
+  .pbtn,
+  .no-print {
+    display: none !important;
+  }
+
+  /* A1: stack pode quebrar entre páginas; cada card de ticket (IA) permanece íntegro */
+  .ap-block.ap-block--a1,
+  .ap-block--a1 .ap-barrier-block,
+  .ap-block--a1 .ap-ticket-block,
+  .ap-block--a1 .ap-ticket-stack {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+  .ap-block--a1 .ap-ticket-sub,
+  .ap-block--a1 .ap-ticket-rows {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid-page !important;
+    overflow: visible !important;
+  }
+  .ap-block--a1 .tk-row {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid-page !important;
+  }
+  .ap-block--a1 .ap-barrier-title,
+  .ap-block--a1 .ap-ctx-strip,
+  .ap-block--a1 .ap-ticket-subhead {
+    break-after: avoid-page !important;
+    page-break-after: avoid !important;
+  }
+}
+
+/* PDF Playwright: sem cabeçalho/rodapé fixos (evita sobreposição no topo das páginas) */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 8mm 12mm 8mm !important;
+  }
+
+  .ma-print-header,
+  .ma-print-footer {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    position: static !important;
+  }
+
+  html,
+  body,
+  .wrap,
+  .ma-page {
+    overflow: visible !important;
+  }
+
+  .wrap,
+  .ma-page {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .ap-block--a1 .ap-ticket-sub,
+  .ap-block--a1 .ap-ticket-rows,
+  .ap-block--a1 .tk-row,
+  .ap-ticket-sub,
+  .ap-ticket-rows,
+  .tk-row,
+  .tk-val,
+  .ap-field,
+  .ap-field-val {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+
+  .ap-ticket-subhead,
+  .ap-barrier-title,
+  .ap-block-title {
+    break-after: avoid-page !important;
+    page-break-after: avoid !important;
+  }
+
+  code,
+  pre,
+  .tk-preline,
+  .ma-bc-copy-code,
+  .ap-field-val,
+  .tk-val {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  /* Rodapé final: colado ao glossário, sem página quase vazia */
+  .footer {
+    break-before: avoid !important;
+    page-break-before: avoid !important;
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    margin-top: 12px !important;
+    padding-top: 10px !important;
+  }
+  .ap-section > .ap-block:last-child {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    margin-bottom: 0 !important;
+  }
+}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" media="print">
 </head>
 <body>
 {% from '_report_macros.html' import ma_logo_icon %}
+{% if not pdf_mode %}
 <div class="ma-export-bar no-print" role="toolbar" aria-label="Exportar relatório">
-  <button type="button" class="pbtn" onclick="window.print()" aria-label="Salvar relatório como PDF">
+  <a href="/audits/{{ audit.id }}/export.pdf" class="pbtn" aria-label="Baixar relatório em PDF" title="PDF gerado pelo servidor (Playwright)">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-    Salvar PDF
-  </button>
+    Baixar PDF
+  </a>
   <a href="/audits/{{ audit.id }}/export.html" class="pbtn pbtn--html" download="relatorio-acessibilidade-{{ audit.id }}.html" title="Baixar relatório completo em HTML">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Baixar HTML
   </a>
 </div>
+{% endif %}
 {% set _print_u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set print_domain = _print_u.split('/')[0] if _print_u else '–' %}
 {% set print_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
@@ -2299,13 +2736,5 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 
 {% include 'report_body.html' %}
 </div>
-<script>
-(function () {
-  if (new URLSearchParams(window.location.search).get('print') !== '1') return;
-  window.addEventListener('load', function () {
-    setTimeout(function () { window.print(); }, 400);
-  });
-})();
-</script>
 </body>
 </html>

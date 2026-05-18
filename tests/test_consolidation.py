@@ -377,6 +377,81 @@ def test_divergencia_nao_listada_quando_mesmo_tipo_ja_falhou_no_lh():
     assert "lighthouse" in rows[0]["confirmado_por"] and "wave" in rows[0]["confirmado_por"]
 
 
+def test_score_risco_alto_quando_ha_barreira_alta_mesmo_com_media_baixa():
+    """1 convergente (alta) + 3 só Lighthouse (média) → score 2,0; nível deve ser ALTO."""
+    tipos = [
+        "controle_sem_nome_acessivel",
+        "formulario_sem_rotulo",
+        "link_sem_nome_acessivel",
+        "imagem_sem_texto_alternativo",
+    ]
+    lh = [
+        _issue(
+            tool="lighthouse",
+            tipo=t,
+            confirmado=["lighthouse"],
+            evidencia=[f"sel-{t}"],
+            issue_orig=f"lh-{t}",
+            lh_id=f"lh-{t}",
+        )
+        for t in tipos
+    ]
+    w_conv = _issue(
+        tool="wave",
+        tipo=tipos[0],
+        confirmado=["wave"],
+        wave_cat="error",
+        evidencia=["sel-wave"],
+        issue_orig="le",
+    )
+    rep = build_report(lh, [w_conv], [], [], [])
+    sr = rep["score_risco"]
+    assert sr["n_alta"] == 1
+    assert sr["n_media"] == 3
+    assert sr["valor"] == 2.25  # (3 + 2 + 2 + 2) / 4 — regra antiga (>2,5) caía em MÉDIO
+    assert sr["nivel"] == "ALTO"
+
+
+def test_score_risco_limite_250_com_barreira_alta_nivel_alto():
+    """2 convergentes + 2 só Lighthouse → score 2,50; regra antiga (>2,5) caía em MÉDIO."""
+    tipos = ["tipo_a", "tipo_b", "tipo_c", "tipo_d"]
+    lh = [
+        _issue(
+            tool="lighthouse",
+            tipo=t,
+            confirmado=["lighthouse"],
+            evidencia=[f"lh-{t}"],
+            issue_orig=f"id-{t}",
+            lh_id=f"id-{t}",
+        )
+        for t in tipos
+    ]
+    w = [
+        _issue(
+            tool="wave",
+            tipo=tipos[0],
+            confirmado=["wave"],
+            wave_cat="error",
+            evidencia=["w-a"],
+            issue_orig="wa",
+        ),
+        _issue(
+            tool="wave",
+            tipo=tipos[1],
+            confirmado=["wave"],
+            wave_cat="error",
+            evidencia=["w-b"],
+            issue_orig="wb",
+        ),
+    ]
+    rep = build_report(lh, w, [], [], [])
+    sr = rep["score_risco"]
+    assert sr["n_alta"] == 2
+    assert sr["n_media"] == 2
+    assert sr["valor"] == 2.5
+    assert sr["nivel"] == "ALTO"
+
+
 def test_display_labels_link_sem_nome_familia_executiva():
     from app.services.display_labels import executive_group_for, issue_display_label
 

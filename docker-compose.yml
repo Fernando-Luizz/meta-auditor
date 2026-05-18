@@ -6,6 +6,8 @@ services:
       - "8010:8000"
     env_file:
       - .env
+    environment:
+      - META_AUDITOR_INTERNAL_BASE_URL=http://127.0.0.1:8000
     volumes:
       # Persistência do banco SQLite e JSONs brutos entre reinicializações
       - ./data:/app/data

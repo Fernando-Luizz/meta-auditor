@@ -500,9 +500,9 @@
   A ordem visual deve corresponder à ordem do DOM. Se CSS reordena visualmente elementos, verifique se a sequência de leitura do leitor de tela ainda faz sentido.
 {%- elif 'device dependent event handler' in t or 'event handler' in t -%}
   Eventos dependentes de dispositivo (somente mouse) excluem usuários de teclado ou toque. Substitua por eventos universais: <code>onclick</code> em vez de <code>onmouseover</code>, ou adicione equivalentes de teclado.
-{%- else -%}
-  {{- clean_exec_text(texto) -}}
-{%- endif -%}
+  {%- else -%}
+    {{- clean_exec_text(texto)|clean_report_text -}}
+  {%- endif -%}
 {% endmacro %}
 
 {% macro desc_tecnica_barreira(b) -%}

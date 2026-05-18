@@ -129,6 +129,21 @@ async def save_audit(
         return int(cur.lastrowid)
 
 
+async def update_report(db_path: Path, audit_id: int, report: dict) -> None:
+    """Atualiza apenas o campo `report` de uma auditoria existente.
+
+    Usado após re-enriquecimento IA para persistir dados de nível 2 que
+    falharam na primeira execução (timeout/rate-limit momentâneo).
+    """
+    rep_json = json.dumps(report, ensure_ascii=False)
+    async with aiosqlite.connect(db_path) as db:
+        await db.execute(
+            "UPDATE audits SET report = ? WHERE id = ?",
+            (rep_json, audit_id),
+        )
+        await db.commit()
+
+
 async def list_audits(
     db_path: Path,
     limit: int = 50,

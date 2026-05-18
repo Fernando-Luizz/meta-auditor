@@ -5,6 +5,15 @@ from __future__ import annotations
 import html
 import re
 
+from markupsafe import Markup, escape
+
+# Tags HTML citadas em texto técnico (não devem virar elementos no relatório).
+_HTML_TAG_LITERAL_RE = re.compile(
+    r"</?(?:main|nav|header|footer|aside|section|article|ul|ol|li|div|span|"
+    r"p|a|img|button|input|label|form|h[1-6]|code|pre|br|noscript)\b[^>]*>",
+    re.IGNORECASE,
+)
+
 # Blocos Unicode frequentes em saídas de LLM e mensagens de UI (não inclui letras acentuadas LATIN).
 _EMOJI_RE = re.compile(
     "["
@@ -37,6 +46,18 @@ def strip_emoji(text: str | None) -> str:
 
 # Travessão (U+2014), meia-ráquia (U+2013), menos matemático (U+2212) em títulos Lighthouse / IA.
 _RANGE_DASH = re.compile(r"(\d)\s*[\u2013\u2014\u2212]\s*(\d)")
+
+# Correções lexicais frequentes em saídas de IA (inglês/espanhol infiltrado).
+_PT_WORD_FIXES: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\bConductar\b", re.IGNORECASE), "Realizar"),
+)
+
+
+def _apply_pt_word_fixes(text: str) -> str:
+    t = text
+    for pattern, replacement in _PT_WORD_FIXES:
+        t = pattern.sub(replacement, t)
+    return t
 
 
 def normalize_html_breaks(text: str | None) -> str:
@@ -78,6 +99,7 @@ def normalize_executive_plaintext(text: str | None) -> str:
     t = re.sub(r"\n{3,}", "\n\n", t)
     t = re.sub(r":\s*:", ": ", t)
     t = strip_emoji(t)
+    t = _apply_pt_word_fixes(t)
     return t.strip()
 
 
@@ -101,6 +123,66 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
             v = tk.get(k)
             if isinstance(v, str) and v.strip():
                 tk[k] = normalize_executive_plaintext(v)
+
+
+def normalize_report_markup_text(text: str | None) -> str:
+    """
+    Normaliza texto técnico para relatório/PDF.
+
+    Resolve casos como:
+    - ``&lt;code&gt;&amp;lt;main&amp;gt;&lt;/code&gt;`` → ``<main>`` (exibido via autoescape do Jinja)
+    - ``<code>&lt;ul&gt;</code>`` → ``<ul>``
+    - ``&#34;campo de texto&#34;`` → ``"campo de texto"``
+
+    Devolve texto simples (não Markup): o template deve renderizar sem ``|safe``.
+    """
+    if text is None:
+        return ""
+
+    t = str(text)
+
+    for _ in range(6):
+        new_t = html.unescape(t)
+        if new_t == t:
+            break
+        t = new_t
+
+    t = re.sub(r"(?is)<\s*/?\s*code\s*>", "", t)
+    t = re.sub(r"(?is)<\s*br\s*/?\s*>", "\n", t)
+    t = re.sub(r"(?is)<\s*/\s*br\s*>", "\n", t)
+
+    t = normalize_report_dashes(t)
+    t = strip_emoji(t)
+    t = _apply_pt_word_fixes(t)
+
+    t = t.replace("\r\n", "\n").replace("\r", "\n")
+    t = re.sub(r"[ \t]{2,}", " ", t)
+    t = re.sub(r"\s+\n", "\n", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+
+    return t.strip()
+
+
+def format_html_tag_literals(text: str | None) -> Markup:
+    """
+    Exibe nomes de tags HTML como texto (ex.: <main>) sem o navegador interpretá-los.
+
+    Escapa o restante do conteúdo e envolve cada tag em <code>.
+    """
+    if not text:
+        return Markup("")
+    s = str(text)
+    parts: list[Markup | str] = []
+    last = 0
+    for match in _HTML_TAG_LITERAL_RE.finditer(s):
+        if match.start() > last:
+            parts.append(escape(s[last : match.start()]))
+        tag = match.group(0)
+        parts.append(Markup(f"<code>{escape(tag)}</code>"))
+        last = match.end()
+    if last < len(s):
+        parts.append(escape(s[last:]))
+    return Markup("").join(parts)
 
 
 def normalize_report_dashes(text: str | None) -> str:

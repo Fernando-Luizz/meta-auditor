@@ -19,10 +19,10 @@
         <span class="ma-conform-icon" aria-hidden="true">{% if nt == 0 %}{{ ma_tag_ok_svg(12)|safe }}{% else %}{{ ma_tag_warn_svg(12)|safe }}{% endif %}</span>
         <div class="ma-conform-text">
           <span class="ma-conform-title">
-            {% if nt == 0 %}WCAG 2.1 AA: Sem achados automáticos
-            {% elif sr_nivel == 'ALTO' %}WCAG 2.1 AA: Indícios de não conformidade
-            {% elif sr_nivel == 'MÉDIO' %}WCAG 2.1 AA: Parcialmente conforme
-            {% else %}WCAG 2.1 AA: Parcialmente conforme{% endif %}
+            {% if nt == 0 %}Resultado automatizado: sem barreiras detectadas
+            {% elif sr_nivel == 'ALTO' %}Resultado automatizado: indícios de não conformidade WCAG 2.1 AA
+            {% elif sr_nivel == 'MÉDIO' %}Resultado automatizado: barreiras moderadas detectadas
+            {% else %}Resultado automatizado: barreiras pontuais detectadas{% endif %}
           </span>
           <span class="ma-conform-sub">
             {% if nt == 0 %}Nenhuma barreira automatizada detectada nesta execução.

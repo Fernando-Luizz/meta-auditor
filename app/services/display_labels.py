@@ -126,7 +126,7 @@ def executive_group_for(issue_tipo_normalizado: str | None) -> str:
         return "Estrutura da página"
     if "viewport" in t:
         return "Viewport e zoom móvel"
-    if "idioma" in t or "lang" in t or "codigo_idioma" in t or "title_invalido" in t:
+    if "idioma" in t or "lang" in t or "codigo_idioma" in t:
         return "Idioma e metadados"
     if (
         "aria" in t

@@ -1,7 +1,7 @@
 {% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, impacto_descricao_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
 
 {# Lighthouse: tabela A4 (usada cedo em «O que está correto» para não prometer detalhes inexistentes) #}
-{% set lh_appendix = r.get('lighthouse_items') or [] %}
+{% set lh_appendix = r.get('lighthouse_items') or r.get('itens_aprovados') or [] %}
 {% set a4_tabela_lh = (lh_appendix|length > 0) %}
 
 {# ══ Contagens por ferramenta (uso nos gráficos) ════════════════════════ #}
@@ -493,7 +493,7 @@
               Como corrigir
             </div>
             <div class="ma-bc-fix-steps">
-              <div class="ma-bc-fix-step">{{ clean_exec_text(correcao_detalhada(b))|safe }}</div>
+              <div class="ma-bc-fix-step">{{ correcao_detalhada(b)|clean_report_text }}</div>
             </div>
           </div>
         </div>
@@ -687,7 +687,7 @@
             {{ termo_barreira(b) }}
             <span class="ma-sev-badge sb-{{ svc }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span>
           </div>
-          <p class="ma-check-item-fix">{{ correcao_detalhada(b)|striptags|truncate(320) }}</p>
+          <p class="ma-check-item-fix">{{ (correcao_detalhada(b)|clean_report_text)|truncate(320) }}</p>
         </div>
       </div>
       {% endfor %}
@@ -712,7 +712,7 @@
             {{ termo_barreira(b) }}
             <span class="ma-sev-badge sb-{{ svc }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span>
           </div>
-          <p class="ma-check-item-fix">{{ correcao_detalhada(b)|striptags|truncate(320) }}</p>
+          <p class="ma-check-item-fix">{{ (correcao_detalhada(b)|clean_report_text)|truncate(320) }}</p>
         </div>
       </div>
       {% endfor %}
@@ -737,7 +737,7 @@
             {{ termo_barreira(b) }}
             <span class="ma-sev-badge sb-{{ svc }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span>
           </div>
-          <p class="ma-check-item-fix">{{ correcao_detalhada(b)|striptags|truncate(320) }}</p>
+          <p class="ma-check-item-fix">{{ (correcao_detalhada(b)|clean_report_text)|truncate(320) }}</p>
         </div>
       </div>
       {% endfor %}
@@ -757,7 +757,7 @@
             {{ termo_barreira(d) }}
             <span class="ma-sev-badge sb-div">DIVERGÊNCIA</span>
           </div>
-          <p class="ma-check-item-fix">{{ (d.get('nota_divergencia') or d.get('nota') or d.get('descricao_tecnica','Validar manualmente.'))|truncate(320) }}</p>
+          <p class="ma-check-item-fix">{{ (d.get('nota_divergencia') or d.get('nota') or d.get('descricao_tecnica','Validar manualmente.')|clean_report_text)|truncate(320) }}</p>
         </div>
       </div>
       {% endfor %}
@@ -778,7 +778,7 @@
       </div>
     </summary>
     <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">
-      Quando o Lighthouse considerou o critério aprovado no conjunto PSI e o WAVE ainda assim reportou barreira no mesmo tipo. O Meta-Auditor regista a discrepância e aplica o resultado mais restritivo nas barreiras consolidadas.</p>
+      Quando o Lighthouse considerou o critério aprovado no conjunto PSI e o WAVE ainda assim reportou barreira no mesmo tipo. O Meta-Auditor registra a discrepância e aplica o resultado mais restritivo nas barreiras consolidadas.</p>
     {% for d in divs %}
     <article class="div-card" aria-labelledby="div-title-{{ loop.index }}">
       <div class="div-top">
@@ -826,22 +826,22 @@
       <div class="pcl-item-title">{{ termo_barreira(b) }}
         <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span>
       </div>
-      <div class="pcl-item-sub">{{ correcao_detalhada(b)|striptags|truncate(200) }}</div>
+      <div class="pcl-item-sub">{{ (correcao_detalhada(b)|clean_report_text)|truncate(200) }}</div>
     </div>
   </div>
   {% endfor %}
   {% endif %}
   {% if medias_ef %}
   <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(2)|safe }}</span> Fase 2: Esforço médio</div>
-  {% for b in medias_ef %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ correcao_detalhada(b)|striptags|truncate(200) }}</div></div></div>{% endfor %}
+  {% for b in medias_ef %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ (correcao_detalhada(b)|clean_report_text)|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
   {% if estruturais %}
   <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(3)|safe }}</span> Fase 3: Estruturais</div>
-  {% for b in estruturais %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ correcao_detalhada(b)|striptags|truncate(200) }}</div></div></div>{% endfor %}
+  {% for b in estruturais %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(b) }} <span class="pcl-prio pcl-{{ b.get('prioridade','baixa') }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></div><div class="pcl-item-sub">{{ (correcao_detalhada(b)|clean_report_text)|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
   {% if divs %}
   <div class="pcl-title" style="margin-top:18px"><span class="ma-phase-ic" aria-hidden="true">{{ ma_phase_svg(4)|safe }}</span> Fase 4: Divergências</div>
-  {% for d in divs %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(d) }}</div><div class="pcl-item-sub">{{ ((d.get('nota') or d.get('nota_divergencia') or ''))|striptags|truncate(200) }}</div></div></div>{% endfor %}
+  {% for d in divs %}<div class="pcl-item"><div class="pcl-check" aria-hidden="true"></div><div class="pcl-content"><div class="pcl-item-title">{{ termo_barreira(d) }}</div><div class="pcl-item-sub">{{ ((d.get('nota') or d.get('nota_divergencia') or '')|clean_report_text)|truncate(200) }}</div></div></div>{% endfor %}
   {% endif %}
 </div>
 
@@ -863,12 +863,12 @@
 
   {# ── A1. Seletores e backlog por barreira (todas as barreiras) ── #}
   {% if bars %}
-  <div class="ap-block">
+  <div class="ap-block ap-block--a1">
     <h3 class="ap-block-title">A1 · Localização técnica e backlog por barreira</h3>
     {% for b in bars %}
     {% set evcodes=b.get('evidencia_localizacao') or [] %}
     {% set publico_label = (b.get('publico_afetado') or '') | normalize_report_dashes %}
-    <div class="ap-barrier-block" id="apendice-tecnico-barreira-{{ loop.index }}">
+    <div class="ap-barrier-block ap-barrier-block--a1" id="apendice-tecnico-barreira-{{ loop.index }}">
       <div class="ap-barrier-title">
         <span class="ap-barrier-num">Barreira #{{ loop.index }}</span>
         <span class="ap-barrier-name">{{ termo_barreira(b) }}</span>
@@ -884,7 +884,7 @@
       {% if b.get('descricao_tecnica') or b.get('descricao_humana') %}
       <div class="ap-desc-tecnica">
         <div class="ap-field-label">Descrição técnica (fonte da ferramenta)</div>
-        <p class="ap-field-val">{{ clean_exec_text(desc_tecnica_barreira(b)) | safe }}</p>
+        <p class="ap-field-val">{{ desc_tecnica_barreira(b)|clean_report_text }}</p>
       </div>
       {% endif %}
       {% if evcodes %}
@@ -945,7 +945,7 @@
 
               <div class="tk-row">
                 <div class="tk-lbl">Descrição</div>
-                <div class="tk-val">{{ clean_exec_text(correcao_detalhada(b)|striptags|truncate(400)) }}</div>
+                <div class="tk-val">{{ (correcao_detalhada(b)|clean_report_text)|truncate(400) }}</div>
               </div>
 
               <div class="tk-row">
@@ -1031,7 +1031,7 @@
         <span class="attl">{{ termo_barreira(a) }}</span>
         <span class="badge b-man">Alerta</span>
       </div>
-      <div style="font-size:12px;color:var(--ink3);line-height:1.55">{{ traduz_desc_tecnica(a.get('descricao_humana') or a.get('descricao_tecnica','')) | safe }}</div>
+      <div style="font-size:12px;color:var(--ink3);line-height:1.55">{{ traduz_desc_tecnica(a.get('descricao_humana') or a.get('descricao_tecnica',''))|clean_report_text }}</div>
     </div>
     {% endfor %}
   </div>
@@ -1048,7 +1048,7 @@
         <span class="m-ic" aria-hidden="true">{{ ma_manual_check_svg(m.get('resultado'))|safe }}</span>
         <div>
           <span class="m-lbl">{{ m.get('titulo_tecnico') or m.get('check_id') or '–' }}</span>
-          <span class="m-desc">{{ traduz_desc_tecnica(m.get('descricao_tecnica') or m.get('descricao_humana') or '') | safe or '–' }}</span>
+          <span class="m-desc">{{ traduz_desc_tecnica(m.get('descricao_tecnica') or m.get('descricao_humana') or '')|clean_report_text or '–' }}</span>
         </div>
       </li>
       {% endfor %}

@@ -13,8 +13,8 @@ from datetime import datetime
 from pathlib import Path
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -51,14 +51,17 @@ from app.database import (
     list_audits,
     save_audit,
     search_urls,
+    update_report,
 )
 from app.models.request_models import AuditRequest
 from app.services.consolidation import build_report
+from app.services.pdf_export import build_pdf_target_urls, render_report_pdf_from_urls
 from app.services.display_labels import attach_display_fields, issue_display_label
 from app.services.text_clean import (
     normalize_barrier_ai_texts,
     normalize_executive_plaintext,
     normalize_report_dashes,
+    normalize_report_markup_text,
     strip_emoji,
 )
 from app.services.extractors import (
@@ -78,6 +81,7 @@ _jinja_env = Environment(
 )
 _jinja_env.filters["strip_emoji"] = strip_emoji
 _jinja_env.filters["normalize_report_dashes"] = normalize_report_dashes
+_jinja_env.filters["clean_report_text"] = normalize_report_markup_text
 
 
 def _filter_issue_display_label(b: object) -> str:
@@ -192,7 +196,45 @@ def _embed_evidence_into_row(audit_row: dict) -> dict:
     return row
 
 
-def _build_report_html(audit_row: dict) -> str:
+async def _ensure_nivel2(audit_id: int, row: dict) -> dict:
+    """Garante nível 2 (versao_dev) antes de exportar HTML/PDF."""
+    if not ANTHROPIC_API_KEY or AI_ENHANCE_LEVEL < 2:
+        return row
+
+    report = row.get("report") or {}
+    barriers = report.get("barreiras_automaticas") or []
+    missing = [b for b in barriers if not b.get("versao_dev")]
+    if not missing:
+        return row
+
+    _log.info(
+        "_ensure_nivel2: audit=%d — %d barreira(s) sem nível 2, re-enriquecendo",
+        audit_id,
+        len(missing),
+    )
+
+    try:
+        from app.services.ai_enhancer import enhance_report
+
+        await enhance_report(
+            report=report,
+            url=row.get("url", ""),
+            api_key=ANTHROPIC_API_KEY,
+            lh_score=row.get("lh_score"),
+            wave_score=row.get("wave_aim_score"),
+            level=AI_ENHANCE_LEVEL,
+        )
+        await update_report(DB_PATH, audit_id, report)
+        row = dict(row)
+        row["report"] = report
+        _log.info("_ensure_nivel2: audit=%d — nível 2 completo e salvo no banco", audit_id)
+    except Exception as exc:
+        _log.warning("_ensure_nivel2: audit=%d falhou (não crítico): %s", audit_id, exc)
+
+    return row
+
+
+def _build_report_html(audit_row: dict, *, pdf_mode: bool = False) -> str:
     """HTML do relatório a partir de um registro completo da tabela `audits`."""
     enriched = _embed_evidence_into_row(audit_row)
     return _jinja_env.get_template("report.html").render(
@@ -202,6 +244,7 @@ def _build_report_html(audit_row: dict) -> str:
         report_footer_org=REPORT_FOOTER_ORG,
         report_footer_author=REPORT_FOOTER_AUTHOR,
         now_year=datetime.now().year,
+        pdf_mode=pdf_mode,
     )
 
 
@@ -846,7 +889,7 @@ async def api_info():
         "health": "/health",
         "audit": "POST /audit com body {\"url\": \"https://...\"}",
         "audits": "GET /audits?limit=50 | GET /audits/{id} | GET /audits/{id}/report.html",
-        "export": "GET /audits/{id}/export.html | export.json | export.zip (attachment); PDF via report.html?print=1",
+        "export": "GET /audits/{id}/export.html | export.json | export.zip | export.pdf (PDF sem cabeçalho do navegador)",
     }
 
 
@@ -884,6 +927,7 @@ async def audit_export_html(audit_id: int):
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
+    row = await _ensure_nivel2(audit_id, row)
     html = _build_report_html(row)
     name = f"relatorio-acessibilidade-{audit_id}.html"
     return HTMLResponse(
@@ -893,13 +937,56 @@ async def audit_export_html(audit_id: int):
     )
 
 
-@app.get("/audits/{audit_id}/report.html", response_class=HTMLResponse)
-async def audit_report_html(audit_id: int):
-    """Relatório legível (HTML) a partir do registro no banco de dados — sem CDN."""
+@app.get("/audits/{audit_id}/export.pdf")
+async def audit_export_pdf(audit_id: int, request: Request):
+    """
+    PDF gerado pelo Meta-Auditor com paginação controlada (Playwright server-side).
+
+    Não use report.html?print=1 nem window.print() — o motor de impressão do
+    navegador corta blocos longos e injeta cabeçalho/rodapé com localhost.
+    """
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
-    html = _build_report_html(row)
+
+    row = await _ensure_nivel2(audit_id, row)
+
+    export_dir = PROJECT_ROOT / "data" / "exports"
+    export_dir.mkdir(parents=True, exist_ok=True)
+    out_path = export_dir / f"relatorio-acessibilidade-{audit_id}.pdf"
+    target_urls = build_pdf_target_urls(audit_id, str(request.base_url))
+
+    try:
+        await asyncio.to_thread(render_report_pdf_from_urls, target_urls, out_path)
+    except Exception as exc:
+        _log.exception("Falha ao gerar PDF da auditoria %s", audit_id)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Falha ao gerar PDF: {exc}",
+        ) from exc
+
+    return FileResponse(
+        str(out_path),
+        media_type="application/pdf",
+        filename=f"relatorio-acessibilidade-{audit_id}.pdf",
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@app.get("/audits/{audit_id}/report.html", response_class=HTMLResponse)
+async def audit_report_html(
+    audit_id: int,
+    pdf: int = Query(0, ge=0, le=1, description="1 = modo renderização PDF (sem barra de export)"),
+    print_mode: int = Query(0, alias="print", ge=0, le=1),
+):
+    """Relatório legível (HTML) a partir do registro no banco de dados — sem CDN."""
+    if print_mode:
+        return RedirectResponse(url=f"/audits/{audit_id}/export.pdf", status_code=303)
+
+    row = await get_audit(DB_PATH, audit_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Auditoria não encontrada")
+    html = _build_report_html(row, pdf_mode=bool(pdf))
     return HTMLResponse(content=html, media_type="text/html; charset=utf-8")
 
 

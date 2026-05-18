@@ -470,7 +470,10 @@ def build_report(
     total_barreiras = len(barreiras)
     if total_barreiras > 0:
         score_risco = round(((n_alta * 3) + (n_media * 2) + (n_baixa * 1)) / total_barreiras, 2)
-        if score_risco > 2.5:
+        # O score numérico preserva a média ponderada para fins comparativos.
+        # O nível executivo eleva para ALTO sempre que houver barreira alta:
+        # qualquer barreira alta exige urgência — a média das demais não deve suavizar isso.
+        if n_alta >= 1:
             nivel_risco = "ALTO"
         elif score_risco >= 1.5:
             nivel_risco = "MÉDIO"
