@@ -10,6 +10,32 @@ _PDF_MARGIN_TOP = "10mm"
 _PDF_MARGIN_SIDE = "8mm"
 _PDF_MARGIN_BOTTOM = "12mm"
 
+_WAIT_IMAGES_JS = """
+async () => {
+  const imgs = Array.from(document.images || []);
+  for (const img of imgs) {
+    img.loading = 'eager';
+    img.decoding = 'sync';
+  }
+  await Promise.all(
+    imgs.map(img => {
+      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+      return new Promise(resolve => {
+        img.onload = resolve;
+        img.onerror = resolve;
+        setTimeout(resolve, 2000);
+      });
+    })
+  );
+  await Promise.all(
+    imgs.map(img => {
+      if (img.decode) return img.decode().catch(() => {});
+      return Promise.resolve();
+    })
+  );
+}
+"""
+
 
 def build_pdf_target_urls(audit_id: int, request_base: str = "") -> list[str]:
     """
@@ -115,21 +141,13 @@ def render_report_pdf_from_urls(target_urls: list[str], out_path: Path) -> None:
 
             try:
                 page.evaluate(
-                    """
-                    async () => {
-                        if (document.fonts && document.fonts.ready) {
+                    f"""
+                    async () => {{
+                        if (document.fonts && document.fonts.ready) {{
                             await document.fonts.ready;
-                        }
-                        const imgs = Array.from(document.images || []);
-                        await Promise.all(imgs.map(img => {
-                            if (img.complete) return Promise.resolve();
-                            return new Promise(resolve => {
-                                img.onload = resolve;
-                                img.onerror = resolve;
-                                setTimeout(resolve, 3000);
-                            });
-                        }));
-                    }
+                        }}
+                        {_WAIT_IMAGES_JS.strip()}
+                    }}
                     """
                 )
             except Exception:
@@ -173,7 +191,11 @@ def render_report_pdf(html: str, *, timeout_ms: int = 120_000) -> bytes:
             page = browser.new_page()
             page.emulate_media(media="print")
             page.set_content(html, wait_until="networkidle", timeout=timeout_ms)
-            page.wait_for_timeout(300)
+            try:
+                page.evaluate(_WAIT_IMAGES_JS)
+            except Exception:
+                pass
+            page.wait_for_timeout(750)
             return page.pdf(
                 format="A4",
                 print_background=True,

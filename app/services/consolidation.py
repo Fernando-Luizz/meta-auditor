@@ -14,9 +14,238 @@ status_deteccao:
 from __future__ import annotations
 
 import hashlib
+import re
 from collections import defaultdict
 
 from app.services.display_labels import attach_display_fields
+
+WCAG_LEVEL_BY_CRITERION: dict[str, str] = {
+    "1.1.1": "a",
+    "1.2.1": "a",
+    "1.2.2": "a",
+    "1.2.3": "a",
+    "1.3.1": "a",
+    "1.3.2": "a",
+    "1.4.1": "a",
+    "2.1.1": "a",
+    "2.1.2": "a",
+    "2.4.1": "a",
+    "2.4.2": "a",
+    "2.4.3": "a",
+    "2.4.4": "a",
+    "2.5.3": "a",
+    "3.1.1": "a",
+    "3.3.2": "a",
+    "4.1.2": "a",
+    "1.4.3": "aa",
+    "1.4.4": "aa",
+    "1.4.10": "aa",
+    "1.4.11": "aa",
+    "2.4.6": "aa",
+    "2.4.7": "aa",
+    "2.5.8": "aa",
+    "1.3.6": "aaa",
+    "2.5.5": "aaa",
+}
+
+_NIVEL_RISCO_CRITICO_MIN = 2.80
+_NIVEL_RISCO_MEDIO_MIN = 1.50
+
+
+def normalizar(valor) -> str:
+    if not valor:
+        return ""
+    return str(valor).lower().strip()
+
+
+def inferir_wcag_nivel(wcag_criterio) -> str:
+    texto = str(wcag_criterio or "")
+    criterios = re.findall(r"\b\d\.\d\.\d+\b", texto)
+    niveis = [
+        WCAG_LEVEL_BY_CRITERION.get(c)
+        for c in criterios
+        if WCAG_LEVEL_BY_CRITERION.get(c)
+    ]
+    if "a" in niveis:
+        return "a"
+    if "aa" in niveis:
+        return "aa"
+    if "aaa" in niveis:
+        return "aaa"
+    return "aa"
+
+
+def _inferir_fase_correcao(barreira: dict) -> str:
+    issue_id = str(
+        barreira.get("issue_id_original") or barreira.get("issue_tipo_normalizado") or ""
+    ).lower()
+    if any(
+        k in issue_id
+        for k in (
+            "image-alt",
+            "imagem_sem",
+            "lang",
+            "button-name",
+            "controle_sem_nome",
+            "button_empty",
+            "botao_completamente_vazio",
+            "label",
+            "heading",
+        )
+    ):
+        return "fase_1"
+    if any(
+        k in issue_id
+        for k in ("contrast", "contraste", "target-size", "alvo_interacao", "link")
+    ):
+        return "fase_2"
+    return "fase_3"
+
+
+def _status_deteccao_para_pontos(barreira: dict) -> str:
+    status = normalizar(barreira.get("status_deteccao"))
+    confirmado = [normalizar(t) for t in (barreira.get("confirmado_por") or []) if t]
+    if status in ("automatico_convergente", "intersecao", "interseção") or len(confirmado) >= 2:
+        return "automatico_convergente"
+    if len(confirmado) == 1 and "lighthouse" in confirmado:
+        return "exclusivo_lh"
+    if len(confirmado) == 1 and "wave" in confirmado:
+        return "exclusivo_wave"
+    return status or "automatico_detectado"
+
+
+def calcular_prioridade_barreira(barreira: dict) -> tuple[str, int]:
+    pontos = 0
+
+    prioridade = normalizar(barreira.get("prioridade", "baixa"))
+    status = _status_deteccao_para_pontos(barreira)
+    fase = normalizar(barreira.get("fase_correcao") or _inferir_fase_correcao(barreira))
+
+    wcag_nivel = normalizar(
+        barreira.get("wcag_nivel") or inferir_wcag_nivel(barreira.get("wcag_criterio"))
+    )
+
+    try:
+        ocorrencias = int(
+            barreira.get("ocorrencias_count")
+            or barreira.get("ocorrencias")
+            or barreira.get("n_ocorrencias")
+            or 1
+        )
+    except (TypeError, ValueError):
+        ocorrencias = 1
+
+    pontos += {
+        "alta": 300,
+        "media": 200,
+        "média": 200,
+        "baixa": 100,
+    }.get(prioridade, 100)
+
+    pontos += {"a": 20, "aa": 10, "aaa": 0}.get(wcag_nivel, 10)
+
+    pontos += {
+        "automatico_convergente": 15,
+        "intersecao": 15,
+        "interseção": 15,
+        "exclusivo_lh": 8,
+        "exclusivo_wave": 8,
+        "automatico_detectado": 8,
+        "divergencia": 3,
+        "divergência": 3,
+    }.get(status, 8)
+
+    pontos += min(10, ocorrencias)
+
+    if fase in ("fase_1", "fase 1", "fase1"):
+        pontos += 5
+
+    if pontos >= 300:
+        return "P1", pontos
+    if pontos >= 200:
+        return "P2", pontos
+    return "P3", pontos
+
+
+def _motivo_prioridade_correcao(barreira: dict, prioridade_correcao: str) -> str:
+    partes: list[str] = []
+    prio = normalizar(barreira.get("prioridade"))
+    if prio == "alta":
+        partes.append("severidade alta")
+    elif prio in ("media", "média"):
+        partes.append("severidade média")
+    else:
+        partes.append("severidade baixa")
+
+    wcag_nivel = normalizar(
+        barreira.get("wcag_nivel") or inferir_wcag_nivel(barreira.get("wcag_criterio"))
+    )
+    partes.append(f"WCAG nível {wcag_nivel.upper()}")
+
+    status = _status_deteccao_para_pontos(barreira)
+    if status == "automatico_convergente":
+        partes.append("confirmação convergente Lighthouse + WAVE")
+    elif status == "exclusivo_lh":
+        partes.append("detectado apenas pelo Lighthouse")
+    elif status == "exclusivo_wave":
+        partes.append("detectado apenas pelo WAVE")
+    else:
+        partes.append("detecção automática")
+
+    try:
+        occ = int(barreira.get("ocorrencias_count") or 1)
+    except (TypeError, ValueError):
+        occ = 1
+    partes.append(f"{occ} ocorrência{'s' if occ != 1 else ''}")
+
+    fase = normalizar(barreira.get("fase_correcao") or _inferir_fase_correcao(barreira))
+    if fase in ("fase_1", "fase 1", "fase1"):
+        partes.append("correção rápida estimada")
+    elif fase in ("fase_2", "fase 2", "fase2"):
+        partes.append("esforço médio estimado")
+    else:
+        partes.append("projeto estrutural estimado")
+
+    return f"{prioridade_correcao}: " + "; ".join(partes) + "."
+
+
+def calcular_nivel_risco_executivo(score_risco: float, n_alta: int) -> str:
+    if score_risco >= _NIVEL_RISCO_CRITICO_MIN:
+        return "CRÍTICO"
+    if n_alta >= 1:
+        return "ALTO"
+    if score_risco >= _NIVEL_RISCO_MEDIO_MIN:
+        return "MÉDIO"
+    return "BAIXO"
+
+
+def _ordenar_barreiras_por_prioridade_correcao(barreiras: list[dict]) -> list[dict]:
+    rank = {"P1": 0, "P2": 1, "P3": 2}
+
+    def _key(b: dict) -> tuple:
+        pc = b.get("prioridade_correcao") or "P3"
+        return (
+            rank.get(pc, 3),
+            -int(b.get("score_prioridade_barreira") or 0),
+            str(b.get("titulo_tecnico") or b.get("issue_tipo_normalizado") or ""),
+        )
+
+    return sorted(barreiras, key=_key)
+
+
+def enriquecer_prioridades_barreiras(barreiras: list[dict]) -> list[dict]:
+    out: list[dict] = []
+    for b in barreiras:
+        row = dict(b)
+        if not row.get("fase_correcao"):
+            row["fase_correcao"] = _inferir_fase_correcao(row)
+        row["wcag_nivel"] = inferir_wcag_nivel(row.get("wcag_criterio"))
+        p_class, p_score = calcular_prioridade_barreira(row)
+        row["prioridade_correcao"] = p_class
+        row["score_prioridade_barreira"] = p_score
+        row["motivo_prioridade_correcao"] = _motivo_prioridade_correcao(row, p_class)
+        out.append(row)
+    return _ordenar_barreiras_por_prioridade_correcao(out)
 
 
 def _location_fingerprint(iss: dict) -> str:
@@ -468,17 +697,12 @@ def build_report(
     n_media = sum(1 for b in barreiras if (b.get("prioridade") or "").lower() == "media")
     n_baixa = sum(1 for b in barreiras if (b.get("prioridade") or "").lower() == "baixa")
     total_barreiras = len(barreiras)
+    barreiras = enriquecer_prioridades_barreiras(barreiras)
+
     if total_barreiras > 0:
         score_risco = round(((n_alta * 3) + (n_media * 2) + (n_baixa * 1)) / total_barreiras, 2)
-        # O score numérico preserva a média ponderada para fins comparativos.
-        # O nível executivo eleva para ALTO sempre que houver barreira alta:
-        # qualquer barreira alta exige urgência — a média das demais não deve suavizar isso.
-        if n_alta >= 1:
-            nivel_risco = "ALTO"
-        elif score_risco >= 1.5:
-            nivel_risco = "MÉDIO"
-        else:
-            nivel_risco = "BAIXO"
+        # Score numérico 0–3 inalterado; nível executivo distingue CRÍTICO (≥2,80) de ALTO.
+        nivel_risco = calcular_nivel_risco_executivo(score_risco, n_alta)
     else:
         score_risco = 0.0
         nivel_risco = "SEM BARREIRAS"

@@ -189,6 +189,8 @@ def attach_display_fields(rows: list[dict] | None) -> None:
     """Preenche rotulo_exibicao, categoria_executiva e categoria_grafico in-place."""
     if not rows:
         return
+    from app.services.contrast_elements import enrich_contrast_fields
+
     for row in rows:
         if not isinstance(row, dict):
             continue
@@ -200,3 +202,4 @@ def attach_display_fields(rows: list[dict] | None) -> None:
         )
         row["categoria_executiva"] = executive_group_for(tipo)
         row["categoria_grafico"] = chart_bucket_for_executive(row["categoria_executiva"])
+        enrich_contrast_fields(row)

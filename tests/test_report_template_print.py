@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_HTML = ROOT / "app" / "templates" / "report.html"
 REPORT_BODY_B = ROOT / "app" / "templates" / "report_body_b.html"
+REPORT_MACROS = ROOT / "app" / "templates" / "_report_macros.html"
 
 
 def _final_print_block(css: str) -> str:
@@ -147,3 +148,76 @@ def test_report_html_print_query_redirects_to_export_pdf():
     assert "print_mode" in src
     assert "RedirectResponse" in src
     assert "export.pdf" in src
+
+
+def test_a1_ai_ticket_uses_deterministic_contrast_criterio():
+    body = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert "_ap_is_contrast" in body
+    assert "criterio_pronto_det(b)" in body
+
+
+def test_public_impact_chart_renders_voice_control():
+    body = REPORT_BODY_B.read_text(encoding="utf-8")
+
+    assert "cnt.voz" in body
+    assert "ma_chart_pub_svg('voz')" in body
+    assert "'Controle por voz', cnt.voz" in body
+    assert "cnt.voz==0" in body
+
+
+def test_evidence_executive_labels_no_validated_capture_wording():
+    body = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert "_has_precise_visual" in body
+    assert "_has_context_visual" in body
+    assert "_is_wave_only" in body
+    assert "Elemento destacado" in body
+    assert "Imagem de contexto" in body
+    assert "Onde procurar" in body
+    assert "contraste insuficiente indicado pela auditoria" in body
+    assert "possível contraste" not in body
+    assert "confirmada pelo WAVE" in body
+    assert "marcação visual exata do elemento na imagem" in body
+    assert "seletores completos estão no" in body
+    assert "Sem marcação visual exata" not in body
+    assert "textos e botões" not in body
+    assert "criterio_pronto_det" in body
+    assert "Controle por voz" in body
+    assert 'loading="eager"' in body
+    assert "Captura ao vivo validada" not in body
+    assert "Elemento detectado — recorte visual indisponível" not in body
+    assert "Como ler esta imagem" not in body
+    assert "ev-caption-hint" not in body
+
+
+def test_evidence_context_note_for_management():
+    body = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert "ev-caption-note" in body
+    assert "não marca o ponto exato do achado" in body or "marcação visual exata do elemento" in body
+    assert "ação recomendada está descrita abaixo" in body
+    assert "WebAIM Contrast Checker" not in body
+
+
+def test_evidence_context_card_styles():
+    css = REPORT_HTML.read_text(encoding="utf-8")
+    assert ".ev-caption-note {" in css
+    assert ".ev-context-card {" in css
+    assert ".ev-badge--context {" in css
+    assert "background: #fffbeb" in css
+    assert "border: 1px solid #fcd34d" in css
+
+
+def test_macros_contrast_uses_dynamic_element_fields():
+    macros = REPORT_MACROS.read_text(encoding="utf-8")
+    assert "correcao_contraste_det" in macros
+    assert "impacto_contraste_det" in macros
+    assert "conforme indicado pela auditoria automática" in macros
+    assert "têm dificuldade" in macros
+    assert "Esta barreira pode impedir a leitura" not in macros.split("impacto_contraste_det")[1][:400]
+    idx = macros.index("impacto_contraste_det")
+    assert "bloqueia o acesso" not in macros[idx : idx + 400]
+    body = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert "elementos_contraste_onde_frase" in body
+    assert "is_contraste" in body
+    rb = (ROOT / "app" / "templates" / "report_body.html").read_text(encoding="utf-8")
+    assert "{% for b in bars %}" in rb
+    assert "criterio_pronto_det" in body

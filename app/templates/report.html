@@ -156,6 +156,16 @@ button.pbtn:hover{background:var(--ink2)}
 .pbtn:focus{outline:3px solid var(--amber);outline-offset:2px}
 .pbtn--html{background:var(--ma-primary)}
 .pbtn--html:hover,a.pbtn--html:hover{background:var(--ma-primary-dark)}
+.ma-usage-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 14px;
+  background:#fff;color:var(--ink2);
+  border:1px solid #E2E8F0;border-radius:var(--rsm);
+  font-size:11px;font-weight:700;letter-spacing:.2px;
+  box-shadow:var(--shmd);
+  font-family:inherit;cursor:default;
+}
+.ma-usage-chip svg{flex:none;color:var(--ma-primary)}
 
 /*,: Relatório: header executivo, scorecard, faixa legal,: */
 .ma-header { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 16px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 16px; }
@@ -215,6 +225,7 @@ button.pbtn:hover{background:var(--ink2)}
 .ma-exec-card { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 14px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 14px; }
 .ma-exec-accent { height: 4px; background: var(--ma-primary); }
 .ma-exec-accent--ok { background: var(--ma-primary); }
+.ma-exec-accent--critico { background: #7F1D1D; }
 .ma-exec-accent--alto { background: var(--ma-alta); }
 .ma-exec-accent--medio { background: var(--ma-media); }
 .ma-exec-accent--baixo { background: var(--ma-primary); }
@@ -581,6 +592,60 @@ button.pbtn:hover{background:var(--ink2)}
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+}
+.ev-caption-note {
+  flex: 1 1 100%;
+  display: block;
+  margin-top: 6px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--ink4);
+}
+
+.ev-badge--context {
+  background: #fef3c7;
+  color: #92400e;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+.ev-figure--context .ev-img-main {
+  opacity: 0.92;
+  border-style: dashed;
+}
+
+.ev-context-card {
+  margin: 14px 0 6px;
+  padding: 14px 16px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: var(--r);
+  color: #78350f;
+  line-height: 1.55;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.ev-context-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #92400e;
+  margin-bottom: 5px;
+}
+
+.ev-context-card p {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+.ev-context-card p:last-child {
+  margin-bottom: 0;
+}
+.ev-unavail a {
+  color: var(--amber-dark);
+  font-weight: 600;
 }
 .ev-badge {
   display: inline-flex;align-items:center;
@@ -989,11 +1054,13 @@ button.pbtn:hover{background:var(--ink2)}
 }
 .exec-stripe{width:8px;flex-shrink:0}
 .exec-alto   .exec-stripe{background:var(--red)}
+.exec-critico .exec-stripe{background:#7F1D1D}
 .exec-medio  .exec-stripe{background:var(--amber)}
 .exec-baixo  .exec-stripe{background:var(--green)}
 .exec-ok     .exec-stripe{background:var(--green)}
 .exec-sem    .exec-stripe{background:var(--blue)}
 
+.exec-critico{background:#FCE8E6;border-color:#7F1D1D}
 .exec-alto  {background:#FEF0EF;border-color:var(--red-mid)}
 .exec-medio {background:#FEF8EE;border-color:var(--amber-mid)}
 .exec-baixo {background:#EAF7F0;border-color:var(--green-mid)}
@@ -1174,20 +1241,41 @@ button.pbtn:hover{background:var(--ink2)}
 }
 .rm-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.40);margin-bottom:10px}
 .rm-score{font-size:56px;font-weight:900;line-height:1;margin-bottom:4px}
+.rm-score.rs-critico{color:#FCA5A5}
 .rm-score.rs-alto  {color:#FF8A80}
 .rm-score.rs-medio {color:#FFD080}
 .rm-score.rs-baixo {color:#80D8A8}
 .rm-max{font-size:18px;color:rgba(255,255,255,.30);font-weight:400}
 .rm-nivel{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.rm-nivel.rn-critico{color:#FCA5A5}
 .rm-nivel.rn-alto  {color:#FF8A80}
 .rm-nivel.rn-medio {color:#FFD080}
 .rm-nivel.rn-baixo {color:#80D8A8}
 .rm-bar{height:8px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden;margin-bottom:10px}
 .rm-fill{height:100%;border-radius:4px}
+.rfc-critico{background:linear-gradient(90deg,#7F1D1D,#B91C1C)}
 .rfc-alto  {background:linear-gradient(90deg,#FF6B5B,#FF8A80)}
 .rfc-medio {background:linear-gradient(90deg,#D4850A,#FFD080)}
 .rfc-baixo {background:linear-gradient(90deg,#16764A,#80D8A8)}
 .rm-note{font-size:10px;color:rgba(255,255,255,.35);line-height:1.5}
+
+/* ══ PRIORIDADE P1/P2/P3 + ORDEM RECOMENDADA ═══════════════ */
+.ma-prio-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:34px;padding:3px 8px;border-radius:6px;
+  font-size:11px;font-weight:800;letter-spacing:.4px;line-height:1;
+}
+.mpb-p1{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
+.mpb-p2{background:#FEF3C7;color:#92400E;border:1px solid #FCD34D}
+.mpb-p3{background:#E0E7FF;color:#3730A3;border:1px solid #A5B4FC}
+.ma-order-sec{margin:24px 0 28px}
+.ma-order-note{margin-bottom:14px;max-width:920px}
+.ma-order-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--rlg);background:var(--white)}
+.ma-order-table{width:100%;border-collapse:collapse;font-size:12px}
+.ma-order-table th,.ma-order-table td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.ma-order-table th{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);background:var(--surface)}
+.ma-order-table tr:last-child td{border-bottom:none}
+.ma-order-motivo{font-size:11px;color:var(--ink2);line-height:1.45;max-width:360px}
 
 /* ══ ACTION PLAN ═══════════════════════════════════════════ */
 .action-plan{
@@ -2375,6 +2463,24 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   /* Regra de qualidade no PDF: captura ao vivo oculta, bloco indisponível visível */
   .ev-img-live { display: none !important; }
   .ev-unavail  { display: flex !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: #fffbeb !important; border-color: #fcd34d !important; }
+  .ev-context-card,
+  .ev-caption-note {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .ev-context-card {
+    display: block !important;
+    background: #fffbeb !important;
+    border: 1px solid #fcd34d !important;
+    color: #78350f !important;
+  }
+  .ev-badge--context {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+  }
+  .ev-figure--context .ev-img-main {
+    border-style: dashed !important;
+  }
   .ev-fail { display: none !important; }
   .ma-bc-appendix-ref:not(.ma-bc-appendix-ref--quiet) {
     display: none !important;
@@ -2698,6 +2804,13 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Baixar HTML
   </a>
+  {% set _u = (audit.report or {}).get('ai_usage') %}
+  {% if _u and _u.get('total_tokens') %}
+  <span class="ma-usage-chip" title="Uso de IA para gerar este relatório · modelo {{ _u.get('model','') }} · {{ _u.get('input_tokens',0) }} tokens de entrada + {{ _u.get('output_tokens',0) }} de saída em {{ _u.get('calls',0) }} chamada(s). Custo estimado pelos preços públicos da Anthropic.">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg>
+    {{ "{:,}".format(_u.get('total_tokens', 0)).replace(",", ".") }} tokens · US$ {{ "%.4f"|format(_u.get('cost_usd', 0)) }}
+  </span>
+  {% endif %}
 </div>
 {% endif %}
 {% set _print_u = (audit.url or '')|replace('https://','')|replace('http://','') %}

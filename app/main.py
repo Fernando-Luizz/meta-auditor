@@ -809,9 +809,8 @@ def _capture_barrier_image_sync_bytes(
                     except Exception:
                         pass
 
-                    if barrier_label:
-                        png_bytes = _add_pillow_label(png_bytes, barrier_label)
-
+                    # Valida a imagem sem adicionar faixa artificial no topo.
+                    # A legenda do relatório já identifica a barreira.
                     if _evidence_is_good(png_bytes):
                         result = png_bytes
                         break
@@ -1053,14 +1052,6 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
                 _log.warning("LH_CROP falhou (audit=%d barreira=%d): %s", audit_id, barrier_idx, exc)
 
     # 3) Playwright ao vivo
-    titulo_barreira = str(barrier.get("titulo_tecnico") or barrier.get("issue_tipo_normalizado") or "")
-    wcag = str(barrier.get("wcag_criterio") or "")
-    barrier_label = f"Barreira #{barrier_idx + 1}"
-    if titulo_barreira:
-        barrier_label += f" · {titulo_barreira[:40]}"
-    if wcag:
-        barrier_label += f" · WCAG {wcag}"
-
     if selectors:
         try:
             png_bytes = await asyncio.to_thread(
@@ -1068,7 +1059,7 @@ async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0),
                 url,
                 selectors,
                 compact,
-                barrier_label,
+                "",
             )
             if png_bytes:
                 DATA_EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1329,6 +1320,7 @@ async def start_audit(request: AuditRequest):
             "items_extracted_count": len(wave_flat),
         },
         "providers": collection_meta,
+        "ai_usage": report.get("ai_usage"),
         "report": report,
         "raw_saved": {
             "lighthouse": bool(lh_raw_path),

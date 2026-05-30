@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, esforco, correcao_detalhada, impacto_descricao_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, prioridade_correcao_badge, esforco, correcao_detalhada, impacto_descricao_det, criterio_pronto_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
 
 {# Lighthouse: tabela A4 (usada cedo em «O que está correto» para não prometer detalhes inexistentes) #}
 {% set lh_appendix = r.get('lighthouse_items') or r.get('itens_aprovados') or [] %}
@@ -47,13 +47,14 @@
         {{ pbar(ma_chart_pub_svg('motor'),'Motor/móvel', cnt.motor, 'amber') }}
         {{ pbar(ma_chart_pub_svg('cogni'),'Cognitivo', cnt.cogni, 'lh') }}
         {{ pbar(ma_chart_pub_svg('surdo'),'Surdos', cnt.surdo, 'wave') }}
+        {{ pbar(ma_chart_pub_svg('voz'),'Controle por voz', cnt.voz, 'teal') }}
         {{ pbar(ma_chart_pub_svg('teclado'),'Teclado/Tab', cnt.naveg, 'purple') }}
         {{ pbar(ma_chart_pub_svg('estrutura'),'Estrutura', cnt.estr, 'blue') }}
-        {% if cnt.visao==0 and cnt.cego==0 and cnt.motor==0 and cnt.cogni==0 and cnt.surdo==0 and cnt.naveg==0 and cnt.estr==0 %}
+        {% if cnt.visao==0 and cnt.cego==0 and cnt.motor==0 and cnt.cogni==0 and cnt.surdo==0 and cnt.voz==0 and cnt.naveg==0 and cnt.estr==0 %}
         <div class="empty">Dados de público não disponíveis para estas barreiras.</div>
         {% endif %}
       </div>
-      <div class="chart-info-box"><strong>Contexto:</strong> IBGE Censo 2022: 8,9% da população brasileira com alguma deficiência.</div>
+      <div class="chart-info-box"><strong>Contexto:</strong> IBGE Censo 2022: 14,4 milhões de pessoas com deficiência, 7,3% da população de 2 anos ou mais.</div>
     </div>
 
     <div>
@@ -132,11 +133,13 @@
       (ma_pub_group_svg('motor', 22), 'Limitação motora', cnt.motor, 'Teclado, dispositivos de entrada alternativos', 'Alvos pequenos e foco quebrado'),
       (ma_pub_group_svg('cogni', 22), 'Cognitivo/Daltonismo', cnt.cogni, 'Dislexia, TDAH, autismo, daltonismo', 'Informação só por cor passa despercebida'),
       (ma_pub_group_svg('surdo', 22), 'Surdez', cnt.surdo, 'Legendas e transcrições', 'Multimídia sem legenda exclui usuários'),
+      (ma_pub_group_svg('voz', 22), 'Controle por voz', cnt.voz, 'Pessoas que usam comandos falados para navegar e acionar links, botões e controles', 'O usuário fala o texto que vê na tela, mas o sistema espera outro nome interno'),
       (ma_pub_group_svg('teclado', 22), 'Navegação por teclado', cnt.naveg, 'Sem ponteiro: Tab e atalhos', 'Link sem nome ou foco invisível ao navegar'),
       (ma_pub_group_svg('estrutura', 22), 'Navegação por estrutura', cnt.estr, 'Leitores de tela e quem navega por títulos', 'Hierarquia de títulos quebrada dificulta orientação')
     ] %}
     {% for ic, nm, cnt_val, desc, ex in gcards %}
-    {%- if nm == 'Navegação por teclado' and cnt.naveg == 0 %}
+    {%- if nm == 'Controle por voz' and cnt.voz == 0 %}
+    {%- elif nm == 'Navegação por teclado' and cnt.naveg == 0 %}
     {%- elif nm == 'Navegação por estrutura' and cnt.estr == 0 %}
     {%- else %}
     <div class="gc {% if cnt_val > 0 %}gc-afetado{% else %}gc-ok{% endif %}" role="listitem">
@@ -265,6 +268,8 @@
     {% for b in bars %}
     {% set bprio=(b.get('prioridade','media'))|lower %}
     {% set occ=(b.get('ocorrencias_count') or 1)|int %}
+    {% set _bar_tp = ((b.get('issue_id_original') or '') ~ ' ' ~ (b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('id') or ''))|lower %}
+    {% set _bar_is_contrast = b.get('is_contraste') or 'color-contrast' in _bar_tp or 'contraste_insuficiente' in _bar_tp or ' contrast' in _bar_tp or _bar_tp.strip().startswith('contrast') or (b.get('wave_categoria') or '')|lower == 'contrast' %}
     {% set ef = esforco(b)|trim %}
     {% set strip_cls = 'manual' if bprio=='revisao_manual' else (bprio if bprio in ['alta','media'] else 'baixa') %}
     {% set loc_dot = strip_cls %}
@@ -304,6 +309,7 @@
           </details>
         </div>
         <div class="ma-bc-badges">
+          {{ prioridade_correcao_badge(b.get('prioridade_correcao')) }}
           <span class="ma-badge {{ sev_badge }}">{{ sev_lbl }}</span>
           <span class="ma-badge-tool ma-bt-{{ tl_cls }}">{{ tl_lbl }}</span>
           <span class="ma-badge-effort">{{ effort_lbl }}</span>
@@ -350,7 +356,7 @@
           <div class="sem-key">Texto visível</div>
           <div class="sem-val">
             {%- if ds.get('visivel') -%}<code>{{ ds.get('visivel') }}</code>
-            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não capturado automaticamente: inspecionar o elemento</span>{%- endif -%}
+            {%- else -%}<span style="font-style:italic;color:var(--ink3)">Não extraído automaticamente. Conferir no card de notícia destacado.</span>{%- endif -%}
           </div>
         </div>
         <div class="sem-row">
@@ -368,7 +374,7 @@
             {%- elif ds.get('acessivel') and ds.get('visivel') -%}
               O texto visível "{{ ds.get('visivel') }}" e o nome acessível "{{ ds.get('acessivel') }}" são diferentes. Usuários de controle por voz dizem o que veem: o sistema reconhece outra coisa e o comando falha.
             {%- elif ds.get('acessivel') and not ds.get('visivel') -%}
-              Nome acessível detectado: "{{ ds.get('acessivel') }}". O texto visível não foi capturado automaticamente. A discrepância foi identificada pelo Lighthouse: inspecionar o elemento para confirmar qual texto o usuário vê em tela e por que diverge do nome acessível.
+              O Lighthouse identificou divergência entre o nome acessível e o rótulo visível. Como o texto visível não foi extraído automaticamente, a equipe deve conferir o card de notícia destacado e comparar o texto exibido com o aria-label no código.
             {%- else -%}
               Discrepância entre texto visível e nome acessível detectada. Inspecionar o elemento para confirmar o conflito.
             {%- endif -%}
@@ -401,14 +407,27 @@
       {% endif %}
 
       <div class="ev-wrap">
-      {# ── Screenshot principal ── #}
-      {# REGRA DE QUALIDADE:
-         LH_CROP / EMBEDDED / PLAYWRIGHT validado são confiáveis.
-         Outras fontes ficam como captura ao vivo no browser e indisponível no PDF. #}
+      {# Evidência visual: LH com recorte = elemento destacado; WAVE = imagem de contexto (sem ponto exato). #}
       <div class="ma-bc-evidence" role="region" aria-label="Evidência visual da barreira #{{ loop.index }}">
         {% set _ev_src = b.get('evidence_source', 'URL') %}
         {% set _ev_b64 = b.get('evidencia_b64') %}
-        {# Fallback: campo legado evidencias[0].screenshot_base64 #}
+
+        {% set _tool_text = (
+            (b.get('ferramenta') or '') ~ ' ' ~
+            (b.get('tool') or '') ~ ' ' ~
+            (b.get('fonte') or '') ~ ' ' ~
+            (b.get('origem') or '') ~ ' ' ~
+            (b.get('issue_id_original') or '')
+          )|lower
+        %}
+        {% set _cp_ev = (b.get('confirmado_por') or [])|map('lower')|list %}
+        {% set _is_wave_only = (_cp_ev|length == 1 and 'wave' in _cp_ev) or (('wave' in _tool_text) and ('lighthouse' not in _tool_text)) %}
+        {% set _ev_tp = ((b.get('issue_id_original') or '') ~ ' ' ~ (b.get('issue_tipo_normalizado') or '') ~ ' ' ~ (b.get('id') or ''))|lower %}
+        {% set _ev_is_contrast = b.get('is_contraste') or 'color-contrast' in _ev_tp or 'contraste_insuficiente' in _ev_tp or ' contrast' in _ev_tp or (b.get('wave_categoria') or '')|lower == 'contrast' %}
+        {% set _has_precise_visual = _ev_b64 and _ev_src in ('LH_CROP', 'PLAYWRIGHT', 'EMBEDDED') and not _is_wave_only %}
+        {% set _has_context_visual = _ev_b64 and _ev_src in ('PLAYWRIGHT', 'EMBEDDED') and _is_wave_only %}
+
+        {# Fallback legado: evidencias[0].screenshot_base64 #}
         {% if not _ev_b64 and b.get('evidencias') %}
           {% for _ev in b.get('evidencias')[:1] %}
             {% if _ev.get('screenshot_base64') %}
@@ -417,46 +436,76 @@
           {% endfor %}
         {% endif %}
 
-        {# Confiável = base64 embutido COM fonte aprovada #}
-        {% set _ev_reliable = _ev_b64 and _ev_src in ('LH_CROP', 'EMBEDDED', 'PLAYWRIGHT') %}
+        {% if _is_wave_only and not _has_precise_visual %}
+          <div class="ev-context-card" role="note">
+            <div class="ev-context-title">Onde procurar</div>
+            <p>
+              {% if _ev_is_contrast %}
+                A ferramenta encontrou {{ occ }} {% if occ == 1 %}ponto{% else %}pontos{% endif %} com contraste insuficiente indicado pela auditoria no conteúdo principal da página, em {{ b.get('elementos_contraste_onde_frase') or 'elementos indicados pela ferramenta' }}.
+              {% else %}
+                A ferramenta encontrou {{ occ }} {% if occ == 1 %}local{% else %}locais{% endif %} relacionado{{ 's' if occ != 1 }} a esta barreira no conteúdo principal da página.
+              {% endif %}
+            </p>
+            <p>Esta barreira foi confirmada pelo WAVE. O WAVE indica a localização técnica do problema, mas não fornece marcação visual exata do elemento na imagem.</p>
+            <p>Para a gestão, a prioridade e a ação recomendada estão descritas abaixo. Para a equipe técnica, os seletores completos estão no <a href="#apendice-tecnico-barreira-{{ loop.index }}">Apêndice A1</a>.</p>
+          </div>
+        {% endif %}
 
-        <figure class="ev-figure" data-ev-src="{{ _ev_src }}">
-          {% if _ev_reliable %}
+        {% if _has_precise_visual %}
+          <figure class="ev-figure" data-ev-src="{{ _ev_src }}">
             <img class="ev-img ev-img-main"
                  src="{{ _ev_b64 }}"
                  alt="Evidência visual da barreira #{{ loop.index }}: {{ termo_barreira(b) }}"
-                 loading="lazy">
-          {% else %}
-            {# Sem evidência confiável:
-               Browser: tenta captura ao vivo (pode funcionar)
-               PDF: CSS oculta a imagem, exibe bloco indisponível #}
-            <img class="ev-img ev-img-main ev-img-live"
-                 src="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=1"
-                 alt="Evidência visual da barreira #{{ loop.index }}: {{ termo_barreira(b) }}"
                  loading="eager"
-                 onerror="this.style.display='none';this.closest('figure').querySelector('.ev-unavail').style.display='flex';">
-            <div class="ev-unavail" role="note">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5M8 10.5v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <span>Evidência visual indisponível: elemento detectado apenas por ferramenta visual (WAVE) sem boundingRect, ou bloqueado por anti-bot. Consulte os seletores no Apêndice Técnico.</span>
-            </div>
-          {% endif %}
-          <figcaption class="ev-caption">
-            {% if _ev_reliable %}
+                 decoding="sync">
+
+            <figcaption class="ev-caption">
               {% if _ev_src == 'LH_CROP' %}
-                <span class="ev-badge ev-badge--lh">Lighthouse · recorte com destaque</span>
-              {% elif _ev_src == 'PLAYWRIGHT' %}
-                <span class="ev-badge ev-badge--url">Captura ao vivo validada</span>
+                <span class="ev-badge ev-badge--lh">Elemento destacado</span>
               {% else %}
-                <span class="ev-badge ev-badge--lh">Evidência capturada</span>
+                <span class="ev-badge ev-badge--url">Recorte visual de apoio</span>
               {% endif %}
-            {% else %}
-              <span class="ev-badge ev-badge--unavail" title="Não há captura estática com o elemento destacado (pipeline Lighthouse ou Playwright). A miniatura ao vivo pode falhar no PDF: use o link «ver captura ao vivo» no navegador.">Recorte validado indisponível</span>
-              · <a href="/audits/{{ audit.id }}/evidence-image?barrier_idx={{ loop.index0 }}&compact=0"
-                   target="_blank" rel="noopener" class="ev-expand-link no-print">ver captura ao vivo ↗</a>
-            {% endif %}
-            · Barreira #{{ loop.index }}
-          </figcaption>
-        </figure>
+
+              · Barreira #{{ loop.index }}
+
+              <span class="ev-caption-note">
+                A imagem mostra a região relacionada ao achado. A ação recomendada está descrita abaixo.
+              </span>
+            </figcaption>
+          </figure>
+
+        {% elif _has_context_visual %}
+          <figure class="ev-figure ev-figure--context" data-ev-src="{{ _ev_src }}">
+            <img class="ev-img ev-img-main ev-img-context"
+                 src="{{ _ev_b64 }}"
+                 alt="Imagem de contexto da página avaliada para a barreira #{{ loop.index }}: {{ termo_barreira(b) }}"
+                 loading="eager"
+                 decoding="sync">
+
+            <figcaption class="ev-caption">
+              <span class="ev-badge ev-badge--context">Imagem de contexto</span>
+              · Barreira #{{ loop.index }}
+
+              <span class="ev-caption-note">
+                Referência visual da página; não marca o ponto exato do achado. A ação recomendada está descrita abaixo.
+              </span>
+            </figcaption>
+          </figure>
+
+        {% elif not _is_wave_only %}
+          <div class="ev-context-card" role="note">
+            <div class="ev-context-title">Onde procurar</div>
+            <p>
+              {% if _ev_is_contrast %}
+                A ferramenta encontrou {{ occ }} {% if occ == 1 %}ponto{% else %}pontos{% endif %} com contraste insuficiente indicado pela auditoria no conteúdo principal da página, em {{ b.get('elementos_contraste_onde_frase') or 'elementos indicados pela ferramenta' }}.
+              {% else %}
+                A ferramenta encontrou {{ occ }} {% if occ == 1 %}local{% else %}locais{% endif %} relacionado{{ 's' if occ != 1 }} a esta barreira no conteúdo principal da página.
+              {% endif %}
+            </p>
+            <p>Esta barreira foi confirmada pela ferramenta de auditoria, mas não foi possível gerar uma marcação visual exata do elemento na imagem.</p>
+            <p>Para a gestão, a prioridade e a ação recomendada estão descritas abaixo. Para a equipe técnica, os seletores completos estão no <a href="#apendice-tecnico-barreira-{{ loop.index }}">Apêndice A1</a>.</p>
+          </div>
+        {% endif %}
       </div>
       </div>
 
@@ -477,12 +526,12 @@
               Impacto
             </div>
             <div class="ma-bc-impact-text">
-              <p>{% if b.get('impacto_descricao') %}{{ clean_exec_text(b.get('impacto_descricao')) }}
+              <p>{% if _bar_is_contrast %}{{ clean_exec_text(b.get('impacto_contraste_det') or impacto_descricao_det(b)) }}
+              {% elif b.get('impacto_descricao') %}{{ clean_exec_text(b.get('impacto_descricao')) }}
               {% elif bprio=='revisao_manual' %}Precisa de confirmação manual antes de classificar como problema ou falso positivo da ferramenta.
               {% else %}{{ clean_exec_text(impacto_descricao_det(b)) }}{% endif %}</p>
               <p>{{ clean_exec_text(pub_desc(b.get('publico_afetado',''), b)) }}</p>
-              {# Mostrar apenas descrição em português; texto em inglês das ferramentas vai para o Apêndice Técnico #}
-              {% if b.get('descricao_humana') %}<p>{{ clean_exec_text(b.get('descricao_humana')) }}</p>{% endif %}
+              {% if b.get('descricao_humana') and not _bar_is_contrast %}<p>{{ clean_exec_text(b.get('descricao_humana')) }}</p>{% endif %}
             </div>
           </div>
           <div class="ma-bc-col">
@@ -868,6 +917,8 @@
     {% for b in bars %}
     {% set evcodes=b.get('evidencia_localizacao') or [] %}
     {% set publico_label = (b.get('publico_afetado') or '') | normalize_report_dashes %}
+    {% set _ap_tp = (b.get('issue_id_original') or b.get('issue_tipo_normalizado') or '')|lower %}
+    {% set _ap_is_contrast = b.get('is_contraste') or 'color-contrast' in _ap_tp or 'contraste_insuficiente' in _ap_tp or ' contrast' in _ap_tp or _ap_tp.strip().startswith('contrast') or (b.get('wave_categoria') or '')|lower == 'contrast' %}
     <div class="ap-barrier-block ap-barrier-block--a1" id="apendice-tecnico-barreira-{{ loop.index }}">
       <div class="ap-barrier-title">
         <span class="ap-barrier-num">Barreira #{{ loop.index }}</span>
@@ -950,7 +1001,7 @@
 
               <div class="tk-row">
                 <div class="tk-lbl">Critério de pronto</div>
-                <div class="tk-val">Auditoria de acessibilidade confirma ausência da barreira; testes com leitor de tela e teclado passam sem erro.</div>
+                <div class="tk-val">{{ criterio_pronto_det(b) }}</div>
               </div>
             </div>
           </div>
@@ -989,10 +1040,10 @@
               </div>
               {% endif %}
 
-              {% if tk.get('criterio_de_pronto') %}
+              {% if tk.get('criterio_de_pronto') or _ap_is_contrast %}
               <div class="tk-row">
                 <div class="tk-lbl">Critério de pronto</div>
-                <div class="tk-val tk-preline">{{ clean_exec_text((tk.get('criterio_de_pronto') or '')|normalize_executive_plaintext) }}</div>
+                <div class="tk-val tk-preline">{% if _ap_is_contrast %}{{ criterio_pronto_det(b) }}{% else %}{{ clean_exec_text((tk.get('criterio_de_pronto') or '')|normalize_executive_plaintext) }}{% endif %}</div>
               </div>
               {% endif %}
             </div>

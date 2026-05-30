@@ -316,6 +316,18 @@ WAVE_NORMALIZATION: dict[tuple[str, str], NormalizedMeta] = {
         "wcag_criterio": "4.1.2 Name, Role, Value",
         "publico_afetado": "Cegos e leitores de tela",
     },
+    ("error", "aria_menu_broken"): {
+        "issue_tipo_normalizado": "menu_aria_estrutura_invalida",
+        "titulo_tecnico": "Menu ARIA com estrutura inválida",
+        "wcag_criterio": "4.1.2 Name, Role, Value",
+        "publico_afetado": "Leitores de tela",
+    },
+    ("alert", "aria_menu_broken"): {
+        "issue_tipo_normalizado": "menu_aria_estrutura_invalida",
+        "titulo_tecnico": "Menu ARIA com estrutura inválida",
+        "wcag_criterio": "4.1.2 Name, Role, Value",
+        "publico_afetado": "Leitores de tela",
+    },
     ("contrast", "contrast"): {
         "issue_tipo_normalizado": "contraste_insuficiente",
         "titulo_tecnico": "Contraste muito baixo",
@@ -494,6 +506,28 @@ WAVE_NORMALIZATION: dict[tuple[str, str], NormalizedMeta] = {
 }
 
 
+# Impacto determinístico (camada executiva) — frases-base por tipo
+DEFAULT_IMPACTO_BY_TIPO: dict[str, str] = {
+    "contraste_insuficiente": (
+        "Os elementos indicados pela ferramenta apresentam contraste insuficiente entre texto e fundo, "
+        "conforme indicado pela auditoria automática. Pessoas com baixa visão têm dificuldade para ler "
+        "ou identificar esse conteúdo, especialmente com ampliação, baixa iluminação ou telas pequenas."
+    ),
+}
+
+# Fragmentos reutilizados em impacto dinâmico por elemento (contrast_elements)
+CONTRASTE_IMPACTO_CLAUSE = (
+    "apresentam contraste insuficiente entre texto e fundo, conforme indicado pela auditoria automática"
+)
+CONTRASTE_IMPACTO_DIFICULDADE_LEITURA = (
+    "têm dificuldade para ler ou identificar esse conteúdo, "
+    "especialmente com ampliação, baixa iluminação ou telas pequenas"
+)
+CONTRASTE_IMPACTO_DIFICULDADE_NAVEGACAO = (
+    "têm dificuldade para localizar caminhos importantes no portal"
+)
+
+
 DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
     # ── Ativação e controle ──────────────────────────────────────────────────
     "controle_sem_nome_acessivel": (
@@ -519,9 +553,9 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "O time de produto precisa alinhar o rótulo visível ao nome interno, sem deixar os dois divergirem."
     ),
     "contraste_insuficiente": (
-        "Parte dos textos e botões usa combinações de cor com contraste baixo demais. "
-        "Em má iluminação ou para quem tem visão reduzida, esse conteúdo some. "
-        "O time de design deve revisar a paleta e garantir contraste mínimo AA antes da próxima publicação."
+        "Os elementos indicados pela ferramenta apresentam contraste insuficiente entre texto e fundo, "
+        "conforme indicado pela auditoria automática. O time de design deve revisar as combinações de cor "
+        "nos pontos indicados e garantir contraste mínimo AA antes da próxima publicação."
     ),
     # ── Perda de conteúdo (imagens) ─────────────────────────────────────────
     "imagem_sem_texto_alternativo": (
@@ -612,6 +646,11 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "Alguns elementos com papel ARIA foram colocados fora do elemento pai esperado pela especificação. "
         "O leitor de tela pode anunciar o elemento de forma isolada, sem o contexto necessário para entendê-lo. "
         "O time deve reestruturar o componente para que os elementos filhos estejam dentro do pai correto."
+    ),
+    "menu_aria_estrutura_invalida": (
+        "O menu usa papéis ARIA de forma incompleta ou incompatível com a estrutura esperada. "
+        "Para quem usa leitor de tela, o componente pode ser anunciado de forma incorreta ou perder partes da navegação. "
+        "O time web deve revisar a estrutura do menu, garantir que os papéis ARIA estejam coerentes e, quando possível, usar elementos HTML nativos."
     ),
     # ── Outros ──────────────────────────────────────────────────────────────
     "campo_select_sem_label": (

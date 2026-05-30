@@ -50,7 +50,17 @@
 {%- endmacro %}
 
 {% macro risk_slug_nv(nv) -%}
-{%- if nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
+{%- if nv == 'CRÍTICO' -%}critico{%- elif nv == 'ALTO' -%}alto{%- elif nv == 'MÉDIO' -%}medio{%- elif nv == 'BAIXO' -%}baixo{%- else -%}baixo{%- endif -%}
+{%- endmacro %}
+
+{% macro prioridade_correcao_badge(p) -%}
+{%- set pc = ((p or 'P3')|string)|trim|upper -%}
+<span class="ma-prio-badge mpb-{{ pc|lower }}" title="Prioridade de correção">{{ pc }}</span>
+{%- endmacro %}
+
+{% macro wcag_nivel_exibir(b) -%}
+{%- set n = (b.get('wcag_nivel') or 'aa')|string|trim|upper -%}
+{{ n if n else 'AA' }}
 {%- endmacro %}
 
 {# Normaliza texto executivo: travessões → dois-pontos, emoji opcional #}
@@ -75,6 +85,8 @@
 <svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2a5.5 5.5 0 0 0-5.5 5.5c0 1.8.9 3.3 2.3 4.2V14h6.4v-2.3A5.5 5.5 0 0 0 10 2z"/><path d="M7.2 14v2.5h5.6V14"/><path d="M8 8h2M10 6.5v3" opacity=".6"/></svg>
 {%- elif kind == 'surdo' -%}
 <svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#0A7B70" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 8.5a5 5 0 0 0-10 0c0 2 1.2 3.5 2 4.8l.3 1.7a1 1 0 0 0 2 0v-1.5c0-.5.3-1 .8-1.3"/><circle cx="10" cy="8.5" r="1.5"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke="#DC2626" stroke-width="1.5"/></svg>
+{%- elif kind == 'voz' -%}
+<svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#7C3AED" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="7" y="3" width="6" height="10" rx="3"/><path d="M5 10a5 5 0 0 0 10 0"/><path d="M10 15v2M7 17h6"/></svg>
 {%- else -%}
 <svg viewBox="0 0 20 20" width="{{ s }}" height="{{ s }}" fill="none" stroke="#0952A0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="10" cy="3.5" r="1.8"/><path d="M10 5.3V10.5M7 8h6M10 10.5l-2 4.5M10 10.5l2 4.5"/></svg>
 {%- endif -%}
@@ -91,6 +103,7 @@
   {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'usuários móveis' in r -%}{{ ma_pub_group_svg('motor', 22) }}
   {%- elif 'cogni' in r or 'daltonismo' in r or 'dislexia' in r -%}{{ ma_pub_group_svg('cogni', 22) }}
   {%- elif 'surdo' in r -%}{{ ma_pub_group_svg('surdo', 22) }}
+  {%- elif 'voz' in r or 'comando de voz' in r or 'controle por voz' in r -%}{{ ma_pub_group_svg('voz', 22) }}
   {%- else -%}{{ ma_pub_group_svg('default', 22) }}{%- endif %}
 {% endmacro %}
 
@@ -122,7 +135,7 @@
   {%- elif 'ceg' in r or 'leitor de tela' in r or 'screen reader' in r -%}
     Usuários cegos utilizam leitores de tela como NVDA, JAWS ou VoiceOver. Quando um elemento não tem nome ou descrição, ele simplesmente não existe para esse usuário: o software passa direto sem anunciar nada.
   {%- elif 'baixa visão' in r or 'baixa visao' in r or 'contraste' in r or 'leitura em' in r -%}
-    Usuários com baixa visão dependem de contraste adequado, zoom e tipografia legível. Quando texto e fundo têm pouca diferença visual, o conteúdo pode desaparecer mesmo com ampliação.
+    Usuários com baixa visão dependem de contraste adequado, zoom e tipografia legível. Quando o texto e o fundo têm pouca diferença visual, títulos e parágrafos podem ficar difíceis ou impossíveis de ler, mesmo com ampliação.
   {%- elif 'motor' in r or 'tremor' in r or 'polegar' in r or 'móvel' in r or 'movel' in r or 'usuários móveis' in r or 'usuarios moveis' in r -%}
     Usuários com limitação motora dependem de alvos clicáveis adequados, espaçamento entre controles e navegação previsível para evitar toques acidentais e retrabalho.
   {%- elif 'voz' in r or 'comando de voz' in r -%}
@@ -245,6 +258,8 @@
     {%- else -%}
       Os atalhos de teclado definidos na página podem interferir com os atalhos do leitor de tela ou do navegador em alguns ambientes. O risco varia conforme o sistema operacional e a tecnologia assistiva usada.
     {%- endif -%}
+  {%- elif b.get('is_contraste') or 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id or 'contrast' in id or (b.get('wave_categoria') or '')|lower == 'contrast' -%}
+    {{- b.get('impacto_contraste_det') or 'Os elementos indicados pela ferramenta apresentam contraste insuficiente entre texto e fundo, conforme indicado pela auditoria automática. Pessoas com baixa visão têm dificuldade para ler ou identificar esse conteúdo, especialmente com ampliação, baixa iluminação ou telas pequenas.' -}}
   {%- elif 'aria' in id -%}
     {%- if prio == 'alta' -%}
       Esta barreira torna o componente semanticamente incoerente para tecnologias assistivas. O elemento existe visualmente, mas pode ser anunciado de forma errada, incompleta ou contraditória, prejudicando entendimento e operação.
@@ -257,15 +272,15 @@
     {%- else -%}
       Esta barreira reduz a clareza da interface e aumenta a chance de erro durante a navegação. O usuário encontra o controle, mas não recebe informação suficiente para agir com confiança.
     {%- endif -%}
-  {%- elif 'contraste' in id or 'color-contrast' in id or 'target-size' in id or 'alvo_interacao' in id or 'rotulo_difere' in id or 'label-content-name-mismatch' in id or 'link-in-text' in id -%}
+  {%- elif 'target-size' in id or 'alvo_interacao' in id or 'rotulo_difere' in id or 'label-content-name-mismatch' in id or 'link-in-text' in id -%}
     {%- if prio == 'alta' -%}
-      Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+      Esta barreira compromete a interação com o elemento afetado. Usuários que dependem de toque preciso, comando de voz ou navegação assistida podem não conseguir acionar ou identificar corretamente a ação esperada.
     {%- else -%}
       Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.
     {%- endif -%}
   {%- else -%}
     {%- if prio == 'alta' -%}
-      Esta barreira bloqueia o acesso: não apenas dificulta. Quem depende da tecnologia afetada não consegue completar a ação.
+      Esta barreira compromete o uso do elemento afetado por quem depende da tecnologia ou condição de navegação relacionada. A correção deve ser tratada como prioridade alta porque pode impedir a conclusão da tarefa em situações reais de uso.
     {%- else -%}
       Prejudica a experiência sem necessariamente bloquear o acesso. Vale incluir na próxima rodada de melhorias.
     {%- endif -%}
@@ -278,8 +293,8 @@
   {%- set id = oid if oid else tipo -%}
   {%- set wg=((b.get('wcag_criterio') or '')|lower) -%}
   {%- set cor=(b.get('correcao_sugerida') or '') -%}
-  {%- if 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id -%}
-    Parte dos textos e botões do site usa combinações de cor com contraste baixo demais: em má iluminação ou para quem tem visão reduzida, esse conteúdo some. Pede ao time de design uma varredura na paleta: toda combinação que não atinge o contraste mínimo precisa ser trocada antes da próxima publicação.
+  {%- if b.get('is_contraste') or 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id or 'contrast' in id or (b.get('wave_categoria') or '')|lower == 'contrast' -%}
+    {{- b.get('correcao_contraste_det') or 'Revisar as combinações de cor dos elementos indicados pela ferramenta, ajustando a cor do texto e/ou do fundo. Validar a razão de contraste mínima exigida pela WCAG: 4.5:1 para texto normal e 3:1 para texto grande.' -}}
   {%- elif 'target-size' in id or 'alvo_interacao' in id -%}
     Vários botões e links do site têm área de clique menor do que o mínimo para uso em celular. Quem tem tremor ou dedo largo acaba ativando o elemento errado. O time de produto precisa aumentar essas áreas: não é mudança visual grande, mas faz diferença real para quem usa o site em mobilidade ou com dificuldade motora.
   {%- elif 'button_empty' in id or 'botao_completamente_vazio' in id or 'button-name' in id or 'controle_sem_nome' in id -%}
@@ -456,6 +471,8 @@
   Alvos de toque com tamanho ou espaçamento insuficientes dificultam a interação para usuários com limitações motoras. A área mínima recomendada é 24×24 px (WCAG 2.5.8), idealmente 44×44 px.
 {%- elif 'aria-hidden' in t and 'focusable' in t -%}
   Elementos focáveis dentro de regiões <code>aria-hidden="true"</code> ficam inacessíveis para tecnologias assistivas. Remova o <code>aria-hidden</code> ou mova os elementos focáveis para fora da região oculta.
+{%- elif 'broken aria menu' in t or 'aria menu' in t or 'aria_menu_broken' in t -%}
+  Menu ARIA com estrutura inválida. Revise papéis, estados e hierarquia do componente para que leitores de tela reconheçam corretamente o menu e seus itens.
 {%- elif 'visible text label' in t or ('accessible name' in t and 'label' in t) -%}
   O rótulo visível não está contido no nome acessível, causando confusão para usuários de controle por voz que ativam elementos pelo texto que veem.
 {%- elif 'empty link' in t or ('link text' in t and 'discernible' in t) -%}
@@ -504,6 +521,20 @@
     {{- clean_exec_text(texto)|clean_report_text -}}
   {%- endif -%}
 {% endmacro %}
+
+{% macro criterio_pronto_det(b) -%}
+  {%- set oid=(b.get('issue_id_original') or '')|lower -%}
+  {%- set tipo=(b.get('issue_tipo_normalizado') or '')|lower -%}
+  {%- set id = oid if oid else tipo -%}
+  {%- set occ=(b.get('ocorrencias_count') or 1)|int -%}
+  {%- if b.get('is_contraste') or 'color-contrast' in id or 'contraste_insuficiente' in id or 'contraste' in id or 'contrast' in id or (b.get('wave_categoria') or '')|lower == 'contrast' -%}
+    Aumentar o contraste dos {{ occ }} elemento{{ 's' if occ != 1 else '' }} para razão mínima de 4.5:1 em texto normal ou 3:1 em texto grande. Validar conformidade com WCAG 1.4.3 usando ferramenta de contraste e confirmar legibilidade em baixa iluminação, com ampliação de tela e simulação de baixa visão.
+  {%- elif 'label-content-name-mismatch' in id or 'label-in-name' in id or 'rotulo_difere' in id -%}
+    Garantir que o nome acessível contenha o rótulo visível em todos os {{ occ }} link{{ 's' if occ != 1 else '' }} identificado{{ 's' if occ != 1 else '' }}. Validar novamente com Lighthouse/axe para confirmar conformidade com WCAG 2.5.3. Testar pelo menos um link com comando de voz ou simulação, confirmando que o texto visível ativa o elemento esperado.
+  {%- else -%}
+    Auditoria de acessibilidade confirma ausência da barreira; testes com leitor de tela e teclado passam sem erro.
+  {%- endif -%}
+{%- endmacro %}
 
 {% macro desc_tecnica_barreira(b) -%}
   {%- set iid = ((b.get('issue_tipo_normalizado','') ~ ' ' ~ b.get('titulo_tecnico','')) | lower) -%}

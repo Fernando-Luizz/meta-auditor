@@ -107,6 +107,7 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
     """Re-normaliza campos de texto da IA (cache legado, JSON da BD). In-place."""
     if not isinstance(barrier, dict):
         return
+    from app.services.contrast_elements import criterio_pronto_contraste_det, is_contrast_barrier
     for k in (
         "justificativa_gerencial",
         "explicacao_usuario",
@@ -123,6 +124,8 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
             v = tk.get(k)
             if isinstance(v, str) and v.strip():
                 tk[k] = normalize_executive_plaintext(v)
+        if is_contrast_barrier(barrier):
+            tk["criterio_de_pronto"] = criterio_pronto_contraste_det(barrier)
 
 
 def normalize_report_markup_text(text: str | None) -> str:

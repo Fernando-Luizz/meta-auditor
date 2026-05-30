@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
+import hashlib
 import json
 import logging
 import re
@@ -27,6 +29,102 @@ NIVEL2_TICKET_MAX_TOKENS = 600
 NIVEL2_TICKET_REPAIR_MAX_TOKENS = 350
 
 _cache: dict[str, dict] = {}
+
+# ── Custo / uso de tokens ─────────────────────────────────────────────────────
+# Preço por token do modelo atual (claude-haiku-4-5). Fonte: tabela de preços da
+# Anthropic (mai/2026): US$ 1,00/MTok entrada · US$ 5,00/MTok saída ·
+# US$ 1,25/MTok escrita de cache · US$ 0,10/MTok leitura de cache.
+# Ajuste estes valores se trocar ANTHROPIC_MODEL.
+_PRICE_INPUT_PER_TOKEN = 1.00 / 1_000_000
+_PRICE_OUTPUT_PER_TOKEN = 5.00 / 1_000_000
+_PRICE_CACHE_WRITE_PER_TOKEN = 1.25 / 1_000_000
+_PRICE_CACHE_READ_PER_TOKEN = 0.10 / 1_000_000
+
+# Acumulador de uso preenchido durante uma execução de enhance_report.
+# É um ContextVar para que as chamadas concorrentes (asyncio.gather) somem no
+# mesmo dicionário sem precisar passá-lo por todas as funções.
+_usage_ctx: contextvars.ContextVar["dict | None"] = contextvars.ContextVar(
+    "ai_usage_accumulator", default=None
+)
+
+
+def _new_usage_accumulator() -> dict:
+    return {
+        "model": ANTHROPIC_MODEL,
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "by_phase": {},
+    }
+
+
+def _record_usage(usage: "dict | None", phase: str) -> None:
+    """Soma o `usage` de uma resposta da API ao acumulador do contexto atual."""
+    acc = _usage_ctx.get()
+    if acc is None:
+        return
+    acc["calls"] += 1
+    ph = acc["by_phase"].setdefault(
+        phase, {"calls": 0, "input_tokens": 0, "output_tokens": 0}
+    )
+    ph["calls"] += 1
+    if not isinstance(usage, dict):
+        return
+    for key in (
+        "input_tokens",
+        "output_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens",
+    ):
+        val = _safe_int(usage.get(key), 0)
+        acc[key] += val
+        if key in ph:
+            ph[key] += val
+
+
+def _compute_cost_usd(acc: dict) -> float:
+    return round(
+        acc.get("input_tokens", 0) * _PRICE_INPUT_PER_TOKEN
+        + acc.get("output_tokens", 0) * _PRICE_OUTPUT_PER_TOKEN
+        + acc.get("cache_creation_input_tokens", 0) * _PRICE_CACHE_WRITE_PER_TOKEN
+        + acc.get("cache_read_input_tokens", 0) * _PRICE_CACHE_READ_PER_TOKEN,
+        6,
+    )
+
+
+def _finalize_usage(acc: dict) -> dict:
+    acc["total_tokens"] = (
+        acc.get("input_tokens", 0)
+        + acc.get("output_tokens", 0)
+        + acc.get("cache_creation_input_tokens", 0)
+        + acc.get("cache_read_input_tokens", 0)
+    )
+    acc["cost_usd"] = _compute_cost_usd(acc)
+    return acc
+
+
+def _merge_usage(prev: dict, cur: dict) -> dict:
+    """Soma dois acumuladores (re-enriquecimento parcial acumula no já registrado)."""
+    out = _new_usage_accumulator()
+    out["model"] = cur.get("model") or prev.get("model") or ANTHROPIC_MODEL
+    for key in (
+        "calls",
+        "input_tokens",
+        "output_tokens",
+        "cache_creation_input_tokens",
+        "cache_read_input_tokens",
+    ):
+        out[key] = _safe_int(prev.get(key), 0) + _safe_int(cur.get(key), 0)
+    for src in (prev, cur):
+        for ph, d in (src.get("by_phase") or {}).items():
+            tgt = out["by_phase"].setdefault(
+                ph, {"calls": 0, "input_tokens": 0, "output_tokens": 0}
+            )
+            for k, v in d.items():
+                tgt[k] = tgt.get(k, 0) + _safe_int(v, 0)
+    return _finalize_usage(out)
 
 
 def _domain(url: str) -> str:
@@ -123,7 +221,9 @@ def _nivel2_ticket_normalized(parsed2: dict) -> tuple[str, dict]:
     )
 
 
-async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill: str = "") -> str:
+async def _call_claude(
+    prompt: str, api_key: str, max_tokens: int = 900, prefill: str = "", phase: str = "outro"
+) -> str:
     headers = {
         "x-api-key": api_key,
         "anthropic-version": "2023-06-01",
@@ -145,6 +245,7 @@ async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill
             resp = await client.post(ANTHROPIC_API_URL, headers=headers, json=body)
             resp.raise_for_status()
             data = resp.json()
+            _record_usage(data.get("usage"), phase)
             text = data["content"][0]["text"]
             # When prefill is used the API returns only what follows it — prepend it back.
             return (prefill + text) if prefill else text
@@ -156,7 +257,7 @@ async def _call_claude(prompt: str, api_key: str, max_tokens: int = 900, prefill
 # Ação gerencial específica por tipo — evita frases genéricas de "confirmar correção".
 _ACAO_GERENCIAL_POR_TIPO: dict[str, str] = {
     "contraste_insuficiente": (
-        "Encaminhar para o time de design e solicitar revisão completa das cores e do contraste de textos e botões."
+        "Encaminhar para o time de design e solicitar revisão do contraste dos elementos de texto indicados pela ferramenta."
     ),
     "link_distinguivel_somente_por_cor": (
         "Encaminhar para o time de design e solicitar que links no texto tenham indicação além da cor."
@@ -248,7 +349,10 @@ def _acao_gerencial_hint(barrier: dict) -> str:
     if tipo in _ACAO_GERENCIAL_POR_TIPO:
         return _ACAO_GERENCIAL_POR_TIPO[tipo]
     if "contraste" in tipo:
-        return _ACAO_GERENCIAL_POR_TIPO["contraste_insuficiente"]
+        el = barrier.get("elementos_contraste_humano") or "elementos indicados pela ferramenta"
+        return (
+            f"Encaminhar para o time de design e solicitar revisão do contraste dos {el}."
+        )
     if "formulario" in tipo or "rotulo" in tipo or "label" in tipo or "fieldset" in tipo:
         return _ACAO_GERENCIAL_POR_TIPO["formulario_sem_rotulo"]
     if "imagem" in tipo or "alt" in tipo or "objeto_embed" in tipo:
@@ -297,18 +401,107 @@ def _context_block(barrier: dict) -> str:
         correcao_raw,
         flags=re.IGNORECASE,
     )
-    return (
-        "CONTEXTO DETERMINÍSTICO (fonte de verdade: não alterar):\n"
-        f"  Tipo normalizado  : {barrier.get('issue_tipo_normalizado', '—')}\n"
-        f"  Título técnico    : {barrier.get('titulo_tecnico', '—')}\n"
-        f"  Critério WCAG     : {barrier.get('wcag_criterio', '—')}\n"
-        f"  Público afetado   : {barrier.get('publico_afetado', '—')}\n"
-        f"  Prioridade        : {prio_map.get(barrier.get('prioridade', ''), barrier.get('prioridade', '—'))}\n"
-        f"  Ferramenta origem : {ferr_map.get(barrier.get('status_deteccao', ''), barrier.get('status_deteccao', '—'))}\n"
-        f"  Ocorrências       : {_safe_int(barrier.get('ocorrencias_count'), 0)} elemento(s) afetado(s)\n"
-        f"  Como corrigir base: {correcao_sem_count}\n"
-        f"  Seletores CSS     :\n{sel_txt}"
+    from app.services.contrast_elements import is_contrast_barrier
+
+    lines = [
+        "CONTEXTO DETERMINÍSTICO (fonte de verdade: não alterar):",
+        f"  Tipo normalizado  : {barrier.get('issue_tipo_normalizado', '—')}",
+        f"  Título técnico    : {barrier.get('titulo_tecnico', '—')}",
+        f"  Critério WCAG     : {barrier.get('wcag_criterio', '—')}",
+        f"  Público afetado   : {barrier.get('publico_afetado', '—')}",
+        f"  Prioridade        : {prio_map.get(barrier.get('prioridade', ''), barrier.get('prioridade', '—'))}",
+        f"  Ferramenta origem : {ferr_map.get(barrier.get('status_deteccao', ''), barrier.get('status_deteccao', '—'))}",
+        f"  Ocorrências       : {_safe_int(barrier.get('ocorrencias_count'), 0)} elemento(s) afetado(s)",
+        f"  Como corrigir base: {correcao_sem_count}",
+        f"  Seletores CSS     :\n{sel_txt}",
+    ]
+    if is_contrast_barrier(barrier):
+        origem = (
+            barrier.get("ferramenta")
+            or barrier.get("tool")
+            or barrier.get("fonte")
+            or barrier.get("origem")
+            or barrier.get("status_deteccao")
+            or "—"
+        )
+        el = barrier.get("elementos_contraste_humano") or "elementos indicados pela ferramenta"
+        lines.extend(
+            [
+                f"  Elementos (contraste): {el}",
+                f"  Origem evidência    : {origem}",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def _contrast_prompt_rules(barrier: dict) -> str:
+    from app.services.contrast_elements import is_contrast_barrier
+
+    if not is_contrast_barrier(barrier):
+        return ""
+    el = barrier.get("elementos_contraste_humano") or "elementos indicados pela ferramenta"
+    origem = str(
+        barrier.get("ferramenta")
+        or barrier.get("tool")
+        or barrier.get("fonte")
+        or ""
+    ).lower()
+    wave_note = ""
+    if "wave" in origem:
+        wave_note = (
+            "\n- Se a origem for WAVE: a ferramenta aponta a localização técnica no Apêndice A1, "
+            "mas não fornece marcação visual exata do elemento na captura."
+        )
+    return f"""
+REGRAS PARA BARRERAS DE CONTRASTE (obrigatório):
+- Descreva sempre o problema como relação entre texto e fundo (não tamanho, fonte ou estilo).
+- Use apenas os tipos de elementos informados em «Elementos (contraste)»: {el}
+- Não mencione botões, links, menus ou formulários se eles não aparecerem nesses dados.
+- Se o tipo de elemento não estiver claro, use «elementos indicados pela ferramenta».{wave_note}
+"""
+
+
+# Banco de analogias do cotidiano — usadas como sugestão de variação no prompt.
+# A escolha é determinística por (host + tipo) para variar entre portais sem
+# aleatoriedade (resultado reproduzível e cacheável).
+_ANALOGIAS_CONTRASTE = [
+    "como ler um aviso impresso com tinta clara em uma parede clara",
+    "como tentar identificar uma placa desbotada no fim da tarde",
+    "como ler uma senha anotada com lápis fraco sob pouca luz",
+    "como procurar uma informação importante em uma tela com brilho baixo",
+    "como distinguir letras cinzas sobre um fundo quase da mesma cor",
+]
+
+_ANALOGIAS_GENERICAS = [
+    "como chegar a uma porta sem placa indicando o que há dentro",
+    "como tentar usar um controle remoto com botões sem identificação",
+    "como seguir uma trilha sem placas nas bifurcações",
+    "como preencher um formulário sem saber o que cada campo pede",
+]
+
+
+def _analogia_hint(barrier: dict) -> str:
+    """Sugere uma analogia do cotidiano, variando por portal e tipo de barreira."""
+    tipo = (barrier.get("issue_tipo_normalizado") or "").lower()
+    publico = (barrier.get("publico_afetado") or "").lower()
+    url = (
+        barrier.get("url")
+        or barrier.get("page_url")
+        or barrier.get("audit_url")
+        or ""
     )
+    try:
+        host = urlparse(url).netloc or "portal"
+    except Exception:
+        host = "portal"
+
+    if "contraste" in tipo or "baixa visão" in publico or "baixa visao" in publico:
+        base = _ANALOGIAS_CONTRASTE
+    else:
+        base = _ANALOGIAS_GENERICAS
+
+    idx = int(hashlib.sha256(f"{host}:{tipo}".encode("utf-8")).hexdigest(), 16) % len(base)
+    return base[idx]
 
 
 def _prompt_nivel1(barrier: dict) -> str:
@@ -319,11 +512,13 @@ def _prompt_nivel1(barrier: dict) -> str:
     }
     prio_label = prio_map.get(barrier.get("prioridade", ""), "NÃO DEFINIDA")
     acao_hint = _acao_gerencial_hint(barrier)
+    analogia = _analogia_hint(barrier)
     return (
         "Você é especialista em acessibilidade web e comunicação executiva.\n\n"
         + _context_block(barrier)
         + f"\n  Prioridade traduzida : {prio_label}\n"
         + f"\n  Ação gerencial esperada (use como base — mantenha a ação específica, ajuste só urgência/time):\n  {acao_hint}\n"
+        + _contrast_prompt_rules(barrier)
         + """\n\nCom base APENAS no contexto acima, gere 4 campos de comunicação.
 NÃO invente dados. NÃO altere severidade. NÃO afirme conformidade legal.
 
@@ -345,18 +540,19 @@ INSTRUÇÕES POR CAMPO:
 justificativa_gerencial (1-2 frases):
   Audiência: gestor ou diretor. Por que esta barreira tem esta prioridade?
   Responda em termos de: quais usuários são excluídos + por que isso é grave na experiência (sem alegações financeiras ou jurídicas).
-  Exemplo bom: "Usuários com baixa visão não conseguem ler textos e botões do site, impedindo que completem compras. Por ser um problema frequente e de alto impacto, a correção deve ser tratada com urgência."
+  Exemplo bom: "Usuários com baixa visão podem não conseguir ler os textos indicados pela ferramenta porque a diferença entre a cor do texto e o fundo é insuficiente. Por ser um problema frequente e de alto impacto, a correção deve ser tratada com urgência."
   Exemplo ruim: "A barreira WCAG 1.4.3 afeta 37 elementos com contraste insuficiente."
 
 explicacao_usuario (2-3 frases):
   Audiência: qualquer pessoa, inclusive quem nunca pensou em acessibilidade.
-  Descreva a experiência real de quem tem a deficiência indicada. Use analogia do cotidiano.
-  Exemplo: "Quem tem baixa visão precisa de muito contraste para enxergar textos. Quando as cores do site são parecidas com o fundo, é como tentar ler uma carta escrita a lápis fraco num papel amarelado."
+  Descreva a experiência real de quem tem a deficiência indicada.
+  Use uma analogia curta do cotidiano, variando conforme o portal, o tipo de barreira e o público afetado. Não repita exemplos prontos e não use a mesma imagem em diferentes portais.
+  Analogia sugerida apenas como referência de imagem cotidiana (NÃO copie literalmente, adapte com outras palavras): __ANALOGIA__
 
 como_corrigir_claro (1-3 frases):
   Audiência: product owner ou gerente de produto.
   Descreva O QUÊ precisa mudar pelo comportamento que o usuário vai ver, não pelo código.
-  Exemplo bom: "Os textos e botões do cabeçalho precisam ter cores que contrastem claramente com o fundo, para que qualquer pessoa consiga lê-los mesmo com pouca luz ou visão reduzida."
+  Exemplo bom: "As combinações de cor nos pontos indicados precisam atingir contraste mínimo entre texto e fundo, para que qualquer pessoa consiga lê-los mesmo com pouca luz ou visão reduzida."
   Exemplo ruim: "Adicione aria-label ao elemento <button> e ajuste color:#333 no CSS."
 
 acao_gerencial (1 frase curta):
@@ -389,7 +585,7 @@ Responda SOMENTE com JSON válido, sem markdown:
   "como_corrigir_claro": "...",
   "acao_gerencial": "..."
 }"""
-    )
+    ).replace("__ANALOGIA__", analogia)
 
 
 def _prompt_nivel2_dev(barrier: dict) -> str:
@@ -415,6 +611,8 @@ Responda SOMENTE com JSON válido, sem markdown:
 
 def _prompt_nivel2_ticket(barrier: dict) -> str:
     """Prompt B do nível 2: gera apenas texto_ticket — contexto sem seletores CSS longos."""
+    from app.services.contrast_elements import is_contrast_barrier
+
     prio_map = {
         "alta": "ALTA — corrigir com urgência",
         "media": "MÉDIA — planejar na próxima entrega",
@@ -429,25 +627,29 @@ def _prompt_nivel2_ticket(barrier: dict) -> str:
         f"  Prioridade       : {prio_map.get(barrier.get('prioridade', ''), '—')}\n"
         f"  Ocorrências      : {_safe_int(barrier.get('ocorrencias_count'), 0)} elemento(s)\n"
     )
-    return (
-        "Você é especialista em acessibilidade web e gestão de backlog ágil.\n\n"
-        + ctx
-        + """\n\nCom base APENAS no contexto acima, crie um ticket de backlog para a equipe.
-NÃO invente dados técnicos. NÃO altere critério WCAG.
-
-texto_ticket.titulo:
-  Máximo 80 caracteres. Formato: verbo no infinitivo + problema + contexto.
-
-texto_ticket.descricao:
-  3-4 frases: o que foi detectado + quem é afetado + critério WCAG violado + impacto funcional.
-
-texto_ticket.criterio_de_pronto:
-  2-3 itens verificáveis, separados por \\n. Cada item começa com verbo.
-
-Responda SOMENTE com JSON válido, sem markdown:
-
-{"texto_ticket": {"titulo": "...", "descricao": "...", "criterio_de_pronto": "..."}}"""
+    instrucoes = (
+        "\n\nCom base APENAS no contexto acima, crie um ticket de backlog para a equipe.\n"
+        "NÃO invente dados técnicos. NÃO altere critério WCAG.\n\n"
+        "texto_ticket.titulo:\n"
+        "  Máximo 80 caracteres. Formato: verbo no infinitivo + problema + contexto.\n\n"
+        "texto_ticket.descricao:\n"
+        "  3-4 frases: o que foi detectado + quem é afetado + critério WCAG violado + impacto funcional.\n\n"
+        "texto_ticket.criterio_de_pronto:\n"
+        "  2-3 itens verificáveis, separados por \\n. Cada item começa com verbo.\n"
     )
+    if is_contrast_barrier(barrier):
+        instrucoes += (
+            "\nREGRA WCAG 1.4.3 (contraste de TEXTO — não componentes gráficos):\n"
+            "  texto_ticket.criterio_de_pronto deve usar APENAS:\n"
+            "  - 4.5:1 para texto normal\n"
+            "  - 3:1 para texto grande (NÃO «elementos gráficos»)\n"
+            "  - validação com ferramenta de contraste e teste em baixa iluminação/ampliação\n"
+        )
+    instrucoes += (
+        "\nResponda SOMENTE com JSON válido, sem markdown:\n\n"
+        '{"texto_ticket": {"titulo": "...", "descricao": "...", "criterio_de_pronto": "..."}}'
+    )
+    return "Você é especialista em acessibilidade web e gestão de backlog ágil.\n\n" + ctx + instrucoes
 
 
 def _prompt_executive(
@@ -619,6 +821,20 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
         normalize_barrier_ai_texts(barrier)
         return
 
+    # URL/host e analogia entram na chave para evitar que portais diferentes
+    # recebam exatamente o mesmo texto de IA (causa da repetição entre relatórios).
+    url_cache = (
+        barrier.get("url")
+        or barrier.get("page_url")
+        or barrier.get("audit_url")
+        or ""
+    )
+    try:
+        host_cache = urlparse(url_cache).netloc or ""
+    except Exception:
+        host_cache = ""
+    analogia_cache = _analogia_hint(barrier)
+
     cache_key = json.dumps(
         {
             "tipo": barrier.get("issue_tipo_normalizado", ""),
@@ -628,6 +844,9 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             "publico": barrier.get("publico_afetado", ""),
             "ocorrencias": int(barrier.get("ocorrencias_count") or 0),
             "onde": barrier.get("onde_esta", ""),
+            "url": url_cache,
+            "host": host_cache,
+            "analogia_hint": analogia_cache,
             "level": level,
         },
         ensure_ascii=False,
@@ -641,7 +860,9 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
     result: dict = {}
 
     # ── Nível 1: camada gerencial ─────────────────────────────────────────────
-    raw1 = await _call_claude(_prompt_nivel1(barrier), api_key, max_tokens=1000, prefill="{")
+    raw1 = await _call_claude(
+        _prompt_nivel1(barrier), api_key, max_tokens=1000, prefill="{", phase="nivel1"
+    )
     parsed1 = _parse_json(raw1)
 
     if not parsed1 and raw1:
@@ -650,7 +871,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             barrier.get("issue_tipo_normalizado", "?"),
         )
         raw1_repair = await _call_claude(
-            _prompt_repair_nivel1(raw1), api_key, max_tokens=500, prefill="{"
+            _prompt_repair_nivel1(raw1), api_key, max_tokens=500, prefill="{", phase="nivel1_repair"
         )
         parsed1 = _parse_json(raw1_repair)
 
@@ -689,6 +910,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             api_key,
             max_tokens=NIVEL2_DEV_MAX_TOKENS,
             prefill="{",
+            phase="nivel2_dev",
         )
         parsed_dev = _parse_json(raw_dev)
 
@@ -699,6 +921,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
                 api_key,
                 max_tokens=NIVEL2_DEV_REPAIR_MAX_TOKENS,
                 prefill="{",
+                phase="nivel2_dev_repair",
             )
             parsed_dev = _parse_json(raw_dev_repair)
 
@@ -712,6 +935,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             api_key,
             max_tokens=NIVEL2_TICKET_MAX_TOKENS,
             prefill="{",
+            phase="nivel2_ticket",
         )
         parsed_ticket = _parse_json(raw_ticket)
 
@@ -722,6 +946,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
                 api_key,
                 max_tokens=NIVEL2_TICKET_REPAIR_MAX_TOKENS,
                 prefill="{",
+                phase="nivel2_ticket_repair",
             )
             parsed_ticket = _parse_json(raw_ticket_repair)
 
@@ -730,6 +955,11 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
             tk_raw = {}
 
         _, tk_norm = _nivel2_ticket_normalized({"versao_dev": "", "texto_ticket": tk_raw})
+
+        from app.services.contrast_elements import criterio_pronto_contraste_det, is_contrast_barrier
+
+        if is_contrast_barrier(barrier):
+            tk_norm["criterio_de_pronto"] = criterio_pronto_contraste_det(barrier)
 
         missing_ticket = [f for f in ("titulo", "descricao", "criterio_de_pronto") if not tk_norm.get(f)]
 
@@ -788,6 +1018,7 @@ async def _enrich_executive(
         _prompt_executive(barriers, domain, lh_score, wave_score, score_risco),
         api_key,
         max_tokens=600,
+        phase="executivo",
     )
     parsed = _parse_json(raw)
     texto = _normalize_pt_text(parsed.get("resumo_executivo_ai", ""))
@@ -809,6 +1040,16 @@ async def enhance_report(
     barriers: list[dict] = report.get("barreiras_automaticas") or []
     if not barriers:
         return
+
+    from app.services.display_labels import attach_display_fields
+
+    attach_display_fields(barriers)
+
+    # Garante a URL da auditoria em cada barreira (host disponível para o cache
+    # da IA e para a escolha de analogia, mesmo quando page_url vier vazio).
+    for _b in barriers:
+        if isinstance(_b, dict) and not _b.get("audit_url"):
+            _b["audit_url"] = url
 
     domain = _domain(url)
     level = max(1, min(level, 2))
@@ -839,8 +1080,25 @@ async def enhance_report(
         async with sem:
             await _safe_exec()
 
-    await asyncio.gather(*[_safe_barrier_limited(b) for b in barriers], _safe_exec_limited())
+    acc = _new_usage_accumulator()
+    token = _usage_ctx.set(acc)
+    try:
+        await asyncio.gather(*[_safe_barrier_limited(b) for b in barriers], _safe_exec_limited())
+    finally:
+        _usage_ctx.reset(token)
+
+    _finalize_usage(acc)
+    prev = report.get("ai_usage")
+    report["ai_usage"] = _merge_usage(prev, acc) if isinstance(prev, dict) else acc
 
     report["ai_enhanced"] = True
     report["ai_enhancement_level"] = level
-    _log.info("ai_enhancer: concluído · %s", domain)
+    _log.info(
+        "ai_enhancer: concluído · %s · IA: %d chamada(s) · %d tokens (entrada %d / saída %d) · US$ %.4f",
+        domain,
+        report["ai_usage"]["calls"],
+        report["ai_usage"]["total_tokens"],
+        report["ai_usage"]["input_tokens"],
+        report["ai_usage"]["output_tokens"],
+        report["ai_usage"]["cost_usd"],
+    )

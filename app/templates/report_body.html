@@ -1,8 +1,8 @@
 {# Relatório executivo premium: variáveis compartilhadas (escopo do include pai) + partes A/B #}
 {% from '_report_macros.html' import risk_slug_nv, esforco %}
 
-{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0) %}
-{% for b in bars+divs %}
+{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0,voz=0) %}
+{% for b in bars %}
   {% set p=(b.get('publico_afetado') or '')|lower %}
   {% set occ=(b.get('ocorrencias_count') or 1)|int %}
   {% if 'baixa visão' in p or 'baixa visao' in p or 'low vision' in p or 'contraste' in p or 'leitura em' in p %}{% set cnt.visao = cnt.visao + occ %}{% endif %}
@@ -12,8 +12,9 @@
   {% if 'surdo' in p or 'deaf' in p %}{% set cnt.surdo = cnt.surdo + occ %}{% endif %}
   {% if 'teclado' in p %}{% set cnt.naveg = cnt.naveg + occ %}{% endif %}
   {% if 'estrutura' in p or 'hierarquia' in p or 'orientação' in p or 'orientacao' in p %}{% set cnt.estr = cnt.estr + occ %}{% endif %}
+  {% if 'voz' in p or 'comando de voz' in p or 'controle por voz' in p %}{% set cnt.voz = cnt.voz + occ %}{% endif %}
 {% endfor %}
-{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr,1]|max %}
+{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr,cnt.voz,1]|max %}
 
 {% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
 {% for bb in bars %}
@@ -71,7 +72,8 @@
 
 {% set sr_nivel = (sr.get('nivel','') if sr else '') %}
 {% set exec_cls = 'exec-sem' %}
-{% if sr_nivel == 'ALTO' %}{% set exec_cls = 'exec-alto' %}
+{% if sr_nivel == 'CRÍTICO' %}{% set exec_cls = 'exec-critico' %}
+{% elif sr_nivel == 'ALTO' %}{% set exec_cls = 'exec-alto' %}
 {% elif sr_nivel == 'MÉDIO' %}{% set exec_cls = 'exec-medio' %}
 {% elif sr_nivel == 'BAIXO' %}{% set exec_cls = 'exec-baixo' %}
 {% endif %}

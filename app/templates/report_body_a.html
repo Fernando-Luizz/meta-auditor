@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg %}
+{% from '_report_macros.html' import pub_icon, pub_desc, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg, prioridade_correcao_badge, wcag_nivel_exibir, termo_barreira, prioridade_exibir_caps %}
 {% set _u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set audit_domain = _u.split('/')[0] if _u else '–' %}
 {% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
@@ -20,12 +20,14 @@
         <div class="ma-conform-text">
           <span class="ma-conform-title">
             {% if nt == 0 %}Resultado automatizado: sem barreiras detectadas
+            {% elif sr_nivel == 'CRÍTICO' %}Resultado automatizado: risco crítico de exclusão digital
             {% elif sr_nivel == 'ALTO' %}Resultado automatizado: indícios de não conformidade WCAG 2.1 AA
             {% elif sr_nivel == 'MÉDIO' %}Resultado automatizado: barreiras moderadas detectadas
             {% else %}Resultado automatizado: barreiras pontuais detectadas{% endif %}
           </span>
           <span class="ma-conform-sub">
             {% if nt == 0 %}Nenhuma barreira automatizada detectada nesta execução.
+            {% elif sr_nivel == 'CRÍTICO' %}Concentração elevada de barreiras de severidade alta: prioridade máxima entre portais.
             {% elif sr_nivel == 'ALTO' %}Barreiras de severidade alta identificadas.
             {% elif sr_nivel == 'MÉDIO' %}Barreiras de severidade média identificadas.
             {% elif sr_nivel == 'BAIXO' %}Barreiras pontuais ou de menor impacto.
@@ -63,7 +65,7 @@
       {% if sr %}
       <div class="ma-meta-item">
         <p class="ma-meta-label">Risco (0–3)</p>
-        <p class="ma-meta-value {% if sr.get('nivel') == 'ALTO' %}red{% elif sr.get('nivel') == 'MÉDIO' %}orange{% elif sr.get('nivel') == 'BAIXO' %}green{% endif %}">{{ sr.get('valor', '–') }} · {{ sr.get('nivel', '–') }}</p>
+        <p class="ma-meta-value {% if sr.get('nivel') == 'CRÍTICO' %}red{% elif sr.get('nivel') == 'ALTO' %}red{% elif sr.get('nivel') == 'MÉDIO' %}orange{% elif sr.get('nivel') == 'BAIXO' %}green{% endif %}">{{ sr.get('valor', '–') }} · {{ sr.get('nivel', '–') }}</p>
       </div>
       {% endif %}
     </div>
@@ -100,8 +102,8 @@
   <div class="ma-score-card">
     <span class="ma-score-label">Barreiras detectadas</span>
     <span class="ma-score-value {% if nt == 0 %}green{% elif nt <= 2 %}orange{% else %}red{% endif %}">{{ nt }}</span>
-    <span class="ma-score-tag {% if nt == 0 %}aprovado{% elif nt <= 2 %}atencao{% else %}critico{% endif %}">
-      {% if nt == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Nenhuma{% elif nt <= 2 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
+    <span class="ma-score-tag {% if nt == 0 %}aprovado{% elif na > 0 %}atencao{% else %}atencao{% endif %}">
+      {% if nt == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Nenhuma{% elif na > 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Com altas{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% endif %}
     </span>
     <span class="ma-score-desc">{{ na }} {{ 'alta' if na == 1 else 'altas' }} · {{ nm }} {{ 'média' if nm == 1 else 'médias' }} · {{ nb }} {{ 'baixa' if nb == 1 else 'baixas' }}</span>
   </div>
@@ -144,7 +146,7 @@
       <div class="ma-exec-headline">
         <span class="ma-exec-eyebrow">Resumo Executivo</span>
         <h2 class="ma-exec-title" id="exec-title">
-          {% if sr_nivel=='ALTO' %}Portal com barreiras críticas de acessibilidade: ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível: correções prioritárias identificadas{% else %}Portal com barreiras pontuais: melhorias de baixo ou médio esforço disponíveis{% endif %}
+          {% if sr_nivel=='CRÍTICO' %}Portal em risco CRÍTICO: correção imediata antes dos demais portais{% elif sr_nivel=='ALTO' %}Portal com barreiras de alta prioridade: ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível: correções prioritárias identificadas{% else %}Portal com barreiras pontuais: melhorias de baixo ou médio esforço disponíveis{% endif %}
         </h2>
       </div>
     </div>
@@ -157,19 +159,19 @@
         {%- if cnt.visao > 0 %}{% set _ = grupos_crit.append('pessoas com baixa visão') %}{% endif %}
         {%- if cnt.motor > 0 %}{% set _ = grupos_crit.append('usuários com mobilidade reduzida') %}{% endif %}
         {%- if cnt.cogni > 0 %}{% set _ = grupos_crit.append('pessoas com dificuldades cognitivas') %}{% endif %}
-        <p>As barreiras críticas afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.</p>
+        <p>As barreiras de alta prioridade afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.</p>
       {% else %}
         <p>Nenhuma barreira foi consolidada como alta prioridade nesta execução. Trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.</p>
       {% endif %}
       {% if rapidas|length > 0 %}
         <p><em>{{ rapidas|length }} {% if rapidas|length == 1 %}problema pode ser corrigido{% else %}problemas podem ser corrigidos{% endif %} em menos de 1 dia</em> pela equipe técnica, com impacto imediato na qualidade da experiência.</p>
       {% endif %}
-      <p>Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando o site tem barreiras de acesso.</p>
+      <p>Segundo o Censo Demográfico 2022, <strong>14,4 milhões de brasileiros</strong> tinham algum tipo de deficiência, o que correspondia a <strong>7,3% da população de 2 anos ou mais</strong>: muitas dessas pessoas ficam excluídas na prática quando o site tem barreiras de acesso.</p>
     </div>
     <div class="ma-exec-counters" role="list" aria-label="Indicadores do resumo executivo">
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num red">{{ na }}</div>
-        <div class="ma-counter-label">Críticas</div>
+        <div class="ma-counter-label">Altas</div>
       </div>
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num amber">{{ nm }}</div>
@@ -202,6 +204,47 @@
     </div>
   </div>
 </div>
+
+{% if nt > 0 %}
+<section class="ma-order-sec" aria-labelledby="order-correcao-heading">
+  <p class="ma-section-eyebrow">Priorização de correção</p>
+  <h2 class="ma-section-title" id="order-correcao-heading">Ordem recomendada de correção</h2>
+  <p class="ma-section-sub ma-order-note">
+    A ordem recomendada de correção considera severidade, nível WCAG, confirmação entre ferramentas, número de ocorrências e fase estimada de correção. Essa priorização é automática e serve como ponto de partida para planejamento técnico.
+  </p>
+  <div class="ma-order-table-wrap">
+    <table class="ma-order-table">
+      <thead>
+        <tr>
+          <th scope="col">Prioridade</th>
+          <th scope="col">Barreira</th>
+          <th scope="col">Severidade</th>
+          <th scope="col">WCAG</th>
+          <th scope="col">Ocorrências</th>
+          <th scope="col">Motivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bars %}
+        {% set bp=(b.get('prioridade') or 'media')|lower %}
+        {% if bp=='alta' %}{% set svc='alta' %}
+        {% elif bp=='baixa' %}{% set svc='baixa' %}
+        {% else %}{% set svc='media' %}
+        {% endif %}
+        <tr>
+          <td>{{ prioridade_correcao_badge(b.get('prioridade_correcao')) }}</td>
+          <td><strong>{{ termo_barreira(b) }}</strong></td>
+          <td><span class="ma-sev-badge sb-{{ svc }}">{{ prioridade_exibir_caps(b.get('prioridade')) }}</span></td>
+          <td>{{ wcag_nivel_exibir(b) }}</td>
+          <td class="ma-td-ocor">{{ (b.get('ocorrencias_count') or 1)|int }}</td>
+          <td class="ma-order-motivo">{{ b.get('motivo_prioridade_correcao') or '–' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
 
 <section class="ma-principles-card" aria-labelledby="pour-heading">
   <p class="ma-section-eyebrow">Análise WCAG</p>
@@ -298,7 +341,7 @@
     <div class="ma-exec-body-text">
       <p>Este portal não apresentou barreiras catalogadas automaticamente pelas ferramentas utilizadas. Resultado positivo na camada automatizada:
       recomenda-se ainda testes manuais, leitor de tela e, quando possível, participação de usuários com deficiência.</p>
-      <p>Segundo o Censo IBGE 2022, <strong>8,9% dos brasileiros</strong> têm alguma deficiência: muitas dessas pessoas ficam excluídas na prática quando há barreiras não detectadas por crawlers.</p>
+      <p>Segundo o Censo Demográfico 2022, <strong>14,4 milhões de brasileiros</strong> tinham algum tipo de deficiência, o que correspondia a <strong>7,3% da população de 2 anos ou mais</strong>: muitas dessas pessoas ficam excluídas na prática quando há barreiras não detectadas por crawlers.</p>
     </div>
     <div class="ma-exec-legal">
       <p class="ma-exec-legal-note">
@@ -324,6 +367,8 @@
   <div class="cf-value">
     {% if nt==0 %}
       <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30-40%</strong> dos critérios AA: não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
+    {% elif sr_nivel=='CRÍTICO' %}
+      <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. O nível CRÍTICO indica concentração elevada de barreiras altas — trate este portal antes dos demais classificados como ALTO.</span>
     {% elif sr_nivel=='ALTO' %}
       <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade precisa de validação humana para ter peso.</span>
     {% elif sr_nivel=='MÉDIO' %}
@@ -332,8 +377,8 @@
       <span>Cobertura automática limitada (~30-40% AA). Mesmo com severidade predominantemente baixa neste relatório, confirme com checagens assistivas após as correções: especialmente onde há formulários, modais ou conteúdo inserido via script.</span>
     {% endif %}
   </div>
-  <div class="cf-badge {% if nt==0 %}cf-conform{% elif sr_nivel=='ALTO' %}cf-nc{% else %}cf-partial{% endif %}">
-    {% if nt==0 %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Auto sem achados{% elif sr_nivel=='ALTO' %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Validar manualmente{% else %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Escopo parcial{% endif %}
+  <div class="cf-badge {% if nt==0 %}cf-conform{% elif sr_nivel=='CRÍTICO' or sr_nivel=='ALTO' %}cf-nc{% else %}cf-partial{% endif %}">
+    {% if nt==0 %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Auto sem achados{% elif sr_nivel=='CRÍTICO' or sr_nivel=='ALTO' %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Validar manualmente{% else %}<span class="cf-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Escopo parcial{% endif %}
   </div>
 </div>
 

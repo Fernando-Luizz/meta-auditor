@@ -2,7 +2,11 @@
 from app.services.consolidation import (
     assign_prioridade,
     build_report,
+    calcular_nivel_risco_executivo,
+    calcular_prioridade_barreira,
     detect_divergencias,
+    enriquecer_prioridades_barreiras,
+    inferir_wcag_nivel,
     merge_barreiras_por_tipo_e_url,
     merge_by_normalized_type,
 )
@@ -450,6 +454,115 @@ def test_score_risco_limite_250_com_barreira_alta_nivel_alto():
     assert sr["n_media"] == 2
     assert sr["valor"] == 2.5
     assert sr["nivel"] == "ALTO"
+
+
+def test_nivel_risco_critico_quando_score_280_ou_mais():
+    assert calcular_nivel_risco_executivo(3.00, 3) == "CRÍTICO"
+    assert calcular_nivel_risco_executivo(2.86, 6) == "CRÍTICO"
+    assert calcular_nivel_risco_executivo(2.80, 1) == "CRÍTICO"
+
+
+def test_nivel_risco_alto_quando_score_abaixo_280_com_barreira_alta():
+    assert calcular_nivel_risco_executivo(2.60, 3) == "ALTO"
+    assert calcular_nivel_risco_executivo(2.33, 2) == "ALTO"
+    assert calcular_nivel_risco_executivo(2.47, 7) == "ALTO"
+
+
+def test_nivel_risco_medio_e_baixo_sem_barreira_alta():
+    assert calcular_nivel_risco_executivo(2.00, 0) == "MÉDIO"
+    assert calcular_nivel_risco_executivo(1.50, 0) == "MÉDIO"
+    assert calcular_nivel_risco_executivo(1.00, 0) == "BAIXO"
+
+
+def test_prioridade_barreira_severidade_dominante():
+    alta = {"prioridade": "alta", "wcag_criterio": "4.1.2", "status_deteccao": "automatico_detectado", "confirmado_por": ["lighthouse"]}
+    media = {"prioridade": "media", "wcag_criterio": "4.1.2", "status_deteccao": "automatico_detectado", "confirmado_por": ["lighthouse"]}
+    baixa = {"prioridade": "baixa", "wcag_criterio": "4.1.2", "status_deteccao": "automatico_detectado", "confirmado_por": ["lighthouse"]}
+    assert calcular_prioridade_barreira(alta)[0] == "P1"
+    assert calcular_prioridade_barreira(media)[0] == "P2"
+    assert calcular_prioridade_barreira(baixa)[0] == "P3"
+
+
+def test_prioridade_barreira_wcag_a_convergente_antes_de_aa_exclusiva():
+    alta_a_conv = {
+        "prioridade": "alta",
+        "wcag_criterio": "4.1.2",
+        "status_deteccao": "automatico_convergente",
+        "confirmado_por": ["lighthouse", "wave"],
+        "ocorrencias_count": 1,
+        "issue_id_original": "aria-invalid",
+    }
+    alta_aa_lh = {
+        "prioridade": "alta",
+        "wcag_criterio": "1.4.3",
+        "status_deteccao": "automatico_detectado",
+        "confirmado_por": ["lighthouse"],
+        "ocorrencias_count": 1,
+        "issue_id_original": "color-contrast",
+    }
+    p1, s1 = calcular_prioridade_barreira(alta_a_conv)
+    p2, s2 = calcular_prioridade_barreira(alta_aa_lh)
+    assert p1 == "P1" and p2 == "P1"
+    assert s1 > s2
+    ordenadas = enriquecer_prioridades_barreiras([alta_aa_lh, alta_a_conv])
+    assert ordenadas[0]["issue_id_original"] == "aria-invalid"
+
+
+def test_prioridade_barreira_ocorrencias_desempatam_mesma_faixa():
+    b1 = {
+        "prioridade": "alta",
+        "wcag_criterio": "1.4.3",
+        "status_deteccao": "automatico_detectado",
+        "confirmado_por": ["wave"],
+        "ocorrencias_count": 2,
+        "issue_id_original": "color-contrast",
+        "titulo_tecnico": "a",
+    }
+    b2 = dict(b1)
+    b2["ocorrencias_count"] = 12
+    b2["titulo_tecnico"] = "b"
+    ordenadas = enriquecer_prioridades_barreiras([b1, b2])
+    assert ordenadas[0]["ocorrencias_count"] == 12
+
+
+def test_inferir_wcag_nivel():
+    assert inferir_wcag_nivel("4.1.2") == "a"
+    assert inferir_wcag_nivel("1.4.3") == "aa"
+    assert inferir_wcag_nivel("1.4.3 | 4.1.2") == "a"
+
+
+def test_build_report_inclui_prioridade_correcao_e_critico():
+    tipos = ["tipo_a", "tipo_b", "tipo_c"]
+    lh = [
+        _issue(
+            tool="lighthouse",
+            tipo=t,
+            confirmado=["lighthouse"],
+            evidencia=[f"lh-{t}"],
+            issue_orig=f"id-{t}",
+            lh_id=f"id-{t}",
+        )
+        for t in tipos
+    ]
+    w = [
+        _issue(
+            tool="wave",
+            tipo=t,
+            confirmado=["wave"],
+            wave_cat="error",
+            evidencia=[f"w-{t}"],
+            issue_orig=f"w-{t}",
+        )
+        for t in tipos
+    ]
+    rep = build_report(lh, w, [], [], [])
+    sr = rep["score_risco"]
+    assert sr["valor"] == 3.0
+    assert sr["nivel"] == "CRÍTICO"
+    bars = rep["barreiras_automaticas"]
+    assert all(b.get("prioridade_correcao") in ("P1", "P2", "P3") for b in bars)
+    assert all(b.get("motivo_prioridade_correcao") for b in bars)
+    assert bars[0]["score_prioridade_barreira"] >= bars[-1]["score_prioridade_barreira"]
 
 
 def test_display_labels_link_sem_nome_familia_executiva():

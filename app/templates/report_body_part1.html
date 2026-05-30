@@ -1,7 +1,7 @@
 
 {# Group counters (publico) #}
 {% from '_report_macros.html' import ma_tag_ok_svg, ma_tag_warn_svg, ma_manual_check_svg %}
-{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0) %}
+{% set cnt=namespace(visao=0,cego=0,motor=0,cogni=0,surdo=0,naveg=0,estr=0,voz=0) %}
 {% for b in bars+divs %}
   {% set p=(b.get('publico_afetado') or '')|lower %}
   {% if 'baixa visão' in p or 'baixa visao' in p or 'low vision' in p or 'contraste' in p %}
@@ -19,6 +19,9 @@
   {% if 'surdo' in p or 'deaf' in p %}
     {% set cnt.surdo = cnt.surdo + 1 %}
   {% endif %}
+  {% if 'voz' in p or 'comando de voz' in p or 'controle por voz' in p %}
+    {% set cnt.voz = cnt.voz + 1 %}
+  {% endif %}
   {% if 'teclado' in p %}
     {% set cnt.naveg = cnt.naveg + 1 %}
   {% endif %}
@@ -26,7 +29,7 @@
     {% set cnt.estr = cnt.estr + 1 %}
   {% endif %}
 {% endfor %}
-{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr]|max %}
+{% set mg=[cnt.visao,cnt.cego,cnt.motor,cnt.cogni,cnt.surdo,cnt.naveg,cnt.estr,cnt.voz]|max %}
 
 {# Category counters (tipo de problema) #}
 {% set cats=namespace(contraste=0,botao=0,imagem=0,link=0,form=0,aria=0,outro=0) %}
