@@ -56,7 +56,7 @@ from app.database import (
 from app.models.request_models import AuditRequest
 from app.services.consolidation import build_report
 from app.services.pdf_export import build_pdf_target_urls, render_report_pdf_from_urls
-from app.services.display_labels import attach_display_fields, issue_display_label
+from app.services.display_labels import attach_display_fields, issue_display_label, pour_bucket_for
 from app.services.text_clean import (
     normalize_barrier_ai_texts,
     normalize_executive_plaintext,
@@ -96,6 +96,7 @@ def _filter_issue_display_label(b: object) -> str:
 
 _jinja_env.filters["issue_display_label"] = _filter_issue_display_label
 _jinja_env.filters["normalize_executive_plaintext"] = normalize_executive_plaintext
+_jinja_env.filters["pour_bucket_for"] = pour_bucket_for
 
 
 def _embed_evidence_into_row(audit_row: dict) -> dict:

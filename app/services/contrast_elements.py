@@ -100,6 +100,34 @@ def _detect_tipos(bruto: str) -> list[str]:
     return list(dict.fromkeys(tipos))
 
 
+def inferir_onde_esta_contraste(barreira: dict[str, Any]) -> str:
+    """Localização humana para barreiras de contraste (prioriza conteúdo principal sobre header genérico no path)."""
+    hay = " ".join(_iter_localizacao_strings(barreira)).lower()
+    bruto = _collect_selector_text(barreira).lower()
+    combined = f"{hay} {bruto}"
+
+    has_text_or_table = re.search(
+        r"\bmain\b|<main|content|section|\bh[1-6]\b|<p[\s>]|paragraph|\btable\b|<table|tbody|thead|\btd\b|\bth\b",
+        combined,
+        re.I,
+    )
+    has_nav = re.search(r"\bnav\b|<nav|menu|navbar", combined, re.I)
+    has_header = re.search(r"\bheader\b|<header|cabec|topbar", combined, re.I)
+    has_table = re.search(r"\btable\b|<table|tbody|thead|\btd\b|\bth\b", combined, re.I)
+
+    if has_nav and not has_text_or_table:
+        return "Menu de navegação"
+    if has_header and not has_text_or_table:
+        return "Cabeçalho da página"
+
+    base = "Conteúdo principal da página"
+    if has_table:
+        return f"{base}, em elementos de texto e tabela"
+    if has_text_or_table or has_header:
+        return base
+    return base
+
+
 def inferir_elementos_contraste(barreira: dict[str, Any]) -> str:
     """
     Descrição humana dos elementos afetados para frases do tipo:
@@ -252,3 +280,4 @@ def enrich_contrast_fields(barreira: dict[str, Any]) -> None:
     barreira["impacto_contraste_det"] = impacto_contraste_deterministico(barreira)
     barreira["correcao_contraste_det"] = correcao_contraste_deterministica(barreira)
     barreira["criterio_pronto_contraste_det"] = criterio_pronto_contraste_det(barreira)
+    barreira["onde_esta"] = inferir_onde_esta_contraste(barreira)

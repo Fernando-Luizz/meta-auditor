@@ -461,6 +461,26 @@ REGRAS PARA BARRERAS DE CONTRASTE (obrigatório):
 """
 
 
+def _label_in_name_prompt_rules(barrier: dict) -> str:
+    oid = (barrier.get("issue_id_original") or "").lower()
+    tipo = (barrier.get("issue_tipo_normalizado") or "").lower()
+    wg = (barrier.get("wcag_criterio") or "").lower()
+    if not (
+        "label-content-name-mismatch" in oid
+        or "label-in-name" in oid
+        or "rotulo_difere" in tipo
+        or "2.5.3" in wg
+    ):
+        return ""
+    return """
+REGRAS PARA WCAG 2.5.3 LABEL IN NAME (obrigatório):
+- O critério é nível A (nunca AA).
+- O nome acessível deve CONTER o texto visível, preferencialmente no início — não precisa ser idêntico palavra por palavra.
+- PROIBIDO dizer que «o texto visível deve ser idêntico ao nome acessível».
+- Em como_corrigir_claro: descreva alinhamento entre o que aparece na tela e o que o controle por voz reconhece, sem exigir correspondência literal total.
+"""
+
+
 # Banco de analogias do cotidiano — usadas como sugestão de variação no prompt.
 # A escolha é determinística por (host + tipo) para variar entre portais sem
 # aleatoriedade (resultado reproduzível e cacheável).
@@ -519,6 +539,7 @@ def _prompt_nivel1(barrier: dict) -> str:
         + f"\n  Prioridade traduzida : {prio_label}\n"
         + f"\n  Ação gerencial esperada (use como base — mantenha a ação específica, ajuste só urgência/time):\n  {acao_hint}\n"
         + _contrast_prompt_rules(barrier)
+        + _label_in_name_prompt_rules(barrier)
         + """\n\nCom base APENAS no contexto acima, gere 4 campos de comunicação.
 NÃO invente dados. NÃO altere severidade. NÃO afirme conformidade legal.
 
@@ -593,6 +614,8 @@ def _prompt_nivel2_dev(barrier: dict) -> str:
     return (
         "Você é especialista em acessibilidade web.\n\n"
         + _context_block(barrier)
+        + _contrast_prompt_rules(barrier)
+        + _label_in_name_prompt_rules(barrier)
         + """\n\nCom base APENAS no contexto acima, escreva uma instrução técnica para o desenvolvedor.
 NÃO invente dados. NÃO altere critério WCAG.
 

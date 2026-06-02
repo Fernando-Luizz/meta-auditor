@@ -1,4 +1,4 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, prioridade_correcao_badge, esforco, correcao_detalhada, impacto_descricao_det, criterio_pronto_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg %}
+{% from '_report_macros.html' import pub_icon, pub_desc, termo_barreira, prioridade_exibir_caps, prioridade_correcao_badge, esforco, correcao_detalhada, impacto_descricao_det, criterio_pronto_det, traduz_desc_tecnica, clean_exec_text, desc_tecnica_barreira, ma_chart_pub_svg, ma_pub_group_svg, ma_phase_svg, ma_manual_check_svg, ma_icon_method_limits, ma_icon_method_next_steps, ma_pin_hint_svg, ma_tag_ok_svg, ma_tag_warn_svg, wcag_nivel_exibir %}
 
 {# Lighthouse: tabela A4 (usada cedo em «O que está correto» para não prometer detalhes inexistentes) #}
 {% set lh_appendix = r.get('lighthouse_items') or r.get('itens_aprovados') or [] %}
@@ -601,7 +601,7 @@
     <div class="ma-plan-head">
       <p class="ma-plan-eyebrow">Plano de ação priorizado</p>
       <h2 class="ma-plan-title" id="action-heading">Impacto versus facilidade de correção</h2>
-      <p class="ma-plan-sub">Numeração contínua em todas as fases: corrija na ordem apresentada para maximizar impacto por esforço.</p>
+      <p class="ma-plan-sub">A ordem abaixo combina prioridade e esforço. A barreira P1 deve permanecer como prioridade de risco, mas correções rápidas podem ser executadas em paralelo quando houver disponibilidade técnica.</p>
     </div>
     <div class="ma-plan-summary">
       {% if rapidas|length > 0 %}
@@ -990,7 +990,7 @@
               {% if b.get('wcag_criterio') %}
               <div class="tk-row">
                 <div class="tk-lbl">WCAG</div>
-                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível AA</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível {{ wcag_nivel_exibir(b) }}</div>
               </div>
               {% endif %}
 
@@ -1022,7 +1022,7 @@
               {% if b.get('wcag_criterio') %}
               <div class="tk-row">
                 <div class="tk-lbl">WCAG</div>
-                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível AA</div>
+                <div class="tk-val">{{ b.get('wcag_criterio') }}: Nível {{ wcag_nivel_exibir(b) }}</div>
               </div>
               {% endif %}
 

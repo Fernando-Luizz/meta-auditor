@@ -2,6 +2,7 @@
 
 from app.services.text_clean import (
     format_html_tag_literals,
+    normalize_barrier_ai_texts,
     normalize_executive_plaintext,
     normalize_html_breaks,
     normalize_report_dashes,
@@ -75,3 +76,21 @@ def test_normalize_executive_plaintext_no_literal_br() -> None:
     assert "<br" not in s.lower()
     assert "lt;br" not in s.lower()
     assert "\n" in s
+
+
+def test_normalize_barrier_ai_texts_label_in_name_fixes() -> None:
+    b = {
+        "issue_id_original": "label-content-name-mismatch",
+        "issue_tipo_normalizado": "rotulo_difere_do_nome_acessivel",
+        "wcag_criterio": "2.5.3 Label in Name",
+        "como_corrigir_claro": (
+            "O texto visível em cada cartão precisa ser idêntico ao nome que o sistema registra internamente."
+        ),
+        "versao_dev": "WCAG 2.5.3 Label in Name: Nível AA",
+        "texto_ticket": {"descricao": "2.5.3 Label in Name: Nível AA"},
+    }
+    normalize_barrier_ai_texts(b)
+    assert "idêntic" not in b["como_corrigir_claro"].lower()
+    assert "conter o texto visível" in b["como_corrigir_claro"]
+    assert "Nível A" in b["versao_dev"]
+    assert "Nível AA" not in b["texto_ticket"]["descricao"]

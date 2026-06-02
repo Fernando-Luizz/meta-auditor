@@ -13,6 +13,13 @@ def _final_print_block(css: str) -> str:
     return css.split(marker, 1)[1]
 
 
+def test_report_template_has_no_ai_usage_chip():
+    html = REPORT_HTML.read_text(encoding="utf-8")
+    assert "ma-usage-chip" not in html
+    assert "cost_usd" not in html
+    assert "total_tokens" not in html
+
+
 def test_print_css_hides_fixed_header_and_footer_in_pdf():
     block = _final_print_block(REPORT_HTML.read_text(encoding="utf-8"))
     assert ".ma-print-header," in block
@@ -98,6 +105,23 @@ def test_titulo_pagina_invalido_nao_cai_em_idioma():
     from app.services.display_labels import executive_group_for
 
     assert executive_group_for("titulo_pagina_invalido") == "Títulos e estrutura"
+
+
+def test_label_in_name_executive_group_not_aria():
+    from app.services.display_labels import executive_group_for, pour_bucket_for
+
+    assert executive_group_for("rotulo_difere_do_nome_acessivel") == "Rótulo visível e nome acessível"
+    assert executive_group_for("rotulo_difere_do_nome_acessivel") != "ARIA e semântica"
+    assert pour_bucket_for({"issue_tipo_normalizado": "rotulo_difere_do_nome_acessivel"}) == "o"
+    assert pour_bucket_for(
+        {
+            "issue_id_original": "label-content-name-mismatch",
+            "issue_tipo_normalizado": "rotulo_difere_do_nome_acessivel",
+            "wcag_criterio": "2.5.3 Label in Name",
+        }
+    ) == "o"
+    assert pour_bucket_for({"issue_tipo_normalizado": "contraste_insuficiente"}) == "p"
+    assert pour_bucket_for({"issue_tipo_normalizado": "aria_referencia_quebrada"}) == "r"
 
 
 def test_print_css_keeps_ticket_subhead_with_following_content():

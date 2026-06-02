@@ -43,13 +43,13 @@
 
 {% set pour=namespace(p=[],o=[],u=[],r=[]) %}
 {% for bb in bars %}
-  {% set tp=(bb.get('issue_id_original') or bb.get('issue_tipo_normalizado') or '')|lower %}
-  {% set nm_cur=(bb.get('categoria_executiva') or '')|trim or bb.get('rotulo_exibicao') or bb.get('issue_tipo_normalizado') or bb.get('titulo_tecnico') or tp %}
-  {% if 'contrast' in tp or 'contraste' in tp or 'alt' in tp or 'imagem' in tp or 'image' in tp %}
+  {% set nm_cur=(bb.get('categoria_executiva') or '')|trim or bb.get('rotulo_exibicao') or bb.get('issue_tipo_normalizado') or bb.get('titulo_tecnico') or (bb.get('issue_id_original') or '') %}
+  {% set bucket=bb|pour_bucket_for %}
+  {% if bucket == 'p' %}
     {% if nm_cur not in pour.p %}{% set _ = pour.p.append(nm_cur) %}{% endif %}
-  {% elif 'target' in tp or 'focus' in tp or 'button' in tp or 'link' in tp or 'keyboard' in tp or 'controle' in tp or 'alvo' in tp %}
+  {% elif bucket == 'o' %}
     {% if nm_cur not in pour.o %}{% set _ = pour.o.append(nm_cur) %}{% endif %}
-  {% elif 'label' in tp or 'heading' in tp or 'lang' in tp or 'formulario' in tp or 'form' in tp %}
+  {% elif bucket == 'u' %}
     {% if nm_cur not in pour.u %}{% set _ = pour.u.append(nm_cur) %}{% endif %}
   {% else %}
     {% if nm_cur not in pour.r %}{% set _ = pour.r.append(nm_cur) %}{% endif %}

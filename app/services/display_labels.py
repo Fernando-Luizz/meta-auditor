@@ -80,6 +80,8 @@ def executive_group_for(issue_tipo_normalizado: str | None) -> str:
 
     if "contraste" in t or t == "link_distinguivel_somente_por_cor" or "wave_alert_text_small" in t:
         return "Contraste e legibilidade"
+    if "rotulo_difere" in t or "label_in_name" in t or "label-in-name" in t:
+        return "Rótulo visível e nome acessível"
     if (
         "imagem" in t
         or "alt" in t
@@ -136,7 +138,6 @@ def executive_group_for(issue_tipo_normalizado: str | None) -> str:
         or "body_aria" in t
         or "aria_hidden" in t
         or "aria_referencia" in t
-        or "rotulo_difere" in t
     ):
         return "ARIA e semântica"
     if (
@@ -162,6 +163,7 @@ def executive_group_for(issue_tipo_normalizado: str | None) -> str:
 # Família executiva → bucket estável dos gráficos de categoria (7 colunas do relatório).
 _EXEC_CHART_BUCKETS: dict[str, str] = {
     "Contraste e legibilidade": "contraste",
+    "Rótulo visível e nome acessível": "link",
     "Imagens e mídia": "imagem",
     "Links e controles sem nome": "botao",
     "Links e destinos": "link",
@@ -176,6 +178,39 @@ _EXEC_CHART_BUCKETS: dict[str, str] = {
     "Outros (Lighthouse)": "outro",
     "Outros": "outro",
 }
+
+
+# Família executiva → princípio WCAG POUR (P/O/U/R).
+_POUR_BY_EXECUTIVE: dict[str, str] = {
+    "Contraste e legibilidade": "p",
+    "Imagens e mídia": "p",
+    "Rótulo visível e nome acessível": "o",
+    "Links e controles sem nome": "o",
+    "Links e destinos": "o",
+    "Teclado e interação": "o",
+    "Estrutura da página": "o",
+    "Viewport e zoom móvel": "o",
+    "Formulários e rótulos": "u",
+    "Títulos e estrutura": "u",
+    "Idioma e metadados": "u",
+    "ARIA e semântica": "r",
+    "Alertas WAVE": "r",
+    "Outros (Lighthouse)": "r",
+    "Outros": "r",
+}
+
+
+def pour_bucket_for(row: dict | None) -> str:
+    """
+    Bucket POUR estável (p/o/u/r) a partir da família executiva.
+    WCAG 2.5.3 Label in Name → Operável (não Compreensível/ARIA).
+    """
+    if not isinstance(row, dict):
+        return "r"
+    cat = (row.get("categoria_executiva") or "").strip()
+    if not cat:
+        cat = executive_group_for(row.get("issue_tipo_normalizado"))
+    return _POUR_BY_EXECUTIVE.get(cat, "r")
 
 
 def chart_bucket_for_executive(cat: str | None) -> str:
@@ -202,4 +237,5 @@ def attach_display_fields(rows: list[dict] | None) -> None:
         )
         row["categoria_executiva"] = executive_group_for(tipo)
         row["categoria_grafico"] = chart_bucket_for_executive(row["categoria_executiva"])
+        row["pour_bucket"] = pour_bucket_for(row)
         enrich_contrast_fields(row)

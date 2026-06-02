@@ -156,16 +156,6 @@ button.pbtn:hover{background:var(--ink2)}
 .pbtn:focus{outline:3px solid var(--amber);outline-offset:2px}
 .pbtn--html{background:var(--ma-primary)}
 .pbtn--html:hover,a.pbtn--html:hover{background:var(--ma-primary-dark)}
-.ma-usage-chip{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:10px 14px;
-  background:#fff;color:var(--ink2);
-  border:1px solid #E2E8F0;border-radius:var(--rsm);
-  font-size:11px;font-weight:700;letter-spacing:.2px;
-  box-shadow:var(--shmd);
-  font-family:inherit;cursor:default;
-}
-.ma-usage-chip svg{flex:none;color:var(--ma-primary)}
 
 /*,: Relatório: header executivo, scorecard, faixa legal,: */
 .ma-header { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 16px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 16px; }
@@ -2804,13 +2794,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Baixar HTML
   </a>
-  {% set _u = (audit.report or {}).get('ai_usage') %}
-  {% if _u and _u.get('total_tokens') %}
-  <span class="ma-usage-chip" title="Uso de IA para gerar este relatório · modelo {{ _u.get('model','') }} · {{ _u.get('input_tokens',0) }} tokens de entrada + {{ _u.get('output_tokens',0) }} de saída em {{ _u.get('calls',0) }} chamada(s). Custo estimado pelos preços públicos da Anthropic.">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg>
-    {{ "{:,}".format(_u.get('total_tokens', 0)).replace(",", ".") }} tokens · US$ {{ "%.4f"|format(_u.get('cost_usd', 0)) }}
-  </span>
-  {% endif %}
 </div>
 {% endif %}
 {% set _print_u = (audit.url or '')|replace('https://','')|replace('http://','') %}

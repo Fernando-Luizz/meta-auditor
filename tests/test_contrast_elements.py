@@ -4,6 +4,7 @@ from app.services.contrast_elements import (
     criterio_pronto_contraste_det,
     enrich_contrast_fields,
     inferir_elementos_contraste,
+    inferir_onde_esta_contraste,
     impacto_contraste_deterministico,
     is_contrast_barrier,
 )
@@ -25,6 +26,21 @@ def test_inferir_h2_e_paragrafo_tcu():
     assert (
         inferir_elementos_contraste(b)
         == "elementos de texto indicados pela ferramenta, como título de seção e parágrafo"
+    )
+    assert inferir_onde_esta_contraste(b) == "Conteúdo principal da página"
+
+
+def test_inferir_onde_esta_contraste_com_tabela():
+    b = _barreira(["main table.dados tbody td", "main h2"])
+    assert inferir_onde_esta_contraste(b) == (
+        "Conteúdo principal da página, em elementos de texto e tabela"
+    )
+
+
+def test_inferir_onde_esta_contraste_ignora_header_no_path():
+    b = _barreira(["header.site > main h2.titulo", "main table td"])
+    assert inferir_onde_esta_contraste(b) == (
+        "Conteúdo principal da página, em elementos de texto e tabela"
     )
 
 
@@ -74,6 +90,7 @@ def test_enrich_via_attach_display_fields():
     attach_display_fields([b])
     assert is_contrast_barrier(b)
     assert "título de seção" in b["elementos_contraste_humano"]
+    assert b["onde_esta"] == "Conteúdo principal da página"
     assert "conforme indicado pela auditoria automática" in b["impacto_contraste_det"]
     assert "têm dificuldade" in b["impacto_contraste_det"]
     assert "possível" not in b["impacto_contraste_det"]

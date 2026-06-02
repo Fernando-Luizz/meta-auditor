@@ -60,6 +60,44 @@ def _apply_pt_word_fixes(text: str) -> str:
     return t
 
 
+_LABEL_IN_NAME_CORRECAO = (
+    "O nome acessível deve conter o texto visível do link, preferencialmente no início, "
+    "para que usuários de controle por voz consigam acionar o elemento pelo texto que enxergam na tela."
+)
+
+_IDENTICO_LABEL_IN_NAME_RE = re.compile(
+    r"O texto visível[^.]*idêntic[^.]+\.",
+    re.IGNORECASE,
+)
+_WCAG_253_NIVEL_AA_RE = re.compile(
+    r"(2\.5\.3\s+Label in Name:\s*)Nível\s+AA",
+    re.IGNORECASE,
+)
+
+
+def _is_label_in_name_barrier(barrier: dict) -> bool:
+    oid = (barrier.get("issue_id_original") or "").lower()
+    tipo = (barrier.get("issue_tipo_normalizado") or "").lower()
+    wg = (barrier.get("wcag_criterio") or "").lower()
+    return (
+        "label-content-name-mismatch" in oid
+        or "label-in-name" in oid
+        or "rotulo_difere" in tipo
+        or "2.5.3" in wg
+    )
+
+
+def _fix_label_in_name_text(text: str) -> str:
+    if not text:
+        return text
+    t = _WCAG_253_NIVEL_AA_RE.sub(r"\1Nível A", text)
+    if _IDENTICO_LABEL_IN_NAME_RE.search(t):
+        t = _IDENTICO_LABEL_IN_NAME_RE.sub(_LABEL_IN_NAME_CORRECAO, t)
+    elif re.search(r"\bidêntic|\bidentic", t, re.I) and "nome acessível" in t.lower():
+        t = _LABEL_IN_NAME_CORRECAO
+    return t
+
+
 def normalize_html_breaks(text: str | None) -> str:
     """
     Converte fragmentos HTML de quebra de linha em '\\n'.
@@ -108,6 +146,8 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
     if not isinstance(barrier, dict):
         return
     from app.services.contrast_elements import criterio_pronto_contraste_det, is_contrast_barrier
+
+    label_in_name = _is_label_in_name_barrier(barrier)
     for k in (
         "justificativa_gerencial",
         "explicacao_usuario",
@@ -118,12 +158,16 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
         v = barrier.get(k)
         if isinstance(v, str) and v.strip():
             barrier[k] = normalize_executive_plaintext(v)
+            if label_in_name:
+                barrier[k] = _fix_label_in_name_text(barrier[k])
     tk = barrier.get("texto_ticket")
     if isinstance(tk, dict):
         for k in ("titulo", "descricao", "criterio_de_pronto"):
             v = tk.get(k)
             if isinstance(v, str) and v.strip():
                 tk[k] = normalize_executive_plaintext(v)
+                if label_in_name:
+                    tk[k] = _fix_label_in_name_text(tk[k])
         if is_contrast_barrier(barrier):
             tk["criterio_de_pronto"] = criterio_pronto_contraste_det(barrier)
 
