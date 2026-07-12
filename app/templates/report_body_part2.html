@@ -1,6 +1,5 @@
 {% from '_report_macros.html' import ma_chart_pub_svg, ma_pub_group_svg, ma_cat_chart_svg, ma_dot_svg, ma_tag_ok_svg, ma_manual_check_svg %}
 
-{# ═══ ANALYTICS CHARTS ═══ #}
 {% if nt > 0 %}
 <div class="charts-sec">
   <div class="charts-row">
@@ -9,16 +8,16 @@
       <div class="chart-ttl">Barreiras por severidade</div>
       <div class="hbar-chart">
         {% if na > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--red)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--red)">Alta prioridade</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (na / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ na }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--red)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--red)">Severidade alta</div><div class="hbar-track"><div class="hbar-fill f-red" style="width:{{ (na / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ na }}</div></div>
         {% endif %}
         {% if nm > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--amber)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--amber)">Média prioridade</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (nm / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nm }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--amber)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--amber)">Severidade média</div><div class="hbar-track"><div class="hbar-fill f-amber" style="width:{{ (nm / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nm }}</div></div>
         {% endif %}
         {% if nb > 0 %}
-        <div class="hbar-row"><div class="hbar-ic" style="color:var(--green)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--green)">Baixa prioridade</div><div class="hbar-track"><div class="hbar-fill f-green" style="width:{{ (nb / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nb }}</div></div>
+        <div class="hbar-row"><div class="hbar-ic" style="color:var(--green)" aria-hidden="true">{{ ma_dot_svg()|safe }}</div><div class="hbar-lbl" style="color:var(--green)">Severidade baixa</div><div class="hbar-track"><div class="hbar-fill f-green" style="width:{{ (nb / nt * 100)|int }}%"></div></div><div class="hbar-num">{{ nb }}</div></div>
         {% endif %}
         {% if na > 0 %}
-        <div style="margin-top:8px;font-size:10px;color:var(--red)"><strong>{{ na }}</strong> {% if na == 1 %}barreira {% else %}barreiras {% endif %} de alta prioridade.</div>
+        <div style="margin-top:8px;font-size:10px;color:var(--red)"><strong>{{ na }}</strong> {% if na == 1 %}barreira{% else %}barreiras{% endif %} de severidade alta.</div>
         {% endif %}
       </div>
     </div>
@@ -65,7 +64,6 @@
 </div>
 {% endif %}
 
-{# ═══ LEGEND ═══ #}
 <div class="leg-block">
   <div class="leg-ey">O que significam os scores</div>
   <div class="leg-grid">
@@ -82,7 +80,6 @@
   </div>
 </div>
 
-{# ═══ HUMAN IMPACT ═══ #}
 {% set todos=[
   {'kind':'visao','nm':'Baixa visão','desc':'Precisam de alto contraste, fontes grandes ou zoom: texto ilegível se o contraste for baixo.','ex':'Glaucoma, catarata','ms':['baixa visão','baixa visao','low vision','contraste']},
   {'kind':'cego','nm':'Cegos / leitor de tela','desc':'NVDA, JAWS ou VoiceOver narram o conteúdo. Sem nomes para botões/imagem, ficam perdidos.','ex':'Cegueira','ms':['leitor de tela','screen reader','ceg']},

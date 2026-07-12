@@ -1,0 +1,599 @@
+{
+  "status": {
+    "success": true,
+    "httpstatuscode": 200
+  },
+  "statistics": {
+    "pagetitle": "Portal e-Cidadania - Senado Federal",
+    "pageurl": "https://www12.senado.leg.br/ecidadania",
+    "time": 7.34,
+    "creditsremaining": 73,
+    "AIMscore": 4.3,
+    "allitemcount": 217,
+    "totalelements": 860,
+    "waveurl": "http://wave.webaim.org/report?url=https://www12.senado.leg.br/ecidadania"
+  },
+  "categories": {
+    "error": {
+      "description": "Errors",
+      "count": 19,
+      "items": {
+        "alt_missing": {
+          "id": "alt_missing",
+          "description": "Missing alternative text",
+          "count": 8,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child + FOOTER > SPAN:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child + FOOTER > SPAN:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child + FOOTER > SPAN:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > INPUT:first-child + INPUT + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child + FOOTER > SPAN:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION > A:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION > A:first-child + IMG + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child + SECTION > A:first-child + IMG",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child + SECTION > A:first-child + IMG + IMG"
+          ]
+        },
+        "alt_link_missing": {
+          "id": "alt_link_missing",
+          "description": "Linked image missing alternative text",
+          "count": 4,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > INPUT:first-child + INPUT + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child > IMG:first-child"
+          ]
+        },
+        "label_missing": {
+          "id": "label_missing",
+          "description": "Missing form label",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV#portal-config > DIV:first-child > INPUT#parametroPesquisa",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > FORM#menu-local__form > DIV:first-child > INPUT:first-child + INPUT"
+          ]
+        },
+        "button_empty": {
+          "id": "button_empty",
+          "description": "Empty button",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV:first-child > BUTTON:first-child"
+          ]
+        },
+        "link_empty": {
+          "id": "link_empty",
+          "description": "Empty link",
+          "count": 4,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A + A + A"
+          ]
+        }
+      }
+    },
+    "contrast": {
+      "description": "Contrast Errors",
+      "count": 17,
+      "items": {
+        "contrast": {
+          "id": "contrast",
+          "description": "Very low contrast",
+          "count": 17,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child + EM",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child + EM",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION + FOOTER > DIV:first-child > SPAN:first-child + EM",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV#container-ideia-legislativa > A:first-child > DIV:first-child > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV#container-ideia-legislativa > A:first-child + DIV + DIV + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > HEADER:first-child > A:first-child"
+          ],
+          "contrastdata": [
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              3.54,
+              "#888888",
+              "#ffffff",
+              false
+            ],
+            [
+              1.98,
+              "#ff9900",
+              "#f6f6f7",
+              true
+            ],
+            [
+              1.98,
+              "#ff9900",
+              "#f6f6f7",
+              false
+            ],
+            [
+              3.94,
+              "#808080",
+              "#ffffff",
+              false
+            ],
+            [
+              3.94,
+              "#808080",
+              "#ffffff",
+              false
+            ],
+            [
+              3.94,
+              "#808080",
+              "#ffffff",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    "alert": {
+      "description": "Alerts",
+      "count": 46,
+      "items": {
+        "link_redundant": {
+          "id": "link_redundant",
+          "description": "Redundant link",
+          "count": 25,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + A + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + A + A + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + A + A + A + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > HEADER:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child + SECTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child + SECTION + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > HEADER:first-child + SECTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > HEADER:first-child + SECTION + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + DIV > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + DIV > A:first-child + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + DIV > A:first-child + A + A + A"
+          ]
+        },
+        "link_pdf": {
+          "id": "link_pdf",
+          "description": "Link to PDF document",
+          "count": 5,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + DIV > A:first-child + A + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + DIV > A:first-child + A + A + A + A"
+          ]
+        },
+        "accesskey": {
+          "id": "accesskey",
+          "description": "Accesskey",
+          "count": 5,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A:first-child + DIV > H1:first-child > A#portal-home-link",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > FORM#menu-local__form > DIV:first-child > INPUT:first-child + INPUT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER + SCRIPT + SCRIPT + SCRIPT + A + A + A"
+          ]
+        },
+        "title_redundant": {
+          "id": "title_redundant",
+          "description": "Redundant title text",
+          "count": 10,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > HEADER:first-child + SECTION > DIV:first-child > A:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > HEADER:first-child + SECTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child + BUTTON > A:first-child > IMG:first-child"
+          ]
+        },
+        "youtube_video": {
+          "id": "youtube_video",
+          "description": "YouTube video",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-oficina-legislativa > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > SECTION:first-child > DIV#video-youtube-player-5bsVPOgb55E > DIV:first-child > IFRAME#iframe-video-youtube-player-5bsVPOgb55E"
+          ]
+        }
+      }
+    },
+    "feature": {
+      "description": "Features",
+      "count": 24,
+      "items": {
+        "alt": {
+          "id": "alt",
+          "description": "Alternative text",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON#aumentarBtn > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON#diminuirBtn > IMG:first-child"
+          ]
+        },
+        "alt_null": {
+          "id": "alt_null",
+          "description": "Null or empty alternative text",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON#contrasteBtn > IMG:first-child"
+          ]
+        },
+        "alt_link": {
+          "id": "alt_link",
+          "description": "Linked image with alternative text",
+          "count": 8,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child + BUTTON > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + A > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > A:first-child + A > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > A:first-child + A + A > IMG:first-child"
+          ]
+        },
+        "figure": {
+          "id": "figure",
+          "description": "Figure",
+          "count": 12,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV#container-evento-interativo > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > INPUT:first-child + INPUT + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV#container-ideia-legislativa > A:first-child + DIV + DIV > ARTICLE:first-child > SECTION:first-child + FIGURE",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV#container-ideia-legislativa > A:first-child + DIV + DIV > ARTICLE:first-child + ARTICLE > SECTION:first-child + FIGURE",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV#container-ideia-legislativa > A:first-child + DIV + DIV > ARTICLE:first-child + ARTICLE + ARTICLE > SECTION:first-child + FIGURE",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > INPUT:first-child + INPUT + DIV + DIV > ARTICLE:first-child > SECTION:first-child + FIGURE",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION + A > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV > HEADER:first-child + SECTION + A > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-consulta-publica > A:first-child + DIV + DIV > DIV:first-child + DIV + DIV > HEADER:first-child + SECTION + A > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > INPUT:first-child + INPUT + DIV + DIV > DIV:first-child > HEADER:first-child + SECTION + A > FIGURE:first-child"
+          ]
+        },
+        "lang": {
+          "id": "lang",
+          "description": "Language",
+          "count": 1,
+          "selectors": [
+            false
+          ]
+        }
+      }
+    },
+    "structure": {
+      "description": "Structural Elements",
+      "count": 16,
+      "items": {
+        "h1": {
+          "id": "h1",
+          "description": "Heading level 1",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A:first-child + DIV > H1:first-child"
+          ]
+        },
+        "ol": {
+          "id": "ol",
+          "description": "Ordered list",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > DIV#above-content-wrapper > DIV#viewlet-above-content > NAV#portal-breadcrumbs > DIV:first-child > SPAN:first-child + OL"
+          ]
+        },
+        "ul": {
+          "id": "ul",
+          "description": "Unordered list",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child"
+          ]
+        },
+        "iframe": {
+          "id": "iframe",
+          "description": "Inline frame",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child > DIV:first-child > DIV#container-oficina-legislativa > A:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > SECTION:first-child > DIV#video-youtube-player-5bsVPOgb55E > DIV:first-child > IFRAME#iframe-video-youtube-player-5bsVPOgb55E"
+          ]
+        },
+        "header": {
+          "id": "header",
+          "description": "Header",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header"
+          ]
+        },
+        "nav": {
+          "id": "nav",
+          "description": "Navigation",
+          "count": 3,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > DIV#above-content-wrapper > DIV#viewlet-above-content > NAV#portal-breadcrumbs"
+          ]
+        },
+        "main": {
+          "id": "main",
+          "description": "Main content",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container"
+          ]
+        },
+        "footer": {
+          "id": "footer",
+          "description": "Footer",
+          "count": 3,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child + FOOTER",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV + FOOTER > DIV#footer-institucional > DIV:first-child > FOOTER:first-child"
+          ]
+        },
+        "aside": {
+          "id": "aside",
+          "description": "Aside",
+          "count": 3,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > DIV:first-child > ASIDE#global_statusmessage",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER:first-child + DIV + DIV + DIV + DIV > MAIN#main-container > DIV:first-child + DIV > DIV:first-child > DIV:first-child > ARTICLE#content > BASE:first-child + DIV > ASIDE:first-child"
+          ]
+        }
+      }
+    },
+    "aria": {
+      "description": "ARIA",
+      "count": 95,
+      "items": {
+        "aria": {
+          "id": "aria",
+          "description": "ARIA",
+          "count": 7,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV:first-child + SCRIPT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV:first-child + SCRIPT + SCRIPT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV:first-child + SCRIPT + SCRIPT + SCRIPT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV:first-child + SCRIPT + SCRIPT + SCRIPT + SCRIPT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child > DIV:first-child + SCRIPT + SCRIPT + SCRIPT + SCRIPT + SCRIPT",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV:first-child"
+          ]
+        },
+        "aria_label": {
+          "id": "aria_label",
+          "description": "ARIA label",
+          "count": 5,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > FORM#menu-local__form > DIV:first-child > INPUT:first-child + INPUT + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + DIV",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > DIV#above-content-wrapper > DIV#viewlet-above-content > NAV#portal-breadcrumbs > DIV:first-child > SPAN:first-child + OL"
+          ]
+        },
+        "aria_tabindex": {
+          "id": "aria_tabindex",
+          "description": "ARIA tabindex",
+          "count": 25,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + DIV > DIV:first-child"
+          ]
+        },
+        "aria_button": {
+          "id": "aria_button",
+          "description": "ARIA button",
+          "count": 3,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child + BUTTON > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV:first-child"
+          ]
+        },
+        "aria_hidden": {
+          "id": "aria_hidden",
+          "description": "ARIA hidden",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child > NAV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > BUTTON#contrasteBtn > IMG:first-child"
+          ]
+        },
+        "aria_expanded": {
+          "id": "aria_expanded",
+          "description": "ARIA expanded",
+          "count": 28,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child > DIV:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A#js-menu-6"
+          ]
+        },
+        "aria_haspopup": {
+          "id": "aria_haspopup",
+          "description": "ARIA popup",
+          "count": 26,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child > DIV#header-institucional > DIV:first-child + DIV > ASIDE:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + A + A + A + A + A + A + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > HEADER:first-child + DIV > HEADER#content-header > DIV:first-child + DIV > DIV:first-child + NAV > DIV#js-navbar-dropdown > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A#js-menu-6"
+          ]
+        }
+      }
+    }
+  }
+}

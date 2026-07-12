@@ -529,7 +529,7 @@ CONTRASTE_IMPACTO_DIFICULDADE_NAVEGACAO = (
 
 
 DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
-    # ── Ativação e controle ──────────────────────────────────────────────────
+    # Ativação e controle
     "controle_sem_nome_acessivel": (
         "Há botões na página sem texto ou rótulo. Para quem usa leitor de tela, esses botões não existem: "
         "o software não anuncia a função do controle e o usuário não sabe se deve clicar. "
@@ -557,7 +557,7 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "conforme indicado pela auditoria automática. O time de design deve revisar as combinações de cor "
         "nos pontos indicados e garantir contraste mínimo AA antes da próxima publicação."
     ),
-    # ── Perda de conteúdo (imagens) ─────────────────────────────────────────
+    # Perda de conteúdo (imagens)
     "imagem_sem_texto_alternativo": (
         "Há imagens com informação útil sem descrição alternativa. Para quem usa leitor de tela, "
         "esse conteúdo simplesmente não chega. "
@@ -581,7 +581,7 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "Quando o objeto não carrega ou não é suportado, o usuário não recebe nenhuma informação equivalente. "
         "O time deve fornecer um equivalente em texto acessível ou substituir o objeto por tecnologia nativa do navegador."
     ),
-    # ── Desorientação estrutural ─────────────────────────────────────────────
+    # Desorientação estrutural
     "ausencia_landmark_main": (
         "Sem uma região principal bem definida, quem navega por teclado ou leitor de tela perde um dos atalhos "
         "mais importantes para chegar diretamente ao conteúdo central da página. "
@@ -605,7 +605,7 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "um nível 1 ou 2. Para quem navega pelo índice de títulos com leitor de tela, a estrutura da página fica incoerente. "
         "O time web precisa reorganizar os títulos em sequência lógica, do mais geral para o mais específico."
     ),
-    # ── Família ARIA ─────────────────────────────────────────────────────────
+    # Família ARIA
     "aria_atributo_nao_permitido": (
         "Há atributos ARIA aplicados em elementos ou papéis que não os aceitam. "
         "Isso introduz ruído semântico e pode levar tecnologias assistivas a anunciar informação incorreta "
@@ -652,7 +652,7 @@ DEFAULT_CORRECAO_BY_TIPO: dict[str, str] = {
         "Para quem usa leitor de tela, o componente pode ser anunciado de forma incorreta ou perder partes da navegação. "
         "O time web deve revisar a estrutura do menu, garantir que os papéis ARIA estejam coerentes e, quando possível, usar elementos HTML nativos."
     ),
-    # ── Outros ──────────────────────────────────────────────────────────────
+    # Outros
     "campo_select_sem_label": (
         "Há campos de seleção sem rótulo associado. "
         "Quem usa leitor de tela chega ao campo e ouve apenas 'caixa de seleção', sem saber o que está escolhendo. "

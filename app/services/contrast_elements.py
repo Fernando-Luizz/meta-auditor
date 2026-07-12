@@ -101,7 +101,7 @@ def _detect_tipos(bruto: str) -> list[str]:
 
 
 def inferir_onde_esta_contraste(barreira: dict[str, Any]) -> str:
-    """Localização humana para barreiras de contraste (prioriza conteúdo principal sobre header genérico no path)."""
+    """Onde está o contraste (prioriza main/content sobre header)."""
     hay = " ".join(_iter_localizacao_strings(barreira)).lower()
     bruto = _collect_selector_text(barreira).lower()
     combined = f"{hay} {bruto}"

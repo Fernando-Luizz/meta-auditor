@@ -1,4 +1,4 @@
-"""Garante classes e CSS de impressão do Apêndice A1 (evita omitir A1.2 no PDF)."""
+"""Classes/CSS de impressão do Apêndice A1 (A1.2 no PDF)."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -105,6 +105,15 @@ def test_titulo_pagina_invalido_nao_cai_em_idioma():
     from app.services.display_labels import executive_group_for
 
     assert executive_group_for("titulo_pagina_invalido") == "Títulos e estrutura"
+
+
+def test_wcag_nivel_exibir_macro_uses_inferir_for_253():
+    macros = REPORT_MACROS.read_text(encoding="utf-8")
+    assert "inferir_wcag_nivel" in macros
+    assert "wcag_nivel_exibir" in macros
+    from app.services.consolidation import inferir_wcag_nivel
+
+    assert inferir_wcag_nivel("2.5.3 Label in Name") == "a"
 
 
 def test_label_in_name_executive_group_not_aria():
@@ -245,3 +254,102 @@ def test_macros_contrast_uses_dynamic_element_fields():
     rb = (ROOT / "app" / "templates" / "report_body.html").read_text(encoding="utf-8")
     assert "{% for b in bars %}" in rb
     assert "criterio_pronto_det" in body
+
+
+def test_score_legend_below_scorecard_in_part_a():
+    part_a = (ROOT / "app" / "templates" / "report_body_a.html").read_text(encoding="utf-8")
+    assert "_score_legend.html" in part_a
+    assert part_a.index("ma-scorecard") < part_a.index("_score_legend.html")
+    legend = (ROOT / "app" / "templates" / "_score_legend.html").read_text(encoding="utf-8")
+    assert "Escala" in legend and "0–10" in legend
+    assert "Score de Risco Meta-Auditor" in legend
+    body_b = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert body_b.count("Como ler os scores") == 0
+
+
+def test_approved_list_uses_lighthouse_passed_label():
+    body_b = REPORT_BODY_B.read_text(encoding="utf-8")
+    assert "lighthouse_passed_label" in body_b
+    assert "truncate_words" in body_b
+    from app.services.display_labels import lighthouse_passed_label
+
+    label = lighthouse_passed_label(
+        {"id": "aria-deprecated-role", "title": "Deprecated ARIA roles were not used"}
+    )
+    assert "obsoleto" in label.lower()
+    assert "Deprecated" not in label
+
+
+def _sample_audit_row() -> dict:
+    return {
+        "id": 99,
+        "url": "https://www.exemplo.gov.br/",
+        "created_at": "2026-05-29T12:00:00",
+        "lh_score": 0.82,
+        "wave_aim_score": 2.6,
+        "wave_error_count": 3,
+        "wave_contrast_count": 1,
+        "report": {
+            "barreiras_automaticas": [
+                {
+                    "issue_tipo_normalizado": "imagem_link_sem_texto_alternativo",
+                    "titulo_tecnico": "Link-imagem sem texto alternativo",
+                    "prioridade": "alta",
+                    "wcag_criterio": "2.4.4 Link Purpose",
+                    "correcao_sugerida": (
+                        "O time de conteúdo e desenvolvimento precisa garantir que cada imagem-link tenha um "
+                        "texto alternativo que explique a ação ou o destino do link. "
+                        "Quando o usuário lê o texto na tela e fala esse comando, o sistema deve reconhecer "
+                        "a frase sem variações ou truncamentos adicionais no nome acessível do controle interativo visível."
+                    ),
+                    "ocorrencias_count": 2,
+                    "publico_afetado": "Leitores de tela",
+                }
+            ],
+            "itens_aprovados": [
+                {"id": "aria-deprecated-role", "title": "Deprecated ARIA roles were not used"},
+                {"id": "aria-allowed-attr", "title": "`[aria-*]` attributes match their roles"},
+            ],
+            "score_risco": {"valor": 2.5, "nivel": "ALTO", "n_alta": 1, "n_media": 0, "n_baixa": 0},
+        },
+        "score_breakdown": {"passed_audits_count": 18, "scored_audits_count": 20, "total_weight": 100},
+    }
+
+
+def test_build_report_html_and_pdf_share_ux_fixes():
+    from app.main import _build_report_html
+
+    html_screen = _build_report_html(_sample_audit_row(), pdf_mode=False)
+    html_pdf = _build_report_html(_sample_audit_row(), pdf_mode=True)
+
+    for html in (html_screen, html_pdf):
+        assert "Como ler os scores" in html
+        assert html.index("ma-scorecard") < html.index("Como ler os scores")
+        assert "Escala" in html and "0–10" in html
+        assert "Score de Risco Meta-Auditor" in html
+        assert "nível executivo" in html
+        assert "sem barreiras de severidade alta" in html
+        assert "barreiras de severidade alta" in html
+        assert "alta prioridade" not in html.split("Resumo Executivo", 1)[0].lower()
+        assert "Meta-Auditor" in html
+        assert "/10</span>" in html
+        assert "Nenhum papel ARIA obsoleto" in html
+        approved = html.split("O que está correto", 1)[1].split("Parâmetros da avaliação", 1)[0]
+        assert "Deprecated ARIA" not in approved
+        checklist = html.split("Checklist de correção", 1)[1].split("Apêndice", 1)[0]
+        assert " ou o..." not in checklist
+        assert "truncate_words" not in html  # filtro aplicado no render, não no HTML final
+        assert "Checklist de correção" in html
+
+    assert 'class="ma-export-bar no-print"' in html_screen
+    assert 'class="ma-export-bar no-print"' not in html_pdf
+
+
+def test_export_pdf_uses_inline_html_render():
+    import inspect
+
+    from app import main as main_mod
+
+    src = inspect.getsource(main_mod.audit_export_pdf)
+    assert "render_report_pdf" in src
+    assert "_build_report_html(row, pdf_mode=True)" in src

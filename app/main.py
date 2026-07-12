@@ -54,15 +54,17 @@ from app.database import (
     update_report,
 )
 from app.models.request_models import AuditRequest
-from app.services.consolidation import build_report
-from app.services.pdf_export import build_pdf_target_urls, render_report_pdf_from_urls
-from app.services.display_labels import attach_display_fields, issue_display_label, pour_bucket_for
+from app.services.consolidation import build_report, inferir_wcag_nivel
+from app.services.pdf_export import build_pdf_target_urls, render_report_pdf, render_report_pdf_from_urls
+from app.services.display_labels import attach_display_fields, issue_display_label, lighthouse_passed_label, pour_bucket_for
 from app.services.text_clean import (
+    barrier_exec_text,
     normalize_barrier_ai_texts,
     normalize_executive_plaintext,
     normalize_report_dashes,
     normalize_report_markup_text,
     strip_emoji,
+    truncate_words,
 )
 from app.services.extractors import (
     extract_lighthouse_issues,
@@ -97,22 +99,14 @@ def _filter_issue_display_label(b: object) -> str:
 _jinja_env.filters["issue_display_label"] = _filter_issue_display_label
 _jinja_env.filters["normalize_executive_plaintext"] = normalize_executive_plaintext
 _jinja_env.filters["pour_bucket_for"] = pour_bucket_for
+_jinja_env.filters["inferir_wcag_nivel"] = inferir_wcag_nivel
+_jinja_env.filters["barrier_exec_text"] = barrier_exec_text
+_jinja_env.filters["truncate_words"] = truncate_words
+_jinja_env.filters["lighthouse_passed_label"] = lighthouse_passed_label
 
 
 def _embed_evidence_into_row(audit_row: dict) -> dict:
-    """
-    Pré-embute evidências base64 em cada barreira antes de renderizar o HTML.
-
-    Cadeia de prioridade por barreira:
-      1. EMBEDDED  — campo legado evidencias[0].screenshot_base64
-      2. LH_CROP   — crop do fullPageScreenshot Lighthouse
-      3. PLAYWRIGHT — lê PNG já cacheado em disco e valida com _evidence_is_good
-      4. UNAVAILABLE — nenhuma evidência confiável disponível
-
-    Adiciona em cada barreira:
-      - evidencia_b64:   str | None
-      - evidence_source: str          "EMBEDDED"|"LH_CROP"|"PLAYWRIGHT"|"UNAVAILABLE"
-    """
+    """Embute evidencia_b64 por barreira: EMBEDDED → LH_CROP → PLAYWRIGHT → UNAVAILABLE."""
     import copy
 
     row = copy.deepcopy(audit_row)
@@ -198,7 +192,7 @@ def _embed_evidence_into_row(audit_row: dict) -> dict:
 
 
 async def _ensure_nivel2(audit_id: int, row: dict) -> dict:
-    """Garante nível 2 (versao_dev) antes de exportar HTML/PDF."""
+    """Re-enriquece versao_dev (nível 2) se faltar, antes de HTML/PDF."""
     if not ANTHROPIC_API_KEY or AI_ENHANCE_LEVEL < 2:
         return row
 
@@ -255,7 +249,7 @@ def _raw_path_for_db(file_path: Path) -> str:
 
 
 def _resolved_raw_path(rel: str | None) -> Path | None:
-    """Caminho absoluto para arquivo bruto, apenas se existir e estiver dentro da árvore de PROJECT_ROOT."""
+    """Resolve caminho bruto sob PROJECT_ROOT, se existir."""
     if not rel or not isinstance(rel, str):
         return None
     p = (PROJECT_ROOT / rel.replace("\\", "/")).resolve()
@@ -353,12 +347,7 @@ def _find_screenshot_data_url(obj: object) -> str | None:
 
 
 def _crop_lh_screenshot_evidence(lh_raw: dict, lhids: list[str]) -> bytes | None:
-    """
-    Recorta e destaca elemento no fullPageScreenshot do Lighthouse (sem rede).
-
-    Usa lighthouseResult.fullPageScreenshot.screenshot (data URL) e
-    fullPageScreenshot.nodes[lhId] com top/left/width/height na mesma escala da imagem.
-    """
+    """Crop do fullPageScreenshot Lighthouse via nodes[lhId] (sem rede)."""
     try:
         from PIL import Image, ImageDraw, ImageFont  # type: ignore
     except ImportError:
@@ -476,15 +465,12 @@ def _crop_lh_screenshot_evidence(lh_raw: dict, lhids: list[str]) -> bytes | None
         return None
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CORREÇÃO 1 — Placeholder informativo (motivo + seletor)
-# ─────────────────────────────────────────────────────────────────────────────
 def _placeholder_evidence_png(
     title: str = "Imagem indisponível",
     reason: str = "",
     selector: str = "",
 ) -> bytes | None:
-    """PNG informativo quando a captura real não é possível (CAPTCHA, bloqueio, timeout)."""
+    """PNG placeholder (CAPTCHA/bloqueio/timeout)."""
     try:
         from PIL import Image, ImageDraw, ImageFont  # type: ignore
     except ImportError:
@@ -494,11 +480,9 @@ def _placeholder_evidence_png(
     img = Image.new("RGB", (W, H), color=(248, 250, 252))
     draw = ImageDraw.Draw(img)
 
-    # Faixa âmbar de cabeçalho
     draw.rectangle([0, 0, W, 32], fill=(251, 191, 36))
     draw.rectangle([0, 0, W - 1, H - 1], outline=(203, 213, 225), width=1)
 
-    # Fontes — tenta DejaVu (Linux/Docker), Helvetica (macOS), fallback default
     ft_bold = ft_reg = ft_sm = None
     for path in [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
@@ -556,7 +540,7 @@ def _barrier_selector_candidates(barrier: dict) -> list[str]:
     seen: set[str] = set()
 
     def strip_lh_preface(line: str) -> str:
-        """Remove prefixo Lighthouse '[lhId]' e texto após o separador (selector costuma ficar primeiro)."""
+        """Remove prefixo '[lhId]' e texto após separador."""
         s = line.strip()
         s = re.sub(r"^\[[^\]\s]+\]\s*", "", s)
         for sep in (" — ", " – ", " - ", ": "):
@@ -587,9 +571,6 @@ def _barrier_selector_candidates(barrier: dict) -> list[str]:
     return out
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CORREÇÃO 2 — JS de highlight injetado via Playwright antes do screenshot
-# ─────────────────────────────────────────────────────────────────────────────
 _HIGHLIGHT_INJECT_JS = """
 (sel) => {
     try {
@@ -616,11 +597,8 @@ _HIGHLIGHT_REMOVE_JS = """
 """
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CORREÇÃO 3 — Faixa de label Pillow sobreposta à imagem Playwright
-# ─────────────────────────────────────────────────────────────────────────────
 def _add_pillow_label(png_bytes: bytes, label: str) -> bytes:
-    """Sobrepõe faixa vermelha com label no topo da imagem capturada pelo Playwright."""
+    """Faixa vermelha com label no topo do PNG."""
     try:
         from PIL import Image, ImageDraw, ImageFont  # type: ignore
 
@@ -650,9 +628,6 @@ def _add_pillow_label(png_bytes: bytes, label: str) -> bytes:
         return png_bytes
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CORREÇÃO 4 — _capture_barrier_image com highlight + clip + label
-# ─────────────────────────────────────────────────────────────────────────────
 async def _capture_barrier_image(
     url: str,
     selectors: list[str],
@@ -675,14 +650,7 @@ async def _capture_barrier_image(
 
 
 def _evidence_is_good(png_bytes: bytes) -> bool:
-    """
-    Valida qualidade mínima da evidência visual.
-
-    Reprova se:
-    - imagem menor que 80x80px
-    - ratio vermelho (r>180, g<120, b<120) abaixo de 0.15%
-    - variância muito baixa (fundo uniforme)
-    """
+    """Reprova PNG <80px, pouco vermelho de highlight (<0,15%) ou fundo uniforme."""
     try:
         from PIL import Image  # type: ignore
         import statistics as _stats
@@ -734,11 +702,7 @@ def _capture_barrier_image_sync_bytes(
     compact: bool = True,
     barrier_label: str = "",
 ) -> bytes | None:
-    """
-    Captura ao vivo via Playwright. Retorna PNG bytes validados ou None.
-
-    Não faz fallback para screenshot genérico.
-    """
+    """Playwright ao vivo → PNG validado, ou None (sem screenshot genérico)."""
     try:
         pw_mod = importlib.import_module("playwright.sync_api")
         sync_playwright = pw_mod.sync_playwright
@@ -939,12 +903,7 @@ async def audit_export_html(audit_id: int):
 
 @app.get("/audits/{audit_id}/export.pdf")
 async def audit_export_pdf(audit_id: int, request: Request):
-    """
-    PDF gerado pelo Meta-Auditor com paginação controlada (Playwright server-side).
-
-    Não use report.html?print=1 nem window.print() — o motor de impressão do
-    navegador corta blocos longos e injeta cabeçalho/rodapé com localhost.
-    """
+    """PDF via Playwright server-side (não use window.print — corta blocos e injeta localhost)."""
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
@@ -954,16 +913,27 @@ async def audit_export_pdf(audit_id: int, request: Request):
     export_dir = PROJECT_ROOT / "data" / "exports"
     export_dir.mkdir(parents=True, exist_ok=True)
     out_path = export_dir / f"relatorio-acessibilidade-{audit_id}.pdf"
-    target_urls = build_pdf_target_urls(audit_id, str(request.base_url))
 
+    # pdf_mode alinha HTML de download e PDF (sem barra de exportação).
+    html = _build_report_html(row, pdf_mode=True)
     try:
-        await asyncio.to_thread(render_report_pdf_from_urls, target_urls, out_path)
-    except Exception as exc:
-        _log.exception("Falha ao gerar PDF da auditoria %s", audit_id)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Falha ao gerar PDF: {exc}",
-        ) from exc
+        pdf_bytes = await asyncio.to_thread(render_report_pdf, html)
+        out_path.write_bytes(pdf_bytes)
+    except Exception as inline_exc:
+        _log.warning(
+            "PDF inline (render_report_pdf) falhou para auditoria %s: %s — tentando via URL",
+            audit_id,
+            inline_exc,
+        )
+        target_urls = build_pdf_target_urls(audit_id, str(request.base_url))
+        try:
+            await asyncio.to_thread(render_report_pdf_from_urls, target_urls, out_path)
+        except Exception as exc:
+            _log.exception("Falha ao gerar PDF da auditoria %s", audit_id)
+            raise HTTPException(
+                status_code=500,
+                detail=f"Falha ao gerar PDF: {exc}",
+            ) from exc
 
     return FileResponse(
         str(out_path),
@@ -992,15 +962,7 @@ async def audit_report_html(
 
 @app.get("/audits/{audit_id}/evidence-image")
 async def audit_evidence_image(audit_id: int, barrier_idx: int = Query(0, ge=0), compact: bool = True):
-    """
-    Evidência visual por barreira — com validação de qualidade.
-
-    Prioridade:
-      1. Cache em disco (já validado anteriormente)
-      2. LH_CROP via fullPageScreenshot + lhIds
-      3. Playwright ao vivo via _capture_barrier_image_sync_bytes (com validação)
-      4. UNAVAILABLE — retorna 404; sem screenshot genérica
-    """
+    """Evidência visual: cache → LH_CROP → Playwright; 404 se UNAVAILABLE."""
     row = await get_audit(DB_PATH, audit_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Auditoria não encontrada")
@@ -1134,13 +1096,7 @@ async def _fetch_wave_optional(url: str) -> tuple[dict, Path | None]:
 
 @app.post("/audit")
 async def start_audit(request: AuditRequest):
-    """
-    Recebe uma URL pública. Em paralelo: PSI (Lighthouse ACCESSIBILITY) e WAVE (reporttype configurável).
-    Brutos em data/raw/. Resposta: Lighthouse, WAVE e relatório consolidado (sem misturar score com contagens WAVE).
-
-    Falha só (502) quando *nenhum* dos dois dados estiver disponível: sem Lighthouse *e* sem WAVE válido.
-    Se WAVE_API_KEY não estiver definida, o WAVE é omitido (relatório só Lighthouse quando o PSI responder).
-    """
+    """PSI + WAVE em paralelo; 502 só se ambos falharem. Sem WAVE_API_KEY → só Lighthouse."""
     url = str(request.url)
     raw_psi: dict = {}
     raw_wave: dict = {}

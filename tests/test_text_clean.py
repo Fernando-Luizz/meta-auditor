@@ -1,6 +1,7 @@
 """Testes de normalização de texto para relatórios."""
 
 from app.services.text_clean import (
+    barrier_exec_text,
     format_html_tag_literals,
     normalize_barrier_ai_texts,
     normalize_executive_plaintext,
@@ -8,6 +9,7 @@ from app.services.text_clean import (
     normalize_report_dashes,
     normalize_report_markup_text,
     strip_emoji,
+    truncate_words,
 )
 
 
@@ -94,3 +96,45 @@ def test_normalize_barrier_ai_texts_label_in_name_fixes() -> None:
     assert "conter o texto visível" in b["como_corrigir_claro"]
     assert "Nível A" in b["versao_dev"]
     assert "Nível AA" not in b["texto_ticket"]["descricao"]
+
+
+def test_barrier_exec_text_cartao_servico_from_evcodes() -> None:
+    b = {
+        "issue_id_original": "label-content-name-mismatch",
+        "wcag_criterio": "2.5.3 Label in Name",
+        "evcodes": ["a.service-card href=?id=carta_de_servico_renovar_cnh"],
+        "como_corrigir_claro": (
+            "O nome acessível deve conter o texto visível do link, preferencialmente no início, "
+            "para que usuários de controle por voz consigam acionar o elemento pelo texto que enxergam na tela."
+        ),
+    }
+    out = barrier_exec_text(b["como_corrigir_claro"], b)
+    assert "cartão" in out
+    assert "do link" not in out
+
+
+def test_truncate_words_cuts_on_word_boundary() -> None:
+    text = (
+        "O time de conteúdo e desenvolvimento precisa garantir que cada imagem-link tenha um "
+        "texto alternativo que explique a ação ou o destino do link. "
+        "Quando o usuário lê o texto na tela e fala esse comando, o sistema deve reconhecer "
+        "a frase sem variações ou truncamentos adicionais no nome acessível do controle interativo visível."
+    )
+    out = truncate_words(text, 320)
+    assert out.endswith("...")
+    assert " ou o..." not in out
+    assert "destino" in out or "ação" in out
+
+
+def test_truncate_words_short_text_unchanged() -> None:
+    assert truncate_words("Texto curto", 50) == "Texto curto"
+
+
+def test_normalize_executive_plaintext_fixes_severidade_lex() -> None:
+    out = normalize_executive_plaintext(
+        "O portal apresenta 3 barreiras de alta prioridade e 2 de média prioridade."
+    )
+    assert "severidade alta" in out
+    assert "severidade média" in out
+    assert "alta prioridade" not in out.lower()
+    assert "média prioridade" not in out.lower()

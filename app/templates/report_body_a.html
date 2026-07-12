@@ -1,8 +1,8 @@
-{% from '_report_macros.html' import pub_icon, pub_desc, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg, prioridade_correcao_badge, wcag_nivel_exibir, termo_barreira, prioridade_exibir_caps %}
+{% from '_report_macros.html' import pub_icon, pub_desc, ma_logo_icon, clean_exec_text, ma_tag_ok_svg, ma_tag_warn_svg, prioridade_correcao_badge, wcag_nivel_exibir, termo_barreira, prioridade_exibir_caps, severidade_contagem_phrase %}
 {% set _u = (audit.url or '')|replace('https://','')|replace('http://','') %}
 {% set audit_domain = _u.split('/')[0] if _u else '–' %}
 {% set audit_date = (audit.created_at or '')[:10] if audit.created_at else '–' %}
-{# Parte A: cabeçalho executivo → exposição legal: na, nm, nb, nt e lh/wv vêm de report.html #}
+{# Contadores na/nm/nb/nt e scores lh/wv vêm de report.html #}
 
 <header class="ma-header" role="banner">
   <div class="ma-header-stripe" aria-hidden="true"></div>
@@ -12,7 +12,7 @@
         {{ ma_logo_icon(40, 'exec', 'light') }}
         <div class="ma-logo-text">
           <span class="ma-logo-wordmark">Meta-<span class="ma-logo-accent">Auditor</span></span>
-          <span class="ma-logo-tagline">UEA · Acessibilidade Web</span>
+          <span class="ma-logo-tagline">Acessibilidade Web</span>
         </div>
       </div>
       <div class="ma-conform-pill{% if nt == 0 %} ok{% endif %}" role="status">
@@ -59,8 +59,8 @@
         <p class="ma-meta-value">Meta-Auditor {{ app_version }}</p>
       </div>
       <div class="ma-meta-item">
-        <p class="ma-meta-label">Instituição</p>
-        <p class="ma-meta-value">{{ report_footer_org or 'UEA: EST' }}</p>
+        <p class="ma-meta-label">Sistema</p>
+        <p class="ma-meta-value">{{ report_footer_org or 'Meta-Auditor' }}</p>
       </div>
       {% if sr %}
       <div class="ma-meta-item">
@@ -75,7 +75,7 @@
 <div class="ma-scorecard" role="region" aria-label="Indicadores principais da auditoria">
   <div class="ma-score-card">
     <span class="ma-score-label">Score Lighthouse</span>
-    <span class="ma-score-value {% if lh_pct is none %}muted{% elif lhcls == 'ok' %}green{% elif lhcls == 'warn' %}orange{% else %}red{% endif %}">{% if lh_pct is not none %}{{ lh_pct }}{% else %}: {% endif %}</span>
+    <span class="ma-score-value {% if lh_pct is none %}muted{% elif lhcls == 'ok' %}green{% elif lhcls == 'warn' %}orange{% else %}red{% endif %}">{% if lh_pct is not none %}{{ lh_pct }}<span class="ma-score-scale">/100</span>{% else %}: {% endif %}</span>
     <span class="ma-score-tag {% if lh_pct is none %}neutro{% elif lhcls == 'ok' %}aprovado{% elif lhcls == 'warn' %}atencao{% else %}critico{% endif %}">
       {% if lh_pct is none %}Indisponível{% elif lhcls == 'ok' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Aprovado{% elif lhcls == 'warn' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
     </span>
@@ -88,7 +88,7 @@
   </div>
   <div class="ma-score-card">
     <span class="ma-score-label">WAVE AIM Score</span>
-    <span class="ma-score-value {% if wv is none %}muted{% elif wvcls == 'ok' %}green{% elif wvcls == 'warn' %}orange{% else %}red{% endif %}">{% if wv is not none %}{{ wv|round(1) }}{% else %}: {% endif %}</span>
+    <span class="ma-score-value {% if wv is none %}muted{% elif wvcls == 'ok' %}green{% elif wvcls == 'warn' %}orange{% else %}red{% endif %}">{% if wv is not none %}{{ wv|round(1) }}<span class="ma-score-scale">/10</span>{% else %}: {% endif %}</span>
     <span class="ma-score-tag {% if wv is none %}neutro{% elif wvcls == 'ok' %}aprovado{% elif wvcls == 'warn' %}atencao{% else %}critico{% endif %}">
       {% if wv is none %}Indisponível{% elif wvcls == 'ok' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Aprovado{% elif wvcls == 'warn' %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Crítico{% endif %}
     </span>
@@ -103,9 +103,9 @@
     <span class="ma-score-label">Barreiras detectadas</span>
     <span class="ma-score-value {% if nt == 0 %}green{% elif nt <= 2 %}orange{% else %}red{% endif %}">{{ nt }}</span>
     <span class="ma-score-tag {% if nt == 0 %}aprovado{% elif na > 0 %}atencao{% else %}atencao{% endif %}">
-      {% if nt == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Nenhuma{% elif na > 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Com altas{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% endif %}
+      {% if nt == 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_ok_svg(10)|safe }}</span> Nenhuma{% elif na > 0 %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Severidade alta{% else %}<span class="ma-score-ic" aria-hidden="true">{{ ma_tag_warn_svg(10)|safe }}</span> Atenção{% endif %}
     </span>
-    <span class="ma-score-desc">{{ na }} {{ 'alta' if na == 1 else 'altas' }} · {{ nm }} {{ 'média' if nm == 1 else 'médias' }} · {{ nb }} {{ 'baixa' if nb == 1 else 'baixas' }}</span>
+    <span class="ma-score-desc">Severidade: {{ na }} alta · {{ nm }} média · {{ nb }} baixa</span>
   </div>
   <div class="ma-score-card">
     <span class="ma-score-label">Erros WAVE</span>
@@ -116,6 +116,8 @@
     <span class="ma-score-desc">+ {{ audit.wave_contrast_count }} alertas de contraste</span>
   </div>
 </div>
+
+{% include '_score_legend.html' %}
 
 <div class="ma-legal" role="note">
   <div class="ma-legal-left">
@@ -146,22 +148,22 @@
       <div class="ma-exec-headline">
         <span class="ma-exec-eyebrow">Resumo Executivo</span>
         <h2 class="ma-exec-title" id="exec-title">
-          {% if sr_nivel=='CRÍTICO' %}Portal em risco CRÍTICO: correção imediata antes dos demais portais{% elif sr_nivel=='ALTO' %}Portal com barreiras de alta prioridade: ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível: correções prioritárias identificadas{% else %}Portal com barreiras pontuais: melhorias de baixo ou médio esforço disponíveis{% endif %}
+          {% if sr_nivel=='CRÍTICO' %}Portal em risco CRÍTICO: correção imediata antes dos demais portais{% elif sr_nivel=='ALTO' %}Portal com barreiras de severidade alta: ação imediata necessária{% elif sr_nivel=='MÉDIO' %}Portal parcialmente acessível: correções prioritárias identificadas{% else %}Portal com barreiras pontuais: melhorias de baixo ou médio esforço disponíveis{% endif %}
         </h2>
       </div>
     </div>
     <div class="ma-exec-body-text">
       <p>Esta auditoria automatizada identificou <strong>{{ nt }} barreira{{ 's' if nt!=1 }} de acessibilidade</strong>
-      neste portal: sendo <strong>{{ na }} {{ 'barreira' if na==1 else 'barreiras' }} de alta prioridade</strong>{% if nm %}, {{ nm }} {{ 'barreira' if nm==1 else 'barreiras' }} de média prioridade{% endif %}{% if nb %} e {{ nb }} {{ 'barreira' if nb==1 else 'barreiras' }} de baixa prioridade{% endif %}.</p>
+      neste portal{{ severidade_contagem_phrase(na, nm, nb) }}.</p>
       {% if na > 0 %}
         {%- set grupos_crit=[] %}
         {%- if cnt.cego > 0 %}{% set _ = grupos_crit.append('usuários de leitor de tela (cegos)') %}{% endif %}
         {%- if cnt.visao > 0 %}{% set _ = grupos_crit.append('pessoas com baixa visão') %}{% endif %}
         {%- if cnt.motor > 0 %}{% set _ = grupos_crit.append('usuários com mobilidade reduzida') %}{% endif %}
         {%- if cnt.cogni > 0 %}{% set _ = grupos_crit.append('pessoas com dificuldades cognitivas') %}{% endif %}
-        <p>As barreiras de alta prioridade afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.</p>
+        <p>As barreiras de severidade alta afetam {{ grupos_crit|join(', ') if grupos_crit else 'grupos identificados nos achados abaixo' }}, além de quem depende de tecnologia assistiva quando o fluxo envolve os mesmos componentes.</p>
       {% else %}
-        <p>Nenhuma barreira foi consolidada como alta prioridade nesta execução. Trate médias e baixas conforme o impacto no fluxo do usuário e valide com testes assistivos.</p>
+        <p>Nenhuma barreira foi consolidada com severidade alta nesta execução. Trate as de severidade média e baixa conforme o impacto no fluxo do usuário e valide com testes assistivos.</p>
       {% endif %}
       {% if rapidas|length > 0 %}
         <p><em>{{ rapidas|length }} {% if rapidas|length == 1 %}problema pode ser corrigido{% else %}problemas podem ser corrigidos{% endif %} em menos de 1 dia</em> pela equipe técnica, com impacto imediato na qualidade da experiência.</p>
@@ -171,15 +173,15 @@
     <div class="ma-exec-counters" role="list" aria-label="Indicadores do resumo executivo">
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num red">{{ na }}</div>
-        <div class="ma-counter-label">Altas</div>
+        <div class="ma-counter-label">Severidade alta</div>
       </div>
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num amber">{{ nm }}</div>
-        <div class="ma-counter-label">Médias</div>
+        <div class="ma-counter-label">Severidade média</div>
       </div>
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num neutral">{{ nb }}</div>
-        <div class="ma-counter-label">Baixas</div>
+        <div class="ma-counter-label">Severidade baixa</div>
       </div>
       <div class="ma-counter" role="listitem">
         <div class="ma-counter-num green">{{ rapidas|length }}</div>
@@ -361,14 +363,13 @@
 
 <main id="main-content">
 
-{# Barra de escopo WCAG: complementa o header (severidade) sem repetir o resumo executivo #}
 <div class="conformance-bar" role="note" aria-label="Escopo e limites da verificação automatizada WCAG">
   <div class="cf-label">Escopo · WCAG 2.1 AA (automático)</div>
   <div class="cf-value">
     {% if nt==0 %}
       <span>Ferramentas como Lighthouse e WAVE cobrem em geral <strong>cerca de 30-40%</strong> dos critérios AA: não substituem certificação nem parecer de conformidade. Nesta página <strong>não houve</strong> barreira catalogada pelos motores automáticos; riscos residuais (teclado, leitor de tela, formulários complexos, conteúdo dinâmico) exigem testes manuais ou com usuários.</span>
     {% elif sr_nivel=='CRÍTICO' %}
-      <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. O nível CRÍTICO indica concentração elevada de barreiras altas — trate este portal antes dos demais classificados como ALTO.</span>
+      <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. O nível CRÍTICO (score ≥ 2,80) indica concentração elevada de barreiras de severidade alta — trate este portal antes dos demais classificados como ALTO.</span>
     {% elif sr_nivel=='ALTO' %}
       <span>O mesmo limite de cobertura (~30-40% dos critérios AA) aplica-se: os achados abaixo são só o que os crawlers conseguiram flagrar. Falhas em fluxos não exercitados ou critérios só manuais podem existir além deste relatório. Declaração institucional de acessibilidade precisa de validação humana para ter peso.</span>
     {% elif sr_nivel=='MÉDIO' %}
@@ -396,7 +397,6 @@
 </div>
 {% endif %}
 
-{# ══ 6. EXPOSIÇÃO LEGAL ══════════════════════════════════════════════ #}
 {% if nt > 0 %}
 <section class="legal-sec" aria-labelledby="legal-heading">
   <div class="legal-inner">
@@ -442,7 +442,7 @@
         <div class="rm-bar" aria-hidden="true">
           <div class="rm-fill rfc-{{ risk_css }}" style="width:{% if rmw>100 %}100{% else %}{{ rmw }}{% endif %}%"></div>
         </div>
-        <div class="rm-note">Combinação de prioridades das barreiras consolidadas pelo Meta-Auditor</div>
+        <div class="rm-note">Nível executivo do portal (severidade × quantidade). Distinto da prioridade de correção P1–P3.</div>
       </div>
       {% endif %}
     </div>

@@ -1,8 +1,8 @@
 FROM python:3.11-slim
 
 # Metadados
-LABEL maintainer="Fernando Luiz da Silva Freire"
-LABEL description="Meta-Auditor de Acessibilidade Web — Lighthouse + WAVE"
+LABEL maintainer="Anonymous Authors"
+LABEL description="Meta-Auditor — web accessibility auditing (Lighthouse + WAVE)"
 
 # Variáveis de build
 ARG APP_DIR=/app

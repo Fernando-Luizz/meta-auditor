@@ -1,16 +1,4 @@
-"""
-Consolida achados por tipo normalizado + URL + assinatura de localização.
-Não mistura score Lighthouse com contagens WAVE.
-
-Passagens:
-1) merge_by_normalized_type: agrupa por (tipo, URL, fingerprint da evidência).
-2) merge_barreiras_por_tipo_e_url: junta linhas com o mesmo tipo na mesma URL (convergência
-   Lighthouse + WAVE mesmo quando os fingerprints de seletor diferem).
-
-status_deteccao:
-- automatico_detectado: uma ferramenta (ou agregado sem convergência cruzada)
-- automatico_convergente: Lighthouse e WAVE no mesmo grupo consolidado
-"""
+"""Consolida achados por tipo normalizado, URL e localização."""
 from __future__ import annotations
 
 import hashlib
@@ -297,7 +285,7 @@ def _merge_evidencia(parts: list[list[str] | None]) -> list[str] | None:
 
 
 def _merge_lhids(parts: list[list[str] | None]) -> list[str] | None:
-    """Preserva lhIds de issues Lighthouse quando grupos são fundidos."""
+    """Mantém lhIds ao fundir grupos Lighthouse."""
     seen: set[str] = set()
     out: list[str] = []
     for p in parts:
@@ -427,9 +415,7 @@ def _merge_barrier_group(group: list[dict]) -> dict:
     onde_join = " | ".join(dict.fromkeys(str(o) for o in ondes)) if ondes else ""
 
     titles = [i.get("titulo_tecnico") for i in group if i.get("titulo_tecnico")]
-    # Prefere o título da fonte Lighthouse quando disponível (mais específico e já normalizado).
-    # max(titles, key=len) causava bugs: títulos WAVE genéricos mais longos sobrescreviam
-    # títulos LH corretos (ex.: "Elementos de formulário sem rótulo associado" > "Rótulo visível diferente do nome acessível").
+    # Prefere título Lighthouse ao fundir (max por len favorecia WAVE genérico).
     lh_titles = [
         i.get("titulo_tecnico")
         for i in group
@@ -532,11 +518,7 @@ def apply_prioridade_to_list(issues: list[dict]) -> list[dict]:
 
 
 def _build_page_map(issues: list[dict]) -> dict[str, str]:
-    """
-    Mapeia URLs únicas para rótulos legíveis no corpo do relatório.
-    Uma URL → «Página principal». Várias → «Página 1», «Página 2», …
-    A URL completa permanece em cada issue (`page_url`) para o apêndice técnico.
-    """
+    """Rótulos de página: 1 URL → «Página principal»; N → «Página 1»… (page_url intacta)."""
     urls: list[str] = list(
         dict.fromkeys(
             str(i.get("page_url") or "").strip()
@@ -593,48 +575,14 @@ def detect_divergencias(
     wave_barrier_issues: list[dict],
     lh_passed_tipo_set: set[str],
 ) -> list[dict]:
-    """
-    Detecta o caso inverso da convergência: Lighthouse PASSOU mas WAVE detectou
-    o mesmo issue_tipo_normalizado como barreira (error ou contrast).
-
-    Regra do Meta-Auditor: em caso de divergência, o resultado mais restritivo
-    (WAVE) prevalece. O achado permanece em barreiras_automaticas; esta seção
-    adicional documenta a discrepância para fins de pesquisa e transparência.
-
-    Só gera divergência quando:
-    - O issue_tipo_normalizado aparece nos tipos que LH passou explicitamente (score=1).
-    - O WAVE o detectou como barreira (error ou contrast) — não alertas.
-    - O tipo NÃO está já marcado como automatico_convergente (que indicaria que LH
-      também falhou, o oposto da divergência).
-
-    Args:
-        wave_barrier_issues: lista de barreiras WAVE (error + contrast) já normalizadas.
-        lh_passed_tipo_set: set de issue_tipo_normalizado cujo audit LH teve score=1.
-
-    Returns:
-        Lista de dicts com a estrutura:
-        {
-            "issue_tipo_normalizado": str,
-            "titulo_tecnico": str,
-            "wcag_criterio": str,
-            "publico_afetado": str,
-            "lighthouse_status": "passou",
-            "wave_count": int,
-            "wave_categoria": str,          # "error" ou "contrast"
-            "decisao": "resultado_mais_restritivo_prevalece",
-            "nota": str,
-        }
-    """
-    # Agregar por tipo (pode haver múltiplos itens WAVE do mesmo tipo na mesma auditoria)
+    """Lighthouse passou e WAVE falhou no mesmo tipo — prevalece WAVE."""
     by_tipo: dict[str, dict] = {}
     for iss in wave_barrier_issues:
         tipo = iss.get("issue_tipo_normalizado") or ""
         if not tipo:
             continue
-        # Só divergência se LH passou explicitamente neste tipo
         if tipo not in lh_passed_tipo_set:
             continue
-        # Se já existir, acumular a contagem
         if tipo in by_tipo:
             by_tipo[tipo]["wave_count"] += int(iss.get("ocorrencias_count") or 1)
         else:
@@ -650,7 +598,6 @@ def detect_divergencias(
                 "decisao": "resultado_mais_restritivo_prevalece",
             }
 
-    # Gerar nota e ordenar por wave_count decrescente
     result: list[dict] = []
     for tipo, entry in by_tipo.items():
         entry["nota"] = _nota_divergencia(tipo, entry["wave_categoria"], entry["wave_count"])

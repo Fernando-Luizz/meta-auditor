@@ -8,15 +8,10 @@
 <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   META-AUDITOR · RELATÓRIO DE ACESSIBILIDADE
-   Design System: Premium Executive Report
-   ═══════════════════════════════════════════════════════════ */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /*: Brand & Neutrals,: : : : : : : : : : : : : : : : : : : : */
   --ink:     #0D1B26;
   --ink2:    #253545;
   --ink3:    #4A5E6E;
@@ -26,8 +21,6 @@
   --border:  #DDE3EC;
   --border2: #C6CFD9;
   --glass:   rgba(255,255,255,0.08);
-
-  /*: Status Palette,: : : : : : : : : : : : : : : : : : : : */
   --red:        #C8291E;
   --red-bg:     #FEF0EF;
   --red-mid:    #F1ACA6;
@@ -54,24 +47,16 @@
   --purple:     #613D9A;
   --purple-bg:  #F1EBFB;
   --purple-mid: #B898E8;
-
-  /*: Tool Colors,: : : : : : : : : : : : : : : : : : : : */
   --lh:     #1464C8;
   --lh-bg:  #EBF3FD;
   --wave:   #0A6B60;
   --wave-bg:#E7F5F3;
-
-  /*: Typography,: : : : : : : : : : : : : : : : : : : : */
   --ff:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
   --ff-mono:"SF Mono","Cascadia Mono","Fira Code",Consolas,monospace;
-
-  /*: Geometry,: : : : : : : : : : : : : : : : : : : : */
   --r:  10px;
   --rsm:6px;
   --rlg:16px;
   --rxl:22px;
-
-  /*: Shadows,: : : : : : : : : : : : : : : : : : : : */
   --sh:   0 2px 12px rgba(13,27,38,.10);
   --shsm: 0 1px 4px  rgba(13,27,38,.07);
   --shmd: 0 4px 20px rgba(13,27,38,.12);
@@ -110,7 +95,6 @@
   --ma-div-dark:var(--purple);
 }
 
-/* ── Base ─────────────────────────────────────────────── */
 body{
   font-family:var(--ff);
   background:var(--paper);
@@ -132,7 +116,6 @@ code{
 strong{font-weight:700}
 .wrap{max-width:1020px;margin:0 auto;padding:32px 22px 100px}
 
-/* ── Exportar relatório (PDF via impressão · HTML arquivo) ── */
 .ma-export-bar{
   position:fixed;top:18px;right:18px;z-index:999;
   display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;
@@ -156,8 +139,6 @@ button.pbtn:hover{background:var(--ink2)}
 .pbtn:focus{outline:3px solid var(--amber);outline-offset:2px}
 .pbtn--html{background:var(--ma-primary)}
 .pbtn--html:hover,a.pbtn--html:hover{background:var(--ma-primary-dark)}
-
-/*,: Relatório: header executivo, scorecard, faixa legal,: */
 .ma-header { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 16px; box-shadow: var(--ma-shadow-md); overflow: hidden; margin-bottom: 16px; }
 .ma-header-stripe { height: 5px; background: linear-gradient(90deg, var(--ma-primary-dark) 0%, var(--ma-primary) 60%, var(--ma-primary-mid) 100%); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .ma-header-body { padding: 28px 32px 24px; }
@@ -191,6 +172,7 @@ button.pbtn:hover{background:var(--ink2)}
 .ma-score-card { background: var(--ma-surface); border: 1px solid var(--ma-border); border-radius: 12px; padding: 16px; box-shadow: var(--ma-shadow-sm); display: flex; flex-direction: column; gap: 6px; }
 .ma-score-label { font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ma-ink-400); }
 .ma-score-value { font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--ma-ink-900); }
+.ma-score-scale { font-size: 14px; font-weight: 600; color: var(--ma-ink-400); margin-left: 2px; letter-spacing: 0; }
 .ma-score-value.green { color: var(--ma-primary); }
 .ma-score-value.orange { color: var(--ma-lighthouse); }
 .ma-score-value.red { color: var(--ma-alta); }
@@ -362,7 +344,6 @@ button.pbtn:hover{background:var(--ink2)}
   background:rgba(9,82,160,.08);
 }
 
-/* ── Contexto rápido da barreira no apêndice A1 (determinístico) ── */
 .ap-ctx-strip{
   display:flex;
   align-items:center;
@@ -442,7 +423,6 @@ button.pbtn:hover{background:var(--ink2)}
 .ma-bc-aud-label { font-size: 11px; font-weight: 600; color: var(--ma-ink-700); }
 .ma-bc-aud-desc { font-size: 11px; color: var(--ma-ink-400); line-height: 1.5; }
 
-/* ── Camada assistida por IA (corpo da barreira) ───────────────────── */
 .ma-bc-ai-layer {
   margin: 0;
   padding: 12px 22px 16px;
@@ -551,7 +531,6 @@ button.pbtn:hover{background:var(--ink2)}
 .ma-bc-occ-hint { padding: 8px 22px; background: var(--amber-bg); border-bottom: 1px solid var(--amber-mid); font-size: 11px; color: var(--amber-dark); line-height: 1.45; display: flex; gap: 8px; align-items: flex-start; }
 .ma-bc-copy-extra { font-size: 10px; color: var(--ma-ink-400); font-style: italic; margin-left: 4px; }
 
-/* ── Evidência visual no card (corpo executivo) ───────────────────── */
 .ma-bc-evidence {
   margin: 16px 0 4px;
   padding: 0;
@@ -751,7 +730,6 @@ button.pbtn:hover{background:var(--ink2)}
   border-color: var(--ma-border);
 }
 
-/* ── Accordion de ticket (Nível 2) ── */
 .ma-bc-ticket-accordion {
   margin: 0;
   border-top: 1px solid rgba(9,82,160,.14);
@@ -817,7 +795,6 @@ button.pbtn:hover{background:var(--ink2)}
   .ma-bc-ticket-lbl { min-width: unset; padding-top: 0; }
 }
 
-/* ── Apêndice Técnico ─────────────────────────────────────────────── */
 .ap-section {
   margin-top: 48px;
   padding-top: 32px;
@@ -1002,7 +979,6 @@ button.pbtn:hover{background:var(--ink2)}
 .r-sem   {background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.18)}
 .r-sub{font-size:10px;color:rgba(255,255,255,.30);text-align:right}
 
-/* ══ CONFORMANCE STATEMENT ══════════════════════════════════ */
 .conformance-bar{
   display:flex;align-items:center;gap:0;
   border-radius:var(--r);border:1.5px solid var(--border2);
@@ -1033,7 +1009,6 @@ button.pbtn:hover{background:var(--ink2)}
 .cf-partial{background:var(--amber-bg);color:var(--amber)}
 .cf-conform{background:var(--green-bg);color:var(--green)}
 
-/* ══ EXECUTIVE SUMMARY ════════════════════════════════════ */
 .exec-banner{
   display:flex;gap:0;
   border-radius:var(--rlg);
@@ -1092,7 +1067,6 @@ button.pbtn:hover{background:var(--ink2)}
   border:1px solid rgba(13,27,38,.10);
 }
 
-/* ══ DASHBOARD ════════════════════════════════════════════ */
 .dash-row{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -1134,7 +1108,6 @@ button.pbtn:hover{background:var(--ink2)}
 .s-crit{background:var(--red-bg);  color:var(--red)}
 .dc-exp{font-size:10px;color:var(--ink4);line-height:1.45;margin-top:4px}
 
-/* ══ POUR MATRIX ════════════════════════════════════════════ */
 .pour-sec{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);margin-bottom:22px;
@@ -1193,7 +1166,6 @@ button.pbtn:hover{background:var(--ink2)}
   flex-shrink:0;margin-top:5px;
 }
 
-/* ══ LEGAL RISK BOX ═════════════════════════════════════════ */
 .legal-sec{
   background:var(--ink);color:#fff;
   border-radius:var(--rlg);margin-bottom:22px;
@@ -1249,7 +1221,6 @@ button.pbtn:hover{background:var(--ink2)}
 .rfc-baixo {background:linear-gradient(90deg,#16764A,#80D8A8)}
 .rm-note{font-size:10px;color:rgba(255,255,255,.35);line-height:1.5}
 
-/* ══ PRIORIDADE P1/P2/P3 + ORDEM RECOMENDADA ═══════════════ */
 .ma-prio-badge{
   display:inline-flex;align-items:center;justify-content:center;
   min-width:34px;padding:3px 8px;border-radius:6px;
@@ -1267,7 +1238,6 @@ button.pbtn:hover{background:var(--ink2)}
 .ma-order-table tr:last-child td{border-bottom:none}
 .ma-order-motivo{font-size:11px;color:var(--ink2);line-height:1.45;max-width:360px}
 
-/* ══ ACTION PLAN ═══════════════════════════════════════════ */
 .action-plan{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);margin-bottom:22px;
@@ -1345,7 +1315,6 @@ button.pbtn:hover{background:var(--ink2)}
 .apb-baixa  {background:var(--green-bg);color:var(--green)}
 .apb-div    {background:var(--purple-bg);color:var(--purple)}
 
-/* ══ CHARTS SECTION ═════════════════════════════════════════ */
 .charts-sec{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);padding:26px 28px;
@@ -1398,7 +1367,6 @@ button.pbtn:hover{background:var(--ink2)}
 .f-ink   {background:var(--ink3)}
 .f-blue  {background:var(--blue)}
 
-/* ══ LEGEND ═════════════════════════════════════════════════ */
 .leg-block{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);padding:20px 24px;
@@ -1409,6 +1377,8 @@ button.pbtn:hover{background:var(--ink2)}
   text-transform:uppercase;color:var(--ink4);margin-bottom:14px;
 }
 .leg-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.leg-grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.leg-block--top{margin-top:0;margin-bottom:18px}
 .leg-tname{
   font-size:13px;font-weight:700;color:var(--ink);
   display:flex;align-items:center;gap:7px;margin-bottom:4px;
@@ -1419,7 +1389,6 @@ button.pbtn:hover{background:var(--ink2)}
 .sc-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3)}
 .sc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-/* ══ PUBLIC GROUPS ══════════════════════════════════════════ */
 .grp-sec{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);padding:24px 28px;
@@ -1457,7 +1426,6 @@ button.pbtn:hover{background:var(--ink2)}
   color:var(--green);padding:2px 8px;border-radius:10px;margin-top:6px;
 }
 
-/* ══ BARRIER CARDS ══════════════════════════════════════════ */
 .section{margin-bottom:28px}
 .sec-row{
   display:flex;align-items:center;gap:10px;
@@ -1604,7 +1572,6 @@ details[open] summary::before{transform:rotate(90deg)}
 }
 .ev-codes code:last-child{border-bottom:none}
 
-/* ══ DIVERGENCES ════════════════════════════════════════════ */
 .div-card{
   background:var(--white);border:1.5px solid var(--purple-mid);
   border-left:5px solid var(--purple);border-radius:var(--r);
@@ -1618,7 +1585,6 @@ details[open] summary::before{transform:rotate(90deg)}
 }
 .div-dec{font-size:11px;font-weight:700;color:var(--purple);margin-top:6px}
 
-/* ══ ALERTS ════════════════════════════════════════════════ */
 .ac{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rsm);padding:14px 18px;
@@ -1638,12 +1604,10 @@ details[open] summary::before{transform:rotate(90deg)}
 .m-lbl{font-weight:700;display:block}
 .m-desc{font-size:11px;color:var(--ink3)}
 
-/* ══ GLOSSARY ═══════════════════════════════════════════════ */
 .gl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;margin-top:13px}
 .gl-t{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px;font-family:var(--ff-mono)}
 .gl-d{font-size:11px;color:var(--ink3);line-height:1.5}
 
-/* ══ LH TABLE ═══════════════════════════════════════════════ */
 .lhd{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--r);margin-bottom:26px;
@@ -1659,7 +1623,6 @@ details[open] summary::before{transform:rotate(90deg)}
 .bd-t tr:nth-child(even) td{background:var(--paper)}
 .ipts{font-weight:700;color:var(--red)}
 
-/* ══ METHODOLOGY ════════════════════════════════════════════ */
 .method-sec{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:var(--rlg);padding:24px 28px;
@@ -1679,7 +1642,6 @@ details[open] summary::before{transform:rotate(90deg)}
 .mc-man {background:var(--amber-bg);border-color:var(--amber-mid)}
 .mc-lim {background:var(--paper);  border-color:var(--border2)}
 
-/* ══ AI ENHANCEMENT BLOCKS ═══════════════════════════════════════════ */
 .exec-ai-box{
   background:linear-gradient(135deg,#0D1B26 0%,#142438 100%);
   border:1.5px solid #2D4F6A;border-left:5px solid var(--blue);
@@ -1775,7 +1737,6 @@ details[open] summary::before{transform:rotate(90deg)}
   color:var(--ink);
 }
 
-/* ══ Fix 4: copiar ticket ───────────────────────────────────────────── */
 .ma-copy-ticket-btn{
   display:inline-flex;align-items:center;gap:5px;
   font-size:10px;font-weight:700;
@@ -1787,7 +1748,6 @@ details[open] summary::before{transform:rotate(90deg)}
 .ma-copy-ticket-btn:hover{background:var(--ma-primary);color:#fff}
 .ma-copy-ticket-btn:focus{outline:2px solid var(--ma-primary);outline-offset:2px}
 
-/* ══ Fix 1: rótulo de página + URL no apêndice ─────────────────────── */
 .ma-page-label{
   display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;
   text-transform:uppercase;color:var(--green-dark);
@@ -1803,7 +1763,6 @@ details[open] summary::before{transform:rotate(90deg)}
   color:var(--ma-primary);word-break:break-all;
 }
 
-/* ══ Fix 2: O que está correto (card fixo, sem <details>) ─────────── */
 .ma-approved-sec{margin-bottom:20px}
 .ma-approved-box{
   background:var(--green-bg);
@@ -1848,7 +1807,6 @@ details[open] summary::before{transform:rotate(90deg)}
 .ma-approved-more .ma-approved-text{color:var(--ink3);font-style:italic}
 .ma-approved-empty{font-size:11px;color:var(--ink3)}
 
-/* ══ Fix 3: declaração formal ───────────────────────────────────────── */
 .ma-eval-declaration{
   background:var(--paper);
   border:1px solid var(--border);border-radius:8px;
@@ -1886,7 +1844,6 @@ details[open] summary::before{transform:rotate(90deg)}
   .ma-eval-lbl{border-right:none;border-bottom:1px solid var(--border);min-width:unset;width:100%}
 }
 
-/* ══ ACCORDION SECTIONS ─────────────────────────────────── */
 details.sc>summary{list-style:none;display:block;cursor:pointer}
 details.sc>summary .sec-row{cursor:pointer}
 details.sc>summary .sec-row::after{
@@ -1894,7 +1851,6 @@ details.sc>summary .sec-row::after{
 }
 details.sc[open]>summary .sec-row::after{content:" ▼"}
 
-/* ══ PRINT CHECKLIST ════════════════════════════════════════ */
 .print-checklist{display:none}
 .pcl-cover{margin-bottom:28px}
 .pcl-cover-title{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
@@ -1922,7 +1878,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 .pcl-media {background:var(--amber-bg);color:var(--amber)}
 .pcl-baixa {background:var(--green-bg);color:var(--green)}
 
-/* ══ FOOTER ════════════════════════════════════════════════ */
 .footer{
   text-align:center;font-size:11px;color:var(--ink4);
   margin-top:24px;padding-top:16px;
@@ -1933,10 +1888,8 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   max-width:620px;margin:0 auto 8px;
 }
 
-/* ══ EMPTY STATE ════════════════════════════════════════════ */
 .empty{color:var(--ink4);font-size:13px;padding:13px 0;font-style:italic}
 
-/* ══ RESPONSIVE ═════════════════════════════════════════════ */
 @media(max-width:740px){
   .ma-exec-counters{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ma-pour-grid{grid-template-columns:1fr 1fr}
@@ -1962,7 +1915,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .cf-label,.cf-badge{width:100%}
 }
 
-/* ══ PRINT ══════════════════════════════════════════════════ */
 @media print{
   body{background:#fff!important;font-size:11px}
   .wrap{max-width:100%!important;padding:0!important}
@@ -2028,7 +1980,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ap-group-header,.exec-banner,.legal-sec,.pour-cell{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
-  /* print-checklist omitido no PDF: evita duplicação com .ma-check-card (checklist executivo já imprime) */
+  /* PDF: omitir .print-checklist (já coberto por .ma-check-card) */
   .print-checklist{display:none!important}
   .legal-sec{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
@@ -2037,9 +1989,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   @page{margin:1.4cm;size:A4 portrait}
 }
 
-/* ============================================================
-   META-AUDITOR: Sessão 6: cabeçalho/rodapé impressão + PDF
-   ============================================================ */
 .ma-print-header,
 .ma-print-footer { display: none; }
 
@@ -2116,7 +2065,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-ph-center { font-size: 9px; color: #6E8098; text-align: center; flex: 1; padding: 0 12px; }
   .ma-ph-right  { font-size: 9px; color: #6E8098; text-align: right; line-height: 1.5; }
 
-  /* Rodapé fixo sobrepunha o texto (conformance, resumo) — oculto no PDF; aviso legal fica no .footer final */
+  /* PDF: ocultar .ma-print-footer fixo */
   .ma-print-footer {
     display: none !important;
   }
@@ -2410,12 +2359,10 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   .ma-bc-copy { padding: 8px 22px; }
 }
 
-/* ── Tela: checklist só para impressão/PDF (evita duplicação com ma-check-card) ── */
 @media screen {
   .print-checklist { display: none; }
 }
 
-/* ── Impressão: apêndice, evidência e links internos ── */
 @media print {
   .ap-section {
     break-before: page;
@@ -2517,10 +2464,6 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   }
 }
 
-/* ============================================================
-   META-AUDITOR: FIX DEFINITIVO DE PDF (Playwright page.pdf)
-   Blocos longos: quebra natural. Cards pequenos: avoid-page.
-   ============================================================ */
 @media print {
   html,
   body {
@@ -2805,7 +2748,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
     {{ ma_logo_icon(22, 'print', 'light') }}
     <div>
       <div class="ma-ph-word">Meta-<span class="ma-ph-accent">Auditor</span></div>
-      <div class="ma-ph-tag">UEA · Acessibilidade Web</div>
+      <div class="ma-ph-tag">Acessibilidade Web</div>
     </div>
   </div>
   <div class="ma-ph-center">Relatório de Acessibilidade Web · WCAG 2.1 AA</div>
@@ -2816,7 +2759,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
 </div>
 
 <div class="ma-print-footer" aria-hidden="true">
-  <div class="ma-pf-left">Meta-Auditor {{ app_version }} · {{ report_footer_org or 'UEA: Escola Superior de Tecnologia' }}</div>
+  <div class="ma-pf-left">Meta-Auditor {{ app_version }}</div>
   <div class="ma-pf-center">
     <span class="ma-pf-dot"></span>
     Relatório gerado automaticamente: não substitui auditoria humana especializada
@@ -2852,7 +2795,7 @@ details.sc[open]>summary .sec-row::after{content:" ▼"}
   {% else %}{% set wvcls='crit' %}{% set wvlbl='CRÍTICO' %}{% set wvcol='#C8291E' %}{% endif %}
 {% else %}{% set wv=none %}{% set wvcls=''%}{% set wvlbl=''%}{% set wvcol='#7F96A8' %}{% endif %}
 
-{# Comprimento do arco semicircular (r=47): π·r ≈ 147,65 — alinhado aos gauges em report_body_part1 #}
+{# Arco do gauge: π·r ≈ 147,65 (r=47) #}
 {% set ARC=147.65 %}
 {% if lh_pct is not none %}{% set lh_arc=(lh_pct/100.0*ARC)|round(2) %}{% else %}{% set lh_arc=0 %}{% endif %}
 {% if wv is not none %}{% set wv_arc=(wv/10.0*ARC)|round(2) %}{% else %}{% set wv_arc=0 %}{% endif %}

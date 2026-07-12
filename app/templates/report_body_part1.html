@@ -76,14 +76,13 @@
 {% set ps=namespace(s='') %}
 {% for b in bars+divs %}{% set ps.s = ps.s ~ ' ' ~ (b.get('publico_afetado') or '')|lower %}{% endfor %}
 
-{# ═══ HEADER ═══ #}
 <div class="ph">
   <div class="ph-row">
     <div>
       <div class="ph-ey">Relatório de Acessibilidade Web</div>
       <div class="ph-title">{{ audit.url|replace('https://','')|replace('http://','')|truncate(60) }}</div>
       <div class="ph-url"><a href="{{ audit.url }}" target="_blank" rel="noopener">{{ audit.url }}</a></div>
-      <div class="ph-meta">Auditoria #{{ audit.id }} &nbsp;·&nbsp; {{ audit.created_at or '–' }} &nbsp;·&nbsp; Meta-Auditor {{ app_version }}{% if report_footer_org %} &nbsp;·&nbsp; {{ report_footer_org }}{% endif %}</div>
+      <div class="ph-meta">Auditoria #{{ audit.id }} &nbsp;·&nbsp; {{ audit.created_at or '–' }} &nbsp;·&nbsp; Meta-Auditor {{ app_version }}</div>
     </div>
     <div>
       {% if sr %}
@@ -100,7 +99,6 @@
   </div>
 </div>
 
-{# ═══ EXECUTIVE SUMMARY ═══ #}
 <div class="exec-box">
   <div class="exec-lbl">Resumo Executivo</div>
   <div class="exec-txt">
@@ -116,7 +114,6 @@
   </div>
 </div>
 
-{# ═══ DASHBOARD GAUGES ═══ #}
 <div class="dash-row">
   <div class="dc dc-lh">
     <div class="dc-lbl">Score Lighthouse</div>
@@ -158,11 +155,12 @@
     <div class="dc-lbl">Score de Risco</div>
     <div class="dc-big">{{ sr.get('valor', '–') }}<span style="font-size:16px;font-weight:400;color:var(--ink4)">/3</span></div>
     {% set nivr = sr.get('nivel','') %}
-    {% if nivr == 'ALTO' %}<span class="spill s-crit">ALTO</span>
+    {% if nivr == 'CRÍTICO' %}<span class="spill s-crit">CRÍTICO</span>
+    {% elif nivr == 'ALTO' %}<span class="spill s-crit">ALTO</span>
     {% elif nivr == 'MÉDIO' %}<span class="spill s-warn">MÉDIO</span>
     {% elif nivr == 'BAIXO' %}<span class="spill s-ok">BAIXO</span>
     {% else %}<span class="spill s-ok">SEM BARREIRAS</span>{% endif %}
-    <div class="dc-exp">Índice consolidado de exclusão digital (severidade × quantidade)</div>
+    <div class="dc-exp">Nível executivo do portal (severidade × quantidade)</div>
   </div>
   {% else %}
   <div class="dc">

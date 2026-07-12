@@ -1,15 +1,10 @@
-"""
-Rótulos humanos para relatório executivo e agrupamento POUR estável.
-
-O identificador issue_tipo_normalizado permanece para consolidação e cache;
-rotulo_exibicao e categoria_executiva são derivados para PDF e resumos.
-"""
+"""Rótulos humanos e agrupamento POUR para o relatório executivo."""
 
 from __future__ import annotations
 
 from app.services.normalize_maps import LIGHTHOUSE_NORMALIZATION, WAVE_NORMALIZATION
 
-# Ajustes finos (prevalecem sobre titulo_tecnico automático quando necessário)
+# Ajustes finos sobre titulo_tecnico automático
 DISPLAY_LABEL_OVERRIDES: dict[str, str] = {
     "controle_sem_nome_acessivel": "Controle sem nome acessível",
     "ausencia_landmark_main": "Ausência da região principal <main>",
@@ -239,3 +234,69 @@ def attach_display_fields(rows: list[dict] | None) -> None:
         row["categoria_grafico"] = chart_bucket_for_executive(row["categoria_executiva"])
         row["pour_bucket"] = pour_bucket_for(row)
         enrich_contrast_fields(row)
+
+
+# Rótulos em português para verificações que o Lighthouse aprovou (corpo executivo).
+_LIGHTHOUSE_PASSED_LABELS: dict[str, str] = {
+    "image-alt": "Imagens informativas com texto alternativo",
+    "link-name": "Links com nome acessível",
+    "button-name": "Botões com nome acessível",
+    "label": "Campos de formulário com rótulo associado",
+    "html-has-lang": "Idioma da página declarado no elemento html",
+    "document-title": "Página com título descritivo",
+    "color-contrast": "Contraste de cores adequado nas amostras verificadas",
+    "target-size": "Alvos de toque com tamanho ou espaçamento adequado",
+    "meta-viewport": "Viewport permite ampliação e zoom",
+    "duplicate-id-aria": "Identificadores ARIA únicos na página",
+    "heading-order": "Ordem semântica de títulos coerente",
+    "empty-heading": "Títulos sem conteúdo vazio",
+    "html-xml-lang-mismatch": "Atributos lang e xml:lang do html coerentes",
+    "valid-lang": "Atributos lang com valor válido",
+    "frame-title": "Frames com título descritivo",
+    "input-image-alt": "Botões de imagem com texto alternativo",
+    "object-alt": "Objetos incorporados com alternativa textual",
+    "video-caption": "Vídeos com legendas ou alternativa",
+    "audio-caption": "Áudios com alternativa equivalente",
+    "aria-allowed-attr": "Atributos ARIA compatíveis com o papel de cada elemento",
+    "aria-required-attr": "Atributos ARIA obrigatórios presentes nos elementos que os exigem",
+    "aria-valid-attr-value": "Valores de atributos ARIA válidos",
+    "aria-valid-attr": "Atributos ARIA válidos e reconhecidos",
+    "aria-roles": "Papéis ARIA válidos",
+    "aria-required-children": "Estrutura de filhos exigida pelo papel ARIA",
+    "aria-required-parent": "Elementos posicionados no pai exigido pelo papel ARIA",
+    "landmark-one-main": "Página com região principal main",
+    "aria-prohibited-attr": "Sem atributos ARIA proibidos para o papel",
+    "aria-hidden-focus": "Elementos ocultos sem descendentes focalizáveis indevidos",
+    "list": "Listas com estrutura válida",
+    "listitem": "Itens de lista dentro de ul, ol ou menu",
+    "link-in-text-block": "Links distinguíveis sem depender apenas da cor",
+    "html-lang-valid": "Valor do atributo lang do html válido",
+    "skip-link": "Link de pular para o conteúdo focalizável",
+    "accesskeys": "Atalhos accesskey sem duplicação",
+    "tabindex": "Sem tabindex positivo disruptivo",
+    "aria-command-name": "Comandos interativos com nome acessível",
+    "aria-conditional-attr": "Atributos ARIA condicionais usados corretamente",
+    "aria-deprecated-role": "Nenhum papel ARIA obsoleto em uso",
+    "aria-hidden-body": "Corpo da página sem aria-hidden",
+    "label-content-name-mismatch": "Rótulo visível alinhado ao nome acessível",
+    "select-name": "Campos select com nome acessível",
+}
+
+
+def lighthouse_passed_label(item: dict | object | None) -> str:
+    """Rótulo em português para item aprovado pelo Lighthouse (seção «O que está correto»)."""
+    if not isinstance(item, dict):
+        return "–"
+    aid = (item.get("id") or "").strip()
+    if aid in _LIGHTHOUSE_PASSED_LABELS:
+        return _LIGHTHOUSE_PASSED_LABELS[aid]
+    from app.services.normalize_maps import normalize_lighthouse_audit
+
+    meta = normalize_lighthouse_audit(aid, str(item.get("title") or ""), "")
+    tt = (meta.get("titulo_tecnico") or "").strip()
+    if tt and not tt.startswith("lighthouse_"):
+        return f"Verificação positiva: {tt}"
+    title = str(item.get("title") or "").strip().replace("`", "")
+    if title:
+        return title
+    return aid or "–"

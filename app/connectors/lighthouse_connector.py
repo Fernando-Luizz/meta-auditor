@@ -57,22 +57,7 @@ async def _do_psi_request(url_str: str) -> tuple[dict, Path]:
 
 
 async def run_lighthouse(url: str) -> tuple[dict, Path]:
-    """
-    Executa auditoria Lighthouse/PSI com retry + backoff exponencial.
-
-    Estratégia:
-      - Tentativas totais: PSI_RETRY_MAX + 1  (padrão: 4).
-      - Retry apenas em erros transientes: 429, 500, 502, 503, 504, Timeout.
-      - Delays: PSI_RETRY_BASE_DELAY × 2^tentativa  →  2s, 4s, 8s por padrão.
-      - Erros permanentes (400, 401, 403…) são propagados imediatamente.
-
-    Returns:
-        Tupla (resposta PSI, caminho do JSON bruto em data/raw).
-
-    Raises:
-        httpx.HTTPStatusError: erro HTTP não transiente ou esgotadas as tentativas.
-        httpx.TimeoutException: timeout esgotadas as tentativas.
-    """
+    """PSI/Lighthouse com retry e backoff em erros transitórios."""
     url_str = url if isinstance(url, str) else str(url)
     last_exc: Exception | None = None
 

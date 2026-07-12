@@ -1,0 +1,35 @@
+<div class="leg-block leg-block--top" role="region" aria-label="Como ler os scores">
+  <div class="leg-ey">Como ler os scores</div>
+  <div class="leg-grid{% if sr %} leg-grid--3{% endif %}">
+    <div>
+      <div class="leg-tname"><div class="tdot" style="background:var(--lh)" aria-hidden="true"></div>Google Lighthouse</div>
+      <div class="leg-desc">Escala <strong>0–100</strong>. DOM renderizado pelo motor do PSI (Chrome desktop): estrutura, ARIA parcial e boas práticas.</div>
+      <div class="leg-sc">
+        <div class="sc-item"><div class="sc-dot" style="background:var(--green)" aria-hidden="true"></div> ≥90 OK</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--amber)" aria-hidden="true"></div> 75–89 Atenção</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--red)" aria-hidden="true"></div> &lt;75 Crítico</div>
+      </div>
+    </div>
+    <div>
+      <div class="leg-tname"><div class="tdot" style="background:var(--wave)" aria-hidden="true"></div>WebAIM WAVE</div>
+      <div class="leg-desc">Escala <strong>0–10</strong> (AIMscore). Página como vista pelo usuário: contraste visual, estrutura, erros e alertas.</div>
+      <div class="leg-sc">
+        <div class="sc-item"><div class="sc-dot" style="background:var(--green)" aria-hidden="true"></div> AIM ≥7 OK</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--amber)" aria-hidden="true"></div> 4–6,9 Atenção</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--red)" aria-hidden="true"></div> &lt;4 Crítico</div>
+      </div>
+    </div>
+    {% if sr %}
+    <div>
+      <div class="leg-tname"><div class="tdot" style="background:var(--red-mid)" aria-hidden="true"></div>Score de Risco Meta-Auditor</div>
+      <div class="leg-desc">Escala <strong>0–3</strong> (média ponderada por severidade das barreiras). O <strong>nível executivo</strong> do portal (BAIXO → CRÍTICO) é distinto da <em>severidade</em> de cada barreira (alta/média/baixa) e da <em>prioridade de correção</em> (P1–P3). <em>Não é comparável</em> com Lighthouse nem com WAVE.</div>
+      <div class="leg-sc">
+        <div class="sc-item"><div class="sc-dot" style="background:var(--red)" aria-hidden="true"></div> ≥2,80 · CRÍTICO</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--red)" aria-hidden="true"></div> &lt;2,80 com barreira de severidade alta · ALTO</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--amber)" aria-hidden="true"></div> 1,50–2,79 sem barreiras de severidade alta · MÉDIO</div>
+        <div class="sc-item"><div class="sc-dot" style="background:var(--green)" aria-hidden="true"></div> &lt;1,50 sem barreiras de severidade alta · BAIXO</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>

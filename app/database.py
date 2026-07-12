@@ -1,18 +1,4 @@
-"""
-Persistência SQLite com aiosqlite.
-
-Schema:
-    tabela `audits` — uma linha por auditoria completada.
-
-Funções públicas:
-    init_db(db_path)          — cria tabela e índices se não existirem.
-    save_audit(db_path, ...)  — insere um registro; retorna o id gerado.
-    list_audits(db_path)      — lista resumos das últimas N auditorias.
-    get_historico_url(db_path, url, limit) — série temporal por URL.
-    search_urls(db_path, q, limit)         — autocomplete de URLs auditadas.
-    get_audit(db_path, id)    — retorna um registro completo (com report).
-    count_audits(db_path)     — total de linhas em `audits`.
-"""
+"""Persistência SQLite (aiosqlite) da tabela `audits`."""
 from __future__ import annotations
 
 import json
@@ -21,7 +7,6 @@ from pathlib import Path
 
 import aiosqlite
 
-# ── DDL ─────────────────────────────────────────────────────────────────────
 _DDL = """
 CREATE TABLE IF NOT EXISTS audits (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -130,11 +115,7 @@ async def save_audit(
 
 
 async def update_report(db_path: Path, audit_id: int, report: dict) -> None:
-    """Atualiza apenas o campo `report` de uma auditoria existente.
-
-    Usado após re-enriquecimento IA para persistir dados de nível 2 que
-    falharam na primeira execução (timeout/rate-limit momentâneo).
-    """
+    """Persiste `report` após re-enriquecimento IA (nível 2)."""
     rep_json = json.dumps(report, ensure_ascii=False)
     async with aiosqlite.connect(db_path) as db:
         await db.execute(
@@ -150,10 +131,7 @@ async def list_audits(
     order_by: str = "created_at",
     order_dir: str = "desc",
 ) -> list[dict]:
-    """
-    Retorna os últimos `limit` registros — sem expor o campo `report` completo.
-    Ordenável por campos permitidos.
-    """
+    """Lista últimos `limit` registros (sem `report` completo)."""
     allowed_order_by = {"created_at", "score_risco", "lh_score", "wave_aim_score", "barreiras_count"}
     allowed_order_dir = {"asc", "desc"}
     safe_order_by = order_by if order_by in allowed_order_by else "created_at"
@@ -234,9 +212,7 @@ async def get_historico_url(db_path: Path, url: str, limit: int = 30) -> list[di
 
 
 async def search_urls(db_path: Path, q: str, limit: int = 10) -> list[str]:
-    """
-    Retorna URLs distintas contendo `q` (case-insensitive por padrão do SQLite LIKE).
-    """
+    """URLs distintas com LIKE em `q` (case-insensitive no SQLite)."""
     query = (q or "").strip()
     if not query:
         return []

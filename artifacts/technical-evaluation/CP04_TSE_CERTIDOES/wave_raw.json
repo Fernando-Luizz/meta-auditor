@@ -1,0 +1,646 @@
+{
+  "status": {
+    "success": true,
+    "httpstatuscode": 200
+  },
+  "statistics": {
+    "pagetitle": "Certidões — Tribunal Superior Eleitoral",
+    "pageurl": "https://www.tse.jus.br/servicos-eleitorais/certidoes",
+    "time": 7.33,
+    "creditsremaining": 88,
+    "AIMscore": 7.1,
+    "allitemcount": 312,
+    "totalelements": 1046,
+    "waveurl": "http://wave.webaim.org/report?url=https://www.tse.jus.br/servicos-eleitorais/certidoes"
+  },
+  "categories": {
+    "error": {
+      "description": "Errors",
+      "count": 2,
+      "items": {
+        "label_missing": {
+          "id": "label_missing",
+          "description": "Missing form label",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child > SPAN:first-child + SPAN + DIV > INPUT:first-child"
+          ]
+        },
+        "aria_reference_broken": {
+          "id": "aria_reference_broken",
+          "description": "Broken ARIA reference",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > SECTION#texto-conteudo > DIV:first-child > DIV#ancora-1"
+          ]
+        }
+      }
+    },
+    "contrast": {
+      "description": "Contrast Errors",
+      "count": 9,
+      "items": {
+        "contrast": {
+          "id": "contrast",
+          "description": "Very low contrast",
+          "count": 9,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb > OL:first-child > LI:first-child > A:first-child > I:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child > svg:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child > svg:first-child + SPAN"
+          ],
+          "contrastdata": [
+            [
+              1,
+              "#ffffff",
+              "#ffffff",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ],
+            [
+              1.26,
+              "#0a0a0a",
+              "#0c2345",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    "alert": {
+      "description": "Alerts",
+      "count": 28,
+      "items": {
+        "alt_redundant": {
+          "id": "alt_redundant",
+          "description": "Redundant alternative text",
+          "count": 3,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > A#abrir-cookies > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > A:first-child > IMG:first-child"
+          ]
+        },
+        "fieldset_missing": {
+          "id": "fieldset_missing",
+          "description": "Missing fieldset",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child"
+          ]
+        },
+        "link_redundant": {
+          "id": "link_redundant",
+          "description": "Redundant link",
+          "count": 16,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child > LI:first-child > A#transparencia_link-acessibilidade",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child + FIGCAPTION > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child > LI:first-child > A:first-child"
+          ]
+        },
+        "noscript": {
+          "id": "noscript",
+          "description": "Noscript element",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV + DIV + NOSCRIPT"
+          ]
+        },
+        "accesskey": {
+          "id": "accesskey",
+          "description": "Accesskey",
+          "count": 6,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV > A:first-child"
+          ]
+        },
+        "title_redundant": {
+          "id": "title_redundant",
+          "description": "Redundant title text",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child + DIV > ADDRESS:first-child > STRONG:first-child + BR + SPAN + BR + SPAN + ABBR"
+          ]
+        }
+      }
+    },
+    "feature": {
+      "description": "Features",
+      "count": 56,
+      "items": {
+        "alt_link": {
+          "id": "alt_link",
+          "description": "Linked image with alternative text",
+          "count": 23,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child > LI:first-child + LI + LI + LI > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV#rodape__topo > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child > A#link-fale-conosco > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > A:first-child > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > A#abrir-cookies > IMG:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > A:first-child > IMG:first-child"
+          ]
+        },
+        "figure": {
+          "id": "figure",
+          "description": "Figure",
+          "count": 14,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > FIGURE:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > FIGURE:first-child"
+          ]
+        },
+        "label": {
+          "id": "label",
+          "description": "Form label",
+          "count": 16,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV > DIV:first-child > INPUT:first-child + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV > DIV:first-child > INPUT:first-child + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child + FORM > DIV:first-child + DIV > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child + LABEL + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child + LABEL + LABEL + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV > LABEL:first-child + LABEL + LABEL + LABEL + LABEL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-sugestao > DIV:first-child > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-elogio > DIV:first-child > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-criticas > DIV:first-child > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-erro > DIV:first-child > LABEL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-nao-encontrou > DIV:first-child > LABEL:first-child"
+          ]
+        },
+        "fieldset": {
+          "id": "fieldset",
+          "description": "Fieldset",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child"
+          ]
+        },
+        "lang": {
+          "id": "lang",
+          "description": "Language",
+          "count": 1,
+          "selectors": [
+            false
+          ]
+        }
+      }
+    },
+    "structure": {
+      "description": "Structural Elements",
+      "count": 75,
+      "items": {
+        "h1": {
+          "id": "h1",
+          "description": "Heading level 1",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child"
+          ]
+        },
+        "h2": {
+          "id": "h2",
+          "description": "Heading level 2",
+          "count": 4,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV:first-child + H2",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child"
+          ]
+        },
+        "h3": {
+          "id": "h3",
+          "description": "Heading level 3",
+          "count": 16,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a6e617665676163616f2d64652d636f6e746578746f > NAV#menu-lateral > H3:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a74616773 > SECTION#tags > H3:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a676573746f722d726573706f6e736176656c > DIV#gestor-responsavel > H3:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > P:first-child + DIV + DIV + H3 + DIV + H3 + DIV + H3",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV:first-child > DIV:first-child > H3#titulo-cookies",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child > H3#titulo-cookies-header"
+          ]
+        },
+        "ol": {
+          "id": "ol",
+          "description": "Ordered list",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb > OL:first-child"
+          ]
+        },
+        "ul": {
+          "id": "ul",
+          "description": "Unordered list",
+          "count": 35,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child > SPAN:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child > SPAN:first-child + UL > LI#custom-rybena-div > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a6e617665676163616f2d64652d636f6e746578746f > NAV#menu-lateral > DIV#menu-lateral-res > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a74616773 > SECTION#tags > H3:first-child + UL",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV#rodape__topo > DIV:first-child > DIV:first-child > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback"
+          ]
+        },
+        "header": {
+          "id": "header",
+          "description": "Header",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child"
+          ]
+        },
+        "nav": {
+          "id": "nav",
+          "description": "Navigation",
+          "count": 14,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a6e617665676163616f2d64652d636f6e746578746f > NAV#menu-lateral",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV#rodape__topo > DIV:first-child > DIV:first-child > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV"
+          ]
+        },
+        "main": {
+          "id": "main",
+          "description": "Main content",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main"
+          ]
+        },
+        "footer": {
+          "id": "footer",
+          "description": "Footer",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER"
+          ]
+        },
+        "aside": {
+          "id": "aside",
+          "description": "Aside",
+          "count": 1,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna"
+          ]
+        }
+      }
+    },
+    "aria": {
+      "description": "ARIA",
+      "count": 142,
+      "items": {
+        "aria": {
+          "id": "aria",
+          "description": "ARIA",
+          "count": 36,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb > OL:first-child > LI:first-child + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > SECTION#texto-conteudo > DIV:first-child > DIV#ancora-1",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV#rodape__topo > DIV:first-child > DIV:first-child > DIV:first-child + NAV > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child > A#feed-esc-sugestao-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI > A#feed-esc-elogio-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI > A#feed-esc-criticas-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI > A#feed-esc-erro-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI + LI > A#feed-esc-nao-encontrou-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-sugestao",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-elogio",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-criticas",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-erro",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-nao-encontrou",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child + BUTTON + A",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child > SPAN:first-child + SPAN + DIV"
+          ]
+        },
+        "aria_label": {
+          "id": "aria_label",
+          "description": "ARIA label",
+          "count": 31,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > UL:first-child > LI:first-child + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV + BUTTON + SMALL + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV + BUTTON + SMALL + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV#compartilhar-conteudo > DIV:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV#compartilhar-conteudo > DIV:first-child > A:first-child + A + A",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV#rodape__topo > DIV:first-child > DIV:first-child > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > A:first-child",
+            false,
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV#collapseMapaSite > DIV:first-child > DIV#mapa-links > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child + NAV",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child + BUTTON",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-sugestao",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-elogio",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-criticas",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-erro",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > DIV#tabfeedback > DIV#feed-esc-nao-encontrou",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child > H3:first-child + BUTTON"
+          ]
+        },
+        "aria_describedby": {
+          "id": "aria_describedby",
+          "description": "ARIA description",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > INPUT#mobile-1780102638497-1835-buscaPortal-0",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > INPUT#buscaPortal"
+          ]
+        },
+        "aria_tabindex": {
+          "id": "aria_tabindex",
+          "description": "ARIA tabindex",
+          "count": 20,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV:first-child + UL > LI:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a676573746f722d726573706f6e736176656c > DIV#gestor-responsavel > H3:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > SECTION#texto-conteudo > DIV:first-child > DIV#ancora-1",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI > A#feed-esc-elogio-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI > A#feed-esc-criticas-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI > A#feed-esc-erro-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > FORM#form-feedback > DIV#seu-feedback > UL#navfeedback > LI:first-child + LI + LI + LI + LI > A#feed-esc-nao-encontrou-tab",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child > SPAN:first-child + SPAN + DIV",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child > SPAN:first-child + SPAN + DIV > INPUT:first-child"
+          ]
+        },
+        "aria_button": {
+          "id": "aria_button",
+          "description": "ARIA button",
+          "count": 14,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV:first-child + UL > LI:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a676573746f722d726573706f6e736176656c > DIV#gestor-responsavel > H3:first-child + A",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child + BUTTON + A",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child"
+          ]
+        },
+        "aria_hidden": {
+          "id": "aria_hidden",
+          "description": "ARIA hidden",
+          "count": 23,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV + BUTTON > SPAN:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child + UL > LI:first-child > DIV:first-child > DIV:first-child > FORM:first-child > FIELDSET:first-child > LEGEND:first-child + DIV > LABEL:first-child + INPUT + DIV + BUTTON > SPAN:first-child + SPAN",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV#breadcrumb > OL:first-child > LI:first-child > A:first-child > I:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV:first-child + UL > LI:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV > DIV:first-child > DIV:first-child > NAV:first-child + UL > LI:first-child > A:first-child > SPAN:first-child + I",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV#compartilhar-conteudo > DIV:first-child > A:first-child > SPAN:first-child > I:first-child + I",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV#compartilhar-conteudo > DIV:first-child > A:first-child + A > SPAN:first-child > I:first-child + I",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > DIV#column-content > DIV#portal-column-content > DIV#content > DIV#compartilhar-conteudo > DIV:first-child > A:first-child + A + A > SPAN:first-child > I:first-child + I",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > NAV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child + FORM > DIV:first-child + DIV > LABEL:first-child + INPUT + DIV > BUTTON#button-addon1 > I:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child > I:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV + DIV > DIV#modal-sugestao-pagina > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child + BUTTON > SPAN:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child > DIV#conteudo-necessarios",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV#conteudo-desempenho"
+          ]
+        },
+        "aria_expanded": {
+          "id": "aria_expanded",
+          "description": "ARIA expanded",
+          "count": 14,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > MAIN#master_main > H1:first-child + H2 + DIV > ASIDE#coluna-lateral-interna > DIV#portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706f7274616c6a652f7473650a6e617665676163616f2d64652d636f6e746578746f > NAV#menu-lateral > H3:first-child + DIV > BUTTON#ui-collapse-143",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV + DIV + MAIN + FOOTER + DIV + DIV > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV:first-child > DIV:first-child + DIV > BUTTON:first-child + BUTTON + A",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child > DIV:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV#modal-lgpd > DIV:first-child > DIV#cookies-preferencias > HEADER:first-child + P + DIV > DIV:first-child + DIV > DIV:first-child"
+          ]
+        },
+        "aria_haspopup": {
+          "id": "aria_haspopup",
+          "description": "ARIA popup",
+          "count": 2,
+          "selectors": [
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV:first-child + BUTTON + DIV > A:first-child",
+            "HTML > BODY#visual-portal-wrapper > DIV:first-child + DIV + DIV + NAV > DIV:first-child > DIV:first-child > DIV#navegacaoResposiva > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child"
+          ]
+        }
+      }
+    }
+  }
+}

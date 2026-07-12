@@ -1,0 +1,1338 @@
+{
+  "barreiras_automaticas": [
+    {
+      "tool": "wave",
+      "issue_id_original": "label_missing",
+      "issue_tipo_normalizado": "formulario_sem_rotulo",
+      "titulo_tecnico": "Rótulo de formulário ausente",
+      "descricao_tecnica": "Missing form label",
+      "wcag_criterio": "1.3.1, 3.3.2",
+      "publico_afetado": "Leitores de tela",
+      "correcao_sugerida": "Campos do formulário estão sem etiqueta. Quem usa leitor de tela chega ao campo e ouve apenas \"campo de texto\": sem saber o que deve preencher. O time de produto precisa vincular um rótulo a cada campo para que o nome do campo seja anunciado quando o foco chegar nele.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV + SCRIPT + DIV > DIV:first-child > TEXTAREA#g-recaptcha-response-100000"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "error",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "automatico_detectado",
+      "dados_semanticos": null,
+      "prioridade": "alta",
+      "fase_correcao": "fase_1",
+      "wcag_nivel": "a",
+      "prioridade_correcao": "P1",
+      "score_prioridade_barreira": 334,
+      "motivo_prioridade_correcao": "P1: severidade alta; WCAG nível A; detectado apenas pelo WAVE; 1 ocorrência; correção rápida estimada.",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Elementos de formulário sem rótulo associado",
+      "categoria_executiva": "Formulários e rótulos",
+      "categoria_grafico": "form",
+      "audit_url": "https://meu.inss.gov.br/#/login",
+      "ai_nivel1_status": "ok",
+      "ai_nivel1_motivo": "",
+      "justificativa_gerencial": "Usuários que dependem de leitores de tela não conseguem identificar o propósito de campos de formulário quando chegam a eles, pois ouvem apenas a indicação genérica de tipo de campo sem saber o que devem preencher. Essa barreira impede o acesso completo ao formulário e deve ser corrigida com urgência.",
+      "explicacao_usuario": "Imagine tentar preencher um formulário em um ambiente escuro onde as etiquetas dos campos não são visíveis. Quem usa leitor de tela enfrenta situação semelhante: chega ao campo e ouve apenas 'campo de texto', sem saber se deve informar nome, email, telefone ou outra informação. Sem essa orientação, fica impossível completar o formulário corretamente.",
+      "como_corrigir_claro": "Cada campo do formulário precisa ter um rótulo vinculado a ele, de modo que quando o usuário chegar ao campo, o nome dele seja anunciado automaticamente. Isso permite que qualquer pessoa saiba exatamente o que deve preencher em cada espaço.",
+      "acao_gerencial": "Encaminhar para o time web e solicitar revisão de todos os campos de formulário e seus rótulos.",
+      "ai_nivel2_status": "ok",
+      "ai_nivel2_motivo": "",
+      "versao_dev": "PROBLEMA: O campo de formulário TEXTAREA#g-recaptcha-response-100000 não possui rótulo associado. Usuários de leitor de tela não conseguem identificar o propósito do campo, ouvindo apenas 'campo de texto' genérico. LOCALIZAÇÃO: HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV + SCRIPT + DIV > DIV:first-child > TEXTAREA#g-recaptcha-response-100000 (1 elemento afetado). SOLUÇÃO: Vincule um elemento LABEL ao TEXTAREA usando o atributo 'for' no label e 'id' no textarea. O atributo 'id' já existe (g-recaptcha-response-100000), portanto crie um LABEL com for='g-recaptcha-response-100000' contendo o texto descritivo do campo. ANTES: <textarea id='g-recaptcha-response-100000'></textarea> DEPOIS: <label for='g-recaptcha-response-100000'>Resposta do reCAPTCHA</label><textarea id='g-recaptcha-response-100000'></textarea> CRITÉRIO WCAG ATENDIDO: 1.3.1 (Informações e Relações) e 3.3.2 (Rótulos ou Instruções). PRIORIDADE: ALTA - corrigir com urgência.",
+      "texto_ticket": {
+        "titulo": "Adicionar rótulo de formulário ausente para acessibilidade",
+        "descricao": "Foi detectado 1 elemento de formulário sem rótulo associado, impedindo que leitores de tela identifiquem o propósito do campo. Usuários de tecnologia assistiva não conseguem compreender qual informação deve ser inserida. A violação afeta os critérios WCAG 1.3.1 (Informações e Relações) e 3.3.2 (Rótulos ou Instruções), comprometendo a navegação e preenchimento do formulário.",
+        "criterio_de_pronto": "Associar rótulo HTML (label) ao elemento de formulário usando atributo 'for' e 'id'\nValidar com leitor de tela que o rótulo é anunciado corretamente ao focar no campo\nConfirmar que a solução atende aos critérios WCAG 1.3.1 e 3.3.2"
+      }
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "tabindex",
+      "issue_tipo_normalizado": "tabindex_positivo",
+      "titulo_tecnico": "Elemento com [tabindex] positivo (maior que 0)",
+      "descricao_tecnica": "A value greater than 0 implies an explicit navigation ordering. Although technically valid, this often creates frustrating experiences for users who rely on assistive technologies. [Learn more about the `tabindex` attribute](https://dequeuniversity.com/rules/axe/4.11/tabindex).",
+      "wcag_criterio": "2.4.3 Focus Order",
+      "publico_afetado": "Navegação por teclado",
+      "correcao_sugerida": "Esta barreira viola o critério 2.4.3 Focus Order. O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "[1-0-A] div.govbr > div.jss13 > nav.br-skiplink > a.br-item: <a class=\"br-item\" href=\"#main-content\" tabindex=\"1\" accesskey=\"1\">",
+        "[1-1-A] div.govbr > div.jss13 > nav.br-skiplink > a.br-item: <a class=\"br-item\" href=\"#menu\" tabindex=\"1\" accesskey=\"2\">",
+        "[1-2-A] div.govbr > div.jss13 > nav.br-skiplink > a.br-item: <a class=\"br-item\" href=\"#footer\" tabindex=\"1\" accesskey=\"4\">"
+      ],
+      "evidencia_lhids": [
+        "1-0-A",
+        "1-1-A",
+        "1-2-A"
+      ],
+      "dados_semanticos": null,
+      "onde_esta": "Menu de navegação",
+      "status_deteccao": "automatico_detectado",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 3,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "tabindex",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "media",
+      "fase_correcao": "fase_3",
+      "wcag_nivel": "a",
+      "prioridade_correcao": "P2",
+      "score_prioridade_barreira": 231,
+      "motivo_prioridade_correcao": "P2: severidade média; WCAG nível A; detectado apenas pelo Lighthouse; 3 ocorrências; projeto estrutural estimado.",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Elemento com [tabindex] positivo (maior que 0)",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao",
+      "audit_url": "https://meu.inss.gov.br/#/login",
+      "ai_nivel1_status": "ok",
+      "ai_nivel1_motivo": "",
+      "justificativa_gerencial": "Usuários que navegam apenas por teclado enfrentam uma ordem de foco desordenada, o que prejudica a experiência de acesso rápido ao conteúdo principal. Como a barreira afeta elementos de navegação essencial, a correção deve ser planejada na próxima entrega.",
+      "explicacao_usuario": "Quem usa teclado para navegar em um site espera que a tecla Tab o leve pelos elementos na ordem lógica da página. Quando essa ordem fica confusa, é como tentar encontrar um caminho em um prédio onde as placas de direção apontam para lugares errados.",
+      "como_corrigir_claro": "Os links de pular para seções principais precisam ser ajustados para que a navegação por teclado siga a ordem natural da página. Isso garante que qualquer pessoa consiga chegar rapidamente ao conteúdo que procura sem se perder na sequência de elementos.",
+      "acao_gerencial": "Encaminhar para o time web e solicitar revisão da ordem de navegação dos links de pular para conteúdo.",
+      "ai_nivel2_status": "ok",
+      "ai_nivel2_motivo": "",
+      "versao_dev": "BARREIRA DE ACESSIBILIDADE: Elementos com tabindex positivo detectados\nO QUE ESTÁ ERRADO:\n3 elementos <a> possuem o atributo tabindex com valor positivo (tabindex=\"1\"), o que viola o critério WCAG 2.4.3 Focus Order. Valores positivos de tabindex criam uma ordem de foco não intuitiva e prejudicam a navegação por teclado.\nONDE ESTÁ:\nOs 3 elementos afetados estão localizados em:\n- div.govbr > div.jss13 > nav.br-skiplink > a.br-item\nElementos específicos:\n1. <a class=\"br-item\" href=\"#main-content\" tabindex=\"1\" accesskey=\"1\">\n2. <a class=\"br-item\" href=\"#menu\" tabindex=\"1\" accesskey=\"2\">\n3. <a class=\"br-item\" href=\"#footer\" tabindex=\"1\" accesskey=\"4\">\nCOMO CORRIGIR:\nRemova o atributo tabindex=\"1\" de todos os 3 elementos <a>. Deixe que a ordem de foco seja determinada pela ordem natural dos elementos no DOM. Mantenha os atributos accesskey se necessário, pois eles não afetam a ordem de foco.\nEXEMPLO ANTES:\n<a class=\"br-item\" href=\"#main-content\" tabindex=\"1\" accesskey=\"1\">Ir para conteúdo principal</a>\nEXEMPLO DEPOIS:\n<a class=\"br-item\" href=\"#main-content\" accesskey=\"1\">Ir para conteúdo principal</a>\nRepita esta correção para os 3 elementos listados acima.",
+      "texto_ticket": {
+        "titulo": "Remover tabindex positivo de 3 elementos para corrigir ordem de foco",
+        "descricao": "Foram identificados 3 elementos com atributo [tabindex] com valores positivos (maiores que 0) na página. Isso afeta usuários que navegam exclusivamente por teclado, pois quebra a ordem natural de foco esperada. A violação ocorre no critério WCAG 2.4.3 Focus Order. O impacto funcional é a navegação desordenada e confusa, prejudicando a experiência de acessibilidade.",
+        "criterio_de_pronto": "Remover ou substituir todos os atributos [tabindex] positivos pelos 3 elementos identificados\nValidar que a ordem de foco segue a sequência natural do DOM após as alterações\nConfirmar que a navegação por teclado funciona de forma lógica e previsível em toda a página"
+      }
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "target-size",
+      "issue_tipo_normalizado": "alvo_interacao_pequeno",
+      "titulo_tecnico": "Alvo de toque ou clique insuficiente (tamanho ou espaçamento)",
+      "descricao_tecnica": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.11/target-size).",
+      "wcag_criterio": "2.5.8 Target Size (Minimum)",
+      "publico_afetado": "Limitação motora",
+      "correcao_sugerida": "Esta barreira viola o critério 2.5.8 Target Size (Minimum). O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "[1-4-BUTTON] div#omni-hide-chat-button > div.sc-eqUAAy > div > button#omni-show-chat: <button id=\"omni-show-chat\" style=\"cursor: pointer; background-color: rgb(19, 81, 180);\" data-listener-added=\"true\">",
+        "[1-3-BUTTON] div#omni-chat-web > div.chat-web-container > div#omni-hide-chat-button > button: <button style=\"font-style: inherit; font-variant: inherit; font-weight: inherit;\" data-listener-added=\"true\">"
+      ],
+      "evidencia_lhids": [
+        "1-4-BUTTON",
+        "1-3-BUTTON"
+      ],
+      "dados_semanticos": null,
+      "onde_esta": "Lista de itens",
+      "status_deteccao": "automatico_detectado",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "target-size",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "media",
+      "fase_correcao": "fase_2",
+      "wcag_nivel": "aa",
+      "prioridade_correcao": "P2",
+      "score_prioridade_barreira": 219,
+      "motivo_prioridade_correcao": "P2: severidade média; WCAG nível AA; detectado apenas pelo Lighthouse; 1 ocorrência; esforço médio estimado.",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Alvo de toque ou clique insuficiente (tamanho ou espaçamento)",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao",
+      "audit_url": "https://meu.inss.gov.br/#/login",
+      "ai_nivel1_status": "ok",
+      "ai_nivel1_motivo": "",
+      "justificativa_gerencial": "Usuários com limitações motoras não conseguem ativar os botões de chat porque as áreas de toque são muito pequenas ou estão muito próximas uma da outra. Essa barreira impede o acesso a uma funcionalidade importante do site e deve ser corrigida no próximo ciclo de desenvolvimento.",
+      "explicacao_usuario": "Imagine tentar apertar um botão muito pequeno em um painel de controle enquanto usa luvas ou tem tremor nas mãos. Usuários com limitações motoras enfrentam essa dificuldade todos os dias ao interagir com elementos muito compactos na tela. Os botões de chat do site estão tão pequenos ou tão próximos que fica quase impossível tocá-los com precisão.",
+      "como_corrigir_claro": "Os botões de chat precisam ter uma área de toque maior e estar mais afastados um do outro, para que qualquer pessoa consiga ativá-los com facilidade, mesmo com pouca precisão motora. Revise o tamanho e o espaçamento dos elementos indicados até atingir o padrão mínimo de acessibilidade.",
+      "acao_gerencial": "Encaminhar para o time de produto e solicitar aumento das áreas de toque e clique dos botões de chat.",
+      "ai_nivel2_status": "ok",
+      "ai_nivel2_motivo": "",
+      "versao_dev": "BARREIRA DE ACESSIBILIDADE: Alvo de toque ou clique insuficiente (tamanho ou espaçamento)\nO QUE ESTÁ ERRADO:\n1 elemento foi identificado com tamanho ou espaçamento de alvo de interação abaixo do mínimo exigido pelo critério WCAG 2.5.8 Target Size (Minimum). Usuários com limitações motoras não conseguem ativar este elemento com precisão.\nONDE ESTÁ:\nO elemento afetado está localizado em:\n- Seletor CSS: button#omni-show-chat dentro de div#omni-hide-chat-button\n- Localização no DOM: div#omni-hide-chat-button > div.sc-eqUAAy > div > button#omni-show-chat\nCOMO CORRIGIR:\nO critério WCAG 2.5.8 exige que alvos de interação tenham no mínimo 44x44 pixels CSS (ou equivalente em unidades relativas). Você deve:\n1. Aumentar as dimensões do botão para no mínimo 44x44 pixels\n2. Se o tamanho visual não puder ser aumentado, adicionar espaçamento (padding ou margin) ao redor do elemento para atingir 44x44 pixels\n3. Garantir que o alvo interativo (área clicável) tenha no mínimo 44x44 pixels\nEXEMPLO ANTES:\nbutton#omni-show-chat { width: 30px; height: 30px; }\nEXEMPLO DEPOIS:\nbutton#omni-show-chat { width: 44px; height: 44px; }\nOU (se preferir manter tamanho visual):\nbutton#omni-show-chat { padding: 10px; min-width: 44px; min-height: 44px; }\nPRIORIDADE: Média. Planejar correção conforme cronograma de acessibilidade.",
+      "texto_ticket": {
+        "titulo": "Aumentar alvo de toque ou clique para atender WCAG 2.5.8",
+        "descricao": "Foi detectado 1 elemento com tamanho ou espaçamento insuficiente para interação por toque ou clique. Usuários com limitações motoras enfrentam dificuldade ao interagir com este componente. A violação do critério WCAG 2.5.8 Target Size (Minimum) impede que o elemento seja acessível conforme padrões de acessibilidade web. O ajuste é necessário para garantir usabilidade inclusiva.",
+        "criterio_de_pronto": "Aumentar o tamanho do alvo de interação para no mínimo 44x44 pixels CSS\nVerificar espaçamento adequado entre elementos interativos adjacentes\nValidar conformidade com WCAG 2.5.8 através de teste de acessibilidade"
+      }
+    }
+  ],
+  "alertas_revisao": [
+    {
+      "tool": "wave",
+      "issue_id_original": "title_redundant",
+      "issue_tipo_normalizado": "titulo_redundante",
+      "titulo_tecnico": "Título redundante ou pouco útil",
+      "descricao_tecnica": "Redundant title text",
+      "wcag_criterio": "2.4.2",
+      "publico_afetado": "Orientação",
+      "correcao_sugerida": "Esta barreira viola o critério 2.4.2. O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > A:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "alert",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "alerta_revisao",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Título redundante ou pouco útil",
+      "categoria_executiva": "Títulos e estrutura",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "accesskey",
+      "issue_tipo_normalizado": "wave_alert_accesskey",
+      "titulo_tecnico": "Accesskey",
+      "descricao_tecnica": "Accesskey",
+      "wcag_criterio": "2.4.1 Bypass Blocks (uso de accesskey pode conflituar com atalhos do sistema)",
+      "publico_afetado": "Navegação por teclado e leitores de tela",
+      "correcao_sugerida": "Esta barreira viola o critério 2.4.1 Bypass Blocks (uso de accesskey pode conflituar com atalhos do sistema). O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A + A"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Menu de navegação",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 3,
+      "wave_categoria": "alert",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "alerta_revisao",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Atalho accesskey conflitante",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "alt_duplicate",
+      "issue_tipo_normalizado": "wave_alert_alt_duplicate",
+      "titulo_tecnico": "Imagem próxima com o mesmo texto alternativo",
+      "descricao_tecnica": "A nearby image has the same alternative text",
+      "wcag_criterio": "1.1.1 Non-text Content",
+      "publico_afetado": "Leitores de tela",
+      "correcao_sugerida": "Esta barreira viola o critério 1.1.1 Non-text Content. O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV > DIV:first-child > DIV:first-child > IMG:first-child + IMG"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "alert",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "alerta_revisao",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Imagem próxima com o mesmo texto alternativo",
+      "categoria_executiva": "Imagens e mídia",
+      "categoria_grafico": "imagem"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "noscript",
+      "issue_tipo_normalizado": "wave_alert_noscript",
+      "titulo_tecnico": "Elemento noscript",
+      "descricao_tecnica": "Noscript element",
+      "wcag_criterio": "1.1.1 (conteúdo equivalente quando JS está desativado, conforme uso)",
+      "publico_afetado": "Usuários sem JavaScript",
+      "correcao_sugerida": "Esta barreira viola o critério 1.1.1 (conteúdo equivalente quando JS está desativado, conforme uso). O time técnico deve revisar os elementos indicados nos seletores do Apêndice Técnico e corrigir conforme as diretrizes do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "alert",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "alerta_revisao",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Elemento noscript",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "tabindex",
+      "issue_tipo_normalizado": "wave_alert_tabindex",
+      "titulo_tecnico": "Tabindex",
+      "descricao_tecnica": "Tabindex",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A + A"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Menu de navegação",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 3,
+      "wave_categoria": "alert",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "alerta_revisao",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Tabindex",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    }
+  ],
+  "informativos_wave": [
+    {
+      "tool": "wave",
+      "issue_id_original": "aria",
+      "issue_tipo_normalizado": "wave_aria_aria",
+      "titulo_tecnico": "ARIA",
+      "descricao_tecnica": "ARIA",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child > BUTTON:first-child + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON + BUTTON",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV + SCRIPT + DIV > DIV:first-child > DIV:first-child > IFRAME:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 19,
+      "wave_categoria": "aria",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "ARIA",
+      "categoria_executiva": "ARIA e semântica",
+      "categoria_grafico": "aria"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "aria_button",
+      "issue_tipo_normalizado": "wave_aria_aria_button",
+      "titulo_tecnico": "ARIA button",
+      "descricao_tecnica": "ARIA button",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 8,
+      "wave_categoria": "aria",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "ARIA button",
+      "categoria_executiva": "Links e controles sem nome",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "aria_hidden",
+      "issue_tipo_normalizado": "wave_aria_aria_hidden",
+      "titulo_tecnico": "ARIA hidden",
+      "descricao_tecnica": "ARIA hidden",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child > SPAN:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A > SPAN:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child > A:first-child + A + A > SPAN:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child > I:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > BUTTON:first-child > I:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > SPAN:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Menu de navegação",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 6,
+      "wave_categoria": "aria",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "ARIA hidden",
+      "categoria_executiva": "ARIA e semântica",
+      "categoria_grafico": "aria"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "aria_label",
+      "issue_tipo_normalizado": "wave_aria_aria_label",
+      "titulo_tecnico": "ARIA label",
+      "descricao_tecnica": "ARIA label",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER > DIV:first-child > DIV:first-child > DIV:first-child + DIV > H1#header-main-title",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV > BUTTON:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > H3:first-child + UL"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 19,
+      "wave_categoria": "aria",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "ARIA label",
+      "categoria_executiva": "Formulários e rótulos",
+      "categoria_grafico": "form"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "aria_tabindex",
+      "issue_tipo_normalizado": "wave_aria_aria_tabindex",
+      "titulo_tecnico": "ARIA tabindex",
+      "descricao_tecnica": "ARIA tabindex",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child > LI:first-child + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child > LI:first-child + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu > SECTION:first-child > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV + DIV + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL > LI:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL > LI:first-child + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child > H3:first-child + UL > LI:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > H3:first-child + UL > LI:first-child > A:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > H3:first-child + UL > LI:first-child + LI > A:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 33,
+      "wave_categoria": "aria",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "ARIA tabindex",
+      "categoria_executiva": "ARIA e semântica",
+      "categoria_grafico": "aria"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "alt",
+      "issue_tipo_normalizado": "wave_feature_alt",
+      "titulo_tecnico": "Alternative text",
+      "descricao_tecnica": "Alternative text",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER > DIV:first-child > DIV:first-child > DIV:first-child > DIV:first-child > IMG#logo_white_background",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV + DIV + DIV + DIV + DIV + DIV + DIV > DIV:first-child > BUTTON:first-child > IMG:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV > DIV:first-child > DIV:first-child > IMG:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 10,
+      "wave_categoria": "feature",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Alternative text",
+      "categoria_executiva": "Imagens e mídia",
+      "categoria_grafico": "imagem"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "alt_null",
+      "issue_tipo_normalizado": "wave_feature_alt_null",
+      "titulo_tecnico": "Null or empty alternative text",
+      "descricao_tecnica": "Null or empty alternative text",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child > DIV:first-child > IMG:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "feature",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Null or empty alternative text",
+      "categoria_executiva": "Imagens e mídia",
+      "categoria_grafico": "imagem"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "lang",
+      "issue_tipo_normalizado": "wave_feature_lang",
+      "titulo_tecnico": "Language",
+      "descricao_tecnica": "Language",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "feature",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Language",
+      "categoria_executiva": "Idioma e metadados",
+      "categoria_grafico": "form"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "footer",
+      "issue_tipo_normalizado": "wave_structure_footer",
+      "titulo_tecnico": "Footer",
+      "descricao_tecnica": "Footer",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Rodapé da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Footer",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "h1",
+      "issue_tipo_normalizado": "wave_structure_h1",
+      "titulo_tecnico": "Heading level 1",
+      "descricao_tecnica": "Heading level 1",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER > DIV:first-child > DIV:first-child > DIV:first-child + DIV > H1#header-main-title"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Heading level 1",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "h2",
+      "issue_tipo_normalizado": "wave_structure_h2",
+      "titulo_tecnico": "Heading level 2",
+      "descricao_tecnica": "Heading level 2",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER > DIV:first-child > DIV:first-child > DIV:first-child + DIV > H1:first-child + H2",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > H2:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION + SECTION > DIV:first-child > H2:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 3,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Heading level 2",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "h3",
+      "issue_tipo_normalizado": "wave_structure_h3",
+      "titulo_tecnico": "Heading level 3",
+      "descricao_tecnica": "Heading level 3",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3#footer-title-Serviços",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3#footer-title-Inscrição",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child > H3#footer-title-Aplicativo",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > H3#footer-title-Suporte"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Menu de navegação",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 4,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Heading level 3",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "header",
+      "issue_tipo_normalizado": "wave_structure_header",
+      "titulo_tecnico": "Header",
+      "descricao_tecnica": "Header",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 2,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Header",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "iframe",
+      "issue_tipo_normalizado": "wave_structure_iframe",
+      "titulo_tecnico": "Inline frame",
+      "descricao_tecnica": "Inline frame",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV + SCRIPT + DIV > DIV:first-child > DIV:first-child > IFRAME:first-child",
+        "HTML > HEAD:first-child + BODY > HEADER:first-child + NOSCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + DIV + DIV + SCRIPT + SCRIPT + SCRIPT + SCRIPT + DIV + SCRIPT + DIV > DIV:first-child + IFRAME"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 2,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Inline frame",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "main",
+      "issue_tipo_normalizado": "wave_structure_main",
+      "titulo_tecnico": "Main content",
+      "descricao_tecnica": "Main content",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 1,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Main content",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "nav",
+      "issue_tipo_normalizado": "wave_structure_nav",
+      "titulo_tecnico": "Navigation",
+      "descricao_tecnica": "Navigation",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > DIV:first-child > NAV:first-child + HEADER + MAIN > SECTION:first-child + SECTION > DIV:first-child > NAV#menu",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 8,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Navigation",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "wave",
+      "issue_id_original": "ul",
+      "issue_tipo_normalizado": "wave_structure_ul",
+      "titulo_tecnico": "Unordered list",
+      "descricao_tecnica": "Unordered list",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": [
+        "HTML > HEAD:first-child + BODY > HEADER:first-child > DIV:first-child > DIV#barra-brasil > DIV:first-child > NAV#menu-barra-brasil > UL:first-child",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV > NAV:first-child > H3:first-child + UL",
+        "HTML > HEAD:first-child + BODY > DIV#root > DIV:first-child > DIV:first-child + DIV + DIV > FOOTER#footer > DIV:first-child > DIV:first-child > DIV:first-child + DIV + DIV + DIV > NAV:first-child > H3:first-child + UL"
+      ],
+      "evidencia_lhids": null,
+      "onde_esta": "Cabeçalho da página",
+      "confirmado_por": [
+        "wave"
+      ],
+      "validacao_manual_necessaria": false,
+      "ocorrencias_count": 5,
+      "wave_categoria": "structure",
+      "lighthouse_audit_id": null,
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "status_deteccao": "informativo",
+      "prioridade": "baixa",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Unordered list",
+      "categoria_executiva": "Alertas WAVE",
+      "categoria_grafico": "outro"
+    }
+  ],
+  "checks_manuais": [
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "custom-controls-labels",
+      "issue_tipo_normalizado": "lighthouse_custom_controls_labels",
+      "titulo_tecnico": "Custom controls have associated labels",
+      "descricao_tecnica": "Custom interactive controls have associated labels, provided by aria-label or aria-labelledby. [Learn more about custom controls and labels](https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "custom-controls-labels",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Custom controls have associated labels",
+      "categoria_executiva": "Formulários e rótulos",
+      "categoria_grafico": "form"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "custom-controls-roles",
+      "issue_tipo_normalizado": "lighthouse_custom_controls_roles",
+      "titulo_tecnico": "Custom controls have ARIA roles",
+      "descricao_tecnica": "Custom interactive controls have appropriate ARIA roles. [Learn how to add roles to custom controls](https://developer.chrome.com/docs/lighthouse/accessibility/custom-control-roles/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "custom-controls-roles",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Custom controls have ARIA roles",
+      "categoria_executiva": "Outros (Lighthouse)",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "focus-traps",
+      "issue_tipo_normalizado": "lighthouse_focus_traps",
+      "titulo_tecnico": "User focus is not accidentally trapped in a region",
+      "descricao_tecnica": "A user can tab into and out of any control or region without accidentally trapping their focus. [Learn how to avoid focus traps](https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "focus-traps",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "User focus is not accidentally trapped in a region",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "focusable-controls",
+      "issue_tipo_normalizado": "lighthouse_focusable_controls",
+      "titulo_tecnico": "Interactive controls are keyboard focusable",
+      "descricao_tecnica": "Custom interactive controls are keyboard focusable and display a focus indicator. [Learn how to make custom controls focusable](https://developer.chrome.com/docs/lighthouse/accessibility/focusable-controls/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "focusable-controls",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Interactive controls are keyboard focusable",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "interactive-element-affordance",
+      "issue_tipo_normalizado": "lighthouse_interactive_element_affordance",
+      "titulo_tecnico": "Interactive elements indicate their purpose and state",
+      "descricao_tecnica": "Interactive elements, such as links and buttons, should indicate their state and be distinguishable from non-interactive elements. [Learn how to decorate interactive elements with affordance hints](https://developer.chrome.com/docs/lighthouse/accessibility/interactive-element-affordance/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "interactive-element-affordance",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Interactive elements indicate their purpose and state",
+      "categoria_executiva": "Outros (Lighthouse)",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "logical-tab-order",
+      "issue_tipo_normalizado": "lighthouse_logical_tab_order",
+      "titulo_tecnico": "The page has a logical tab order",
+      "descricao_tecnica": "Tabbing through the page follows the visual layout. Users cannot focus elements that are offscreen. [Learn more about logical tab ordering](https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "logical-tab-order",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "The page has a logical tab order",
+      "categoria_executiva": "Outros (Lighthouse)",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "managed-focus",
+      "issue_tipo_normalizado": "lighthouse_managed_focus",
+      "titulo_tecnico": "The user's focus is directed to new content added to the page",
+      "descricao_tecnica": "If new content, such as a dialog, is added to the page, the user's focus is directed to it. [Learn how to direct focus to new content](https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "managed-focus",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "The user's focus is directed to new content added to the page",
+      "categoria_executiva": "Teclado e interação",
+      "categoria_grafico": "botao"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "offscreen-content-hidden",
+      "issue_tipo_normalizado": "lighthouse_offscreen_content_hidden",
+      "titulo_tecnico": "Offscreen content is hidden from assistive technology",
+      "descricao_tecnica": "Offscreen content is hidden with display: none or aria-hidden=true. [Learn how to properly hide offscreen content](https://developer.chrome.com/docs/lighthouse/accessibility/offscreen-content-hidden/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "offscreen-content-hidden",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Offscreen content is hidden from assistive technology",
+      "categoria_executiva": "Outros (Lighthouse)",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "use-landmarks",
+      "issue_tipo_normalizado": "lighthouse_use_landmarks",
+      "titulo_tecnico": "HTML5 landmark elements are used to improve navigation",
+      "descricao_tecnica": "Landmark elements (`<main>`, `<nav>`, etc.) are used to improve the keyboard navigation of the page for assistive technology. [Learn more about landmark elements](https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "use-landmarks",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "HTML5 landmark elements are used to improve navigation",
+      "categoria_executiva": "Estrutura da página",
+      "categoria_grafico": "outro"
+    },
+    {
+      "tool": "lighthouse",
+      "issue_id_original": "visual-order-follows-dom",
+      "issue_tipo_normalizado": "lighthouse_visual_order_follows_dom",
+      "titulo_tecnico": "Visual order on the page follows DOM order",
+      "descricao_tecnica": "DOM order matches the visual order, improving navigation for assistive technology. [Learn more about DOM and visual ordering](https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom/).",
+      "wcag_criterio": "",
+      "publico_afetado": "",
+      "correcao_sugerida": "O time técnico deve revisar os elementos indicados no Apêndice Técnico e corrigir conforme as diretrizes WCAG do critério correspondente.",
+      "evidencia_localizacao": null,
+      "evidencia_lhids": null,
+      "dados_semanticos": null,
+      "onde_esta": "Localização não identificada automaticamente",
+      "status_deteccao": "manual_pendente",
+      "confirmado_por": [
+        "lighthouse"
+      ],
+      "validacao_manual_necessaria": true,
+      "ocorrencias_count": 1,
+      "wave_categoria": null,
+      "lighthouse_audit_id": "visual-order-follows-dom",
+      "page_url": "https://meu.inss.gov.br/#/login",
+      "prioridade": "revisao_manual",
+      "page_label": "Página principal",
+      "rotulo_exibicao": "Visual order on the page follows DOM order",
+      "categoria_executiva": "Outros (Lighthouse)",
+      "categoria_grafico": "outro"
+    }
+  ],
+  "divergencias": [],
+  "score_risco": {
+    "valor": 2.33,
+    "nivel": "ALTO",
+    "n_alta": 1,
+    "n_media": 2,
+    "n_baixa": 0,
+    "total_barreiras": 3
+  },
+  "multi_page": false,
+  "page_map": {
+    "Página principal": "https://meu.inss.gov.br/#/login"
+  },
+  "itens_aprovados": [
+    {
+      "id": "accesskeys",
+      "title": "`[accesskey]` values are unique"
+    },
+    {
+      "id": "aria-allowed-attr",
+      "title": "`[aria-*]` attributes match their roles"
+    },
+    {
+      "id": "aria-command-name",
+      "title": "`button`, `link`, and `menuitem` elements have accessible names"
+    },
+    {
+      "id": "aria-conditional-attr",
+      "title": "ARIA attributes are used as specified for the element's role"
+    },
+    {
+      "id": "aria-deprecated-role",
+      "title": "Deprecated ARIA roles were not used"
+    },
+    {
+      "id": "aria-hidden-body",
+      "title": "`[aria-hidden=\"true\"]` is not present on the document `<body>`"
+    },
+    {
+      "id": "aria-hidden-focus",
+      "title": "`[aria-hidden=\"true\"]` elements do not contain focusable descendents"
+    },
+    {
+      "id": "aria-input-field-name",
+      "title": "ARIA input fields have accessible names"
+    },
+    {
+      "id": "aria-prohibited-attr",
+      "title": "Elements use only permitted ARIA attributes"
+    },
+    {
+      "id": "aria-required-attr",
+      "title": "`[role]`s have all required `[aria-*]` attributes"
+    },
+    {
+      "id": "aria-required-children",
+      "title": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children."
+    },
+    {
+      "id": "aria-required-parent",
+      "title": "`[role]`s are contained by their required parent element"
+    },
+    {
+      "id": "aria-roles",
+      "title": "`[role]` values are valid"
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "title": "`[aria-*]` attributes have valid values"
+    },
+    {
+      "id": "aria-valid-attr",
+      "title": "`[aria-*]` attributes are valid and not misspelled"
+    },
+    {
+      "id": "button-name",
+      "title": "Buttons have an accessible name"
+    },
+    {
+      "id": "color-contrast",
+      "title": "Background and foreground colors have a sufficient contrast ratio"
+    },
+    {
+      "id": "document-title",
+      "title": "Document has a `<title>` element"
+    },
+    {
+      "id": "heading-order",
+      "title": "Heading elements appear in a sequentially-descending order"
+    },
+    {
+      "id": "html-has-lang",
+      "title": "`<html>` element has a `[lang]` attribute"
+    }
+  ],
+  "resumo_executivo_ai": "O portal apresenta 3 barreiras de acessibilidade, sendo 1 de alta prioridade e 2 de média prioridade. Usuários que dependem de leitores de tela enfrentam dificuldade crítica ao interagir com formulários, enquanto usuários que navegam por teclado e aqueles com limitação motora encontram obstáculos na movimentação e no acesso a elementos interativos do site.\nA correção dessas barreiras deve ser encaminhada como prioridade imediata, especialmente a barreira urgente que afeta leitores de tela. A inação perpetua a exclusão de públicos que dependem de funcionalidades específicas para usar o portal, reduzindo a efetividade do serviço público e comprometendo a experiência de usuários que já enfrentam desafios de acesso.",
+  "ai_usage": {
+    "model": "claude-haiku-4-5-20251001",
+    "calls": 10,
+    "input_tokens": 10345,
+    "output_tokens": 3324,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "by_phase": {
+      "executivo": {
+        "calls": 1,
+        "input_tokens": 1054,
+        "output_tokens": 230
+      },
+      "nivel1": {
+        "calls": 3,
+        "input_tokens": 6497,
+        "output_tokens": 939
+      },
+      "nivel2_dev": {
+        "calls": 3,
+        "input_tokens": 1716,
+        "output_tokens": 1395
+      },
+      "nivel2_ticket": {
+        "calls": 3,
+        "input_tokens": 1078,
+        "output_tokens": 760
+      }
+    },
+    "total_tokens": 13669,
+    "cost_usd": 0.026965
+  },
+  "ai_enhanced": true,
+  "ai_enhancement_level": 2,
+  "metadados_coleta": {
+    "lighthouse": {
+      "status": "ok",
+      "error": null,
+      "version": "13.3.0"
+    },
+    "wave": {
+      "status": "ok",
+      "error": null
+    }
+  }
+}

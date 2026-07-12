@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from app.services.normalize_maps import normalize_lighthouse_audit, normalize_wave_item
 
-# WAVE: categorias que entram como barreira automática ou alerta (não misturar com feature/estrutura informativa).
+# WAVE: só error/contrast/alert como barreira/alerta (não feature/estrutura).
 WAVE_BARRIER_CATEGORIES = frozenset({"error", "contrast"})
 WAVE_ALERT_CATEGORIES = frozenset({"alert"})
 WAVE_INFORMATIVE_CATEGORIES = frozenset({"feature", "structure", "aria"})

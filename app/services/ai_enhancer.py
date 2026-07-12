@@ -30,19 +30,14 @@ NIVEL2_TICKET_REPAIR_MAX_TOKENS = 350
 
 _cache: dict[str, dict] = {}
 
-# ── Custo / uso de tokens ─────────────────────────────────────────────────────
-# Preço por token do modelo atual (claude-haiku-4-5). Fonte: tabela de preços da
-# Anthropic (mai/2026): US$ 1,00/MTok entrada · US$ 5,00/MTok saída ·
-# US$ 1,25/MTok escrita de cache · US$ 0,10/MTok leitura de cache.
-# Ajuste estes valores se trocar ANTHROPIC_MODEL.
+# Preço claude-haiku-4-5 (Anthropic mai/2026): $1/MTok in · $5/MTok out ·
+# $1.25/MTok cache write · $0.10/MTok cache read. Ajuste se trocar ANTHROPIC_MODEL.
 _PRICE_INPUT_PER_TOKEN = 1.00 / 1_000_000
 _PRICE_OUTPUT_PER_TOKEN = 5.00 / 1_000_000
 _PRICE_CACHE_WRITE_PER_TOKEN = 1.25 / 1_000_000
 _PRICE_CACHE_READ_PER_TOKEN = 0.10 / 1_000_000
 
-# Acumulador de uso preenchido durante uma execução de enhance_report.
-# É um ContextVar para que as chamadas concorrentes (asyncio.gather) somem no
-# mesmo dicionário sem precisar passá-lo por todas as funções.
+# ContextVar: gather concorrente soma no mesmo acumulador.
 _usage_ctx: contextvars.ContextVar["dict | None"] = contextvars.ContextVar(
     "ai_usage_accumulator", default=None
 )
@@ -172,7 +167,6 @@ def _iter_json_objects(text: str):
 
 def _parse_json(raw: str) -> dict:
     text = raw.strip()
-    # Strip markdown fences
     for fence in ("```json", "```"):
         if text.startswith(fence):
             text = text[len(fence) :]
@@ -180,14 +174,11 @@ def _parse_json(raw: str) -> dict:
                 text = text[: text.rfind("```")]
             break
     text = text.strip()
-    # Direct parse (happy path — covers prefill responses that start with "{")
     try:
         return json.loads(text)
     except Exception:
         pass
-    # Fallback: try each balanced {...} block in the response in order.
-    # Stops at the first one that parses successfully — handles preamble text,
-    # stray braces like {x}, and multiple JSON blocks without capturing too much.
+    # Primeiro {...} JSON válido (preâmbulo / blocos extras).
     for candidate in _iter_json_objects(text):
         try:
             return json.loads(candidate)
@@ -197,12 +188,12 @@ def _parse_json(raw: str) -> dict:
 
 
 def _normalize_pt_text(text: str) -> str:
-    """Normaliza pontuação, espaços e quebras de linha em textos executivos."""
+    """Normaliza pontuação/espaços em textos executivos."""
     return normalize_executive_plaintext(text)
 
 
 def _strip_br_literals(s: str) -> str:
-    """Converte marcas <br> (incl. entidades escapadas) em quebras antes da normalização completa."""
+    """<br> / entidades → '\\n' antes da normalização completa."""
     return normalize_html_breaks(s)
 
 
@@ -231,13 +222,12 @@ async def _call_claude(
     }
     messages: list[dict] = [{"role": "user", "content": prompt}]
     if prefill:
-        # Assistant prefill: forces the model to continue from this token,
-        # guaranteeing the output begins with the prefill string.
+        # Prefill: força a saída a começar pela string dada.
         messages.append({"role": "assistant", "content": prefill})
     body = {
         "model": ANTHROPIC_MODEL,
         "max_tokens": max_tokens,
-        "temperature": 0,  # Saída JSON — máxima estabilidade, mínima variação
+        "temperature": 0,
         "messages": messages,
     }
     try:
@@ -247,14 +237,14 @@ async def _call_claude(
             data = resp.json()
             _record_usage(data.get("usage"), phase)
             text = data["content"][0]["text"]
-            # When prefill is used the API returns only what follows it — prepend it back.
+            # Prefill: API devolve só o sufixo — reanexa.
             return (prefill + text) if prefill else text
     except Exception as exc:
         _log.warning("ai_enhancer: chamada Claude falhou — %s", exc)
         return ""
 
 
-# Ação gerencial específica por tipo — evita frases genéricas de "confirmar correção".
+# Ação gerencial específica por tipo — evita frases genéricas.
 _ACAO_GERENCIAL_POR_TIPO: dict[str, str] = {
     "contraste_insuficiente": (
         "Encaminhar para o time de design e solicitar revisão do contraste dos elementos de texto indicados pela ferramenta."
@@ -383,17 +373,16 @@ def _context_block(barrier: dict) -> str:
     sels = _selectors(barrier)
     sel_txt = "\n".join(f"  • {s}" for s in sels) if sels else "  (não disponíveis)"
     prio_map = {
-        "alta": "ALTA: corrigir com urgência",
-        "media": "MÉDIA: planejar correção",
-        "baixa": "BAIXA: melhorar oportunisticamente",
+        "alta": "ALTA (severidade): corrigir com urgência",
+        "media": "MÉDIA (severidade): planejar correção",
+        "baixa": "BAIXA (severidade): melhorar oportunisticamente",
         "revisao_manual": "REQUER REVISÃO MANUAL",
     }
     ferr_map = {
         "automatico_convergente": "Lighthouse + WAVE (confirmado por ambas)",
         "automatico_detectado": "Lighthouse ou WAVE (ferramenta única)",
     }
-    # Remove contagens do texto de correcao_sugerida para a IA não repetir counts de uma
-    # ferramenta só (ex.: Lighthouse 37 vs consolidado 48). O número oficial está em Ocorrências.
+    # Remove contagens de correcao_sugerida (evita LH 37 vs consolidado 48).
     correcao_raw = barrier.get("correcao_sugerida") or "(sem texto base)"
     correcao_sem_count = re.sub(
         r"\b\d+\s*(elementos?|itens?|ocorrências?|instances?|items?\s+affected)",
@@ -409,7 +398,7 @@ def _context_block(barrier: dict) -> str:
         f"  Título técnico    : {barrier.get('titulo_tecnico', '—')}",
         f"  Critério WCAG     : {barrier.get('wcag_criterio', '—')}",
         f"  Público afetado   : {barrier.get('publico_afetado', '—')}",
-        f"  Prioridade        : {prio_map.get(barrier.get('prioridade', ''), barrier.get('prioridade', '—'))}",
+        f"  Severidade        : {prio_map.get(barrier.get('prioridade', ''), barrier.get('prioridade', '—'))}",
         f"  Ferramenta origem : {ferr_map.get(barrier.get('status_deteccao', ''), barrier.get('status_deteccao', '—'))}",
         f"  Ocorrências       : {_safe_int(barrier.get('ocorrencias_count'), 0)} elemento(s) afetado(s)",
         f"  Como corrigir base: {correcao_sem_count}",
@@ -481,9 +470,7 @@ REGRAS PARA WCAG 2.5.3 LABEL IN NAME (obrigatório):
 """
 
 
-# Banco de analogias do cotidiano — usadas como sugestão de variação no prompt.
-# A escolha é determinística por (host + tipo) para variar entre portais sem
-# aleatoriedade (resultado reproduzível e cacheável).
+# Analogias determinísticas por (host + tipo): variação cacheável entre portais.
 _ANALOGIAS_CONTRASTE = [
     "como ler um aviso impresso com tinta clara em uma parede clara",
     "como tentar identificar uma placa desbotada no fim da tarde",
@@ -525,18 +512,18 @@ def _analogia_hint(barrier: dict) -> str:
 
 
 def _prompt_nivel1(barrier: dict) -> str:
-    prio_map = {
+    sev_map = {
         "alta": "ALTA: corrigir com urgência",
         "media": "MÉDIA: planejar na próxima entrega",
         "baixa": "BAIXA: melhorar quando possível",
     }
-    prio_label = prio_map.get(barrier.get("prioridade", ""), "NÃO DEFINIDA")
+    sev_label = sev_map.get(barrier.get("prioridade", ""), "NÃO DEFINIDA")
     acao_hint = _acao_gerencial_hint(barrier)
     analogia = _analogia_hint(barrier)
     return (
         "Você é especialista em acessibilidade web e comunicação executiva.\n\n"
         + _context_block(barrier)
-        + f"\n  Prioridade traduzida : {prio_label}\n"
+        + f"\n  Severidade traduzida : {sev_label}\n"
         + f"\n  Ação gerencial esperada (use como base — mantenha a ação específica, ajuste só urgência/time):\n  {acao_hint}\n"
         + _contrast_prompt_rules(barrier)
         + _label_in_name_prompt_rules(barrier)
@@ -559,7 +546,7 @@ REGRAS ABSOLUTAS DE ESCRITA:
 INSTRUÇÕES POR CAMPO:
 
 justificativa_gerencial (1-2 frases):
-  Audiência: gestor ou diretor. Por que esta barreira tem esta prioridade?
+  Audiência: gestor ou diretor. Por que esta barreira tem esta severidade?
   Responda em termos de: quais usuários são excluídos + por que isso é grave na experiência (sem alegações financeiras ou jurídicas).
   Exemplo bom: "Usuários com baixa visão podem não conseguir ler os textos indicados pela ferramenta porque a diferença entre a cor do texto e o fundo é insuficiente. Por ser um problema frequente e de alto impacto, a correção deve ser tratada com urgência."
   Exemplo ruim: "A barreira WCAG 1.4.3 afeta 37 elementos com contraste insuficiente."
@@ -636,7 +623,7 @@ def _prompt_nivel2_ticket(barrier: dict) -> str:
     """Prompt B do nível 2: gera apenas texto_ticket — contexto sem seletores CSS longos."""
     from app.services.contrast_elements import is_contrast_barrier
 
-    prio_map = {
+    sev_map = {
         "alta": "ALTA — corrigir com urgência",
         "media": "MÉDIA — planejar na próxima entrega",
         "baixa": "BAIXA — melhorar quando possível",
@@ -647,7 +634,7 @@ def _prompt_nivel2_ticket(barrier: dict) -> str:
         f"  Título técnico   : {barrier.get('titulo_tecnico', '—')}\n"
         f"  Critério WCAG    : {barrier.get('wcag_criterio', '—')}\n"
         f"  Público afetado  : {barrier.get('publico_afetado', '—')}\n"
-        f"  Prioridade       : {prio_map.get(barrier.get('prioridade', ''), '—')}\n"
+        f"  Severidade       : {sev_map.get(barrier.get('prioridade', ''), '—')}\n"
         f"  Ocorrências      : {_safe_int(barrier.get('ocorrencias_count'), 0)} elemento(s)\n"
     )
     instrucoes = (
@@ -682,7 +669,7 @@ def _prompt_executive(
     wave_score: float | None,
     score_risco: dict | None,
 ) -> str:
-    _ = lh_score  # Lighthouse omitido do prompt executivo (evita jargão "estrutura técnica")
+    _ = lh_score  # LH omitido do prompt executivo (evita jargão)
 
     alta = [b for b in barriers if b.get("prioridade") == "alta"]
     media = [b for b in barriers if b.get("prioridade") == "media"]
@@ -712,10 +699,14 @@ def _prompt_executive(
 
     def _barrier_line(b: dict) -> str:
         pub = b.get("publico_afetado") or "usuários com deficiência"
-        prio = b.get("prioridade", "")
+        sev = b.get("prioridade", "")
         tipo = b.get("issue_tipo_normalizado") or b.get("titulo_tecnico") or "barreira não nomeada"
-        urgencia = "URGENTE" if prio == "alta" else "IMPORTANTE" if prio == "media" else "OPCIONAL"
-        return f"  • [{urgencia}] {tipo}: afeta {pub}"
+        sev_label = {
+            "alta": "SEVERIDADE ALTA",
+            "media": "SEVERIDADE MÉDIA",
+            "baixa": "SEVERIDADE BAIXA",
+        }.get(sev, sev.upper() if sev else "—")
+        return f"  • [{sev_label}] {tipo}: afeta {pub}"
 
     lista = "\n".join(_barrier_line(b) for b in barriers)
     n_alta, n_media = len(alta), len(media)
@@ -725,23 +716,27 @@ def _prompt_executive(
         return singular if n == 1 else plural
 
     b_word = _plural(total, "barreira", "barreiras")
-    a_desc = f"{n_alta} de alta prioridade" if n_alta > 0 else ""
-    m_desc = f"{n_media} de média prioridade" if n_media > 0 else ""
-    prio_parts = [p for p in [a_desc, m_desc] if p]
-    prio_str = " e ".join(prio_parts) if prio_parts else ""
+    a_desc = f"{n_alta} de severidade alta" if n_alta > 0 else ""
+    m_desc = f"{n_media} de severidade média" if n_media > 0 else ""
+    sev_parts = [p for p in [a_desc, m_desc] if p]
+    sev_str = " e ".join(sev_parts) if sev_parts else ""
 
-    if prio_str:
-        contagem = f"{total} {b_word} de acessibilidade, sendo {prio_str}"
+    if sev_str:
+        contagem = f"{total} {b_word} de acessibilidade, sendo {sev_str}"
     else:
         contagem = f"{total} {b_word} de acessibilidade"
 
-    u_word = _plural(n_alta, "urgente", "urgentes")
-    i_word = _plural(n_media, "importante", "importantes")
-    totais_prioridade = f"{n_alta} {u_word}, {n_media} {i_word}"
+    totais_severidade = ", ".join(
+        p for p in [
+            f"{n_alta} de severidade alta" if n_alta else "",
+            f"{n_media} de severidade média" if n_media else "",
+        ]
+        if p
+    )
 
     situacao = (
         "crítica"
-        if risco_nivel in ("ALTO", "alto")
+        if risco_nivel in ("CRÍTICO", "critico", "ALTO", "alto")
         else "de atenção"
         if risco_nivel in ("MÉDIO", "medio")
         else "controlada"
@@ -753,7 +748,7 @@ def _prompt_executive(
         f"  Portal                           : {domain}\n"
         f"  Qualidade da experiência do usuário: {wv_qual}\n"
         f"  Situação geral                   : {situacao}\n"
-        f"  Total de barreiras               : {total} ({totais_prioridade})\n"
+        f"  Total de barreiras               : {total} ({totais_severidade})\n"
         f"  Barreiras encontradas:\n{lista}\n\n"
         f"  PÚBLICOS AFETADOS (use SOMENTE estes — não adicione outros):\n{publicos_txt}\n\n"
         "REGRAS ABSOLUTAS (violá-las invalida a resposta):\n"
@@ -844,8 +839,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
         normalize_barrier_ai_texts(barrier)
         return
 
-    # URL/host e analogia entram na chave para evitar que portais diferentes
-    # recebam exatamente o mesmo texto de IA (causa da repetição entre relatórios).
+    # URL/host + analogia na chave: evita texto idêntico entre portais.
     url_cache = (
         barrier.get("url")
         or barrier.get("page_url")
@@ -882,7 +876,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
 
     result: dict = {}
 
-    # ── Nível 1: camada gerencial ─────────────────────────────────────────────
+    # Nível 1 (gerencial)
     raw1 = await _call_claude(
         _prompt_nivel1(barrier), api_key, max_tokens=1000, prefill="{", phase="nivel1"
     )
@@ -927,7 +921,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
     if level >= 2:
         tipo = barrier.get("issue_tipo_normalizado", "?")
 
-        # ── Chamada A: versao_dev ─────────────────────────────────────────────
+        # Nível 2A: versao_dev
         raw_dev = await _call_claude(
             _prompt_nivel2_dev(barrier),
             api_key,
@@ -952,7 +946,7 @@ async def _enrich_barrier(barrier: dict, api_key: str, level: int) -> None:
         if versao_dev and not _looks_valid_dev_text(versao_dev):
             versao_dev = ""
 
-        # ── Chamada B: texto_ticket ─────────────────────────────────────────
+        # Nível 2B: texto_ticket
         raw_ticket = await _call_claude(
             _prompt_nivel2_ticket(barrier),
             api_key,
@@ -1068,8 +1062,7 @@ async def enhance_report(
 
     attach_display_fields(barriers)
 
-    # Garante a URL da auditoria em cada barreira (host disponível para o cache
-    # da IA e para a escolha de analogia, mesmo quando page_url vier vazio).
+    # audit_url por barreira: host para cache/analogia se page_url vazio.
     for _b in barriers:
         if isinstance(_b, dict) and not _b.get("audit_url"):
             _b["audit_url"] = url

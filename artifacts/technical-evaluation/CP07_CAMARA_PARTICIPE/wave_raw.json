@@ -1,0 +1,445 @@
+{
+  "status": {
+    "success": true,
+    "httpstatuscode": 200
+  },
+  "statistics": {
+    "pagetitle": "Participe - Portal da Câmara dos Deputados",
+    "pageurl": "https://www.camara.leg.br/participe",
+    "time": 6.03,
+    "creditsremaining": 79,
+    "AIMscore": 8.9,
+    "allitemcount": 208,
+    "totalelements": 733,
+    "waveurl": "http://wave.webaim.org/report?url=https://www.camara.leg.br/participe"
+  },
+  "categories": {
+    "error": {
+      "description": "Errors",
+      "count": 3,
+      "items": {
+        "button_empty": {
+          "id": "button_empty",
+          "description": "Empty button",
+          "count": 3,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE + DIV > A:first-child + BUTTON"
+          ]
+        }
+      }
+    },
+    "contrast": {
+      "description": "Contrast Errors",
+      "count": 1,
+      "items": {
+        "contrast": {
+          "id": "contrast",
+          "description": "Very low contrast",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child"
+          ],
+          "contrastdata": [
+            [
+              3.48,
+              "#ffffff",
+              "#1c91d1",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    "alert": {
+      "description": "Alerts",
+      "count": 9,
+      "items": {
+        "accesskey": {
+          "id": "accesskey",
+          "description": "Accesskey",
+          "count": 9,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV > UL:first-child > LI:first-child + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child > LI:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child > LI:first-child + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child > LI:first-child + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#buscaportal > FORM:first-child"
+          ]
+        }
+      }
+    },
+    "feature": {
+      "description": "Features",
+      "count": 4,
+      "items": {
+        "alt": {
+          "id": "alt",
+          "description": "Alternative text",
+          "count": 2,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE > DIV:first-child > DIV:first-child > IMG:first-child",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE > DIV:first-child > DIV:first-child > IMG:first-child + IMG"
+          ]
+        },
+        "label": {
+          "id": "label",
+          "description": "Form label",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#buscaportal > FORM:first-child > LABEL:first-child"
+          ]
+        },
+        "lang": {
+          "id": "lang",
+          "description": "Language",
+          "count": 1,
+          "selectors": [
+            false
+          ]
+        }
+      }
+    },
+    "structure": {
+      "description": "Structural Elements",
+      "count": 55,
+      "items": {
+        "h1": {
+          "id": "h1",
+          "description": "Heading level 1",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + H1"
+          ]
+        },
+        "h2": {
+          "id": "h2",
+          "description": "Heading level 2",
+          "count": 4,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION > DIV:first-child > H2#debates-interativos",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > H2#enquetes",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2#outras-formas",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child"
+          ]
+        },
+        "h3": {
+          "id": "h3",
+          "description": "Heading level 3",
+          "count": 6,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV > H3:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3#titulo-mais-comentadas",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL > LI:first-child > ARTICLE:first-child > H3:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL > LI:first-child + LI > ARTICLE:first-child > H3:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL > LI:first-child + LI + LI > ARTICLE:first-child > H3:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL > LI:first-child + LI + LI + LI > ARTICLE:first-child > H3:first-child"
+          ]
+        },
+        "h4": {
+          "id": "h4",
+          "description": "Heading level 4",
+          "count": 3,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultima-semana > H4:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimo-mes > H4:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimos-meses > H4:first-child"
+          ]
+        },
+        "ol": {
+          "id": "ol",
+          "description": "Ordered list",
+          "count": 4,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child > NAV:first-child > OL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultima-semana > H4:first-child + OL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimo-mes > H4:first-child + OL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimos-meses > H4:first-child + OL"
+          ]
+        },
+        "ul": {
+          "id": "ul",
+          "description": "Unordered list",
+          "count": 29,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV#js-nesta-secao > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV > H3:first-child + DIV > DIV:first-child > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION + SECTION + SECTION > DIV:first-child > H2:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV + DIV > DIV:first-child > UL:first-child"
+          ]
+        },
+        "header": {
+          "id": "header",
+          "description": "Header",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child"
+          ]
+        },
+        "nav": {
+          "id": "nav",
+          "description": "Navigation",
+          "count": 2,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child > NAV:first-child"
+          ]
+        },
+        "search": {
+          "id": "search",
+          "description": "Search",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#buscaportal > FORM:first-child"
+          ]
+        },
+        "main": {
+          "id": "main",
+          "description": "Main content",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content"
+          ]
+        },
+        "footer": {
+          "id": "footer",
+          "description": "Footer",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER"
+          ]
+        },
+        "aside": {
+          "id": "aside",
+          "description": "Aside",
+          "count": 2,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE"
+          ]
+        }
+      }
+    },
+    "aria": {
+      "description": "ARIA",
+      "count": 136,
+      "items": {
+        "aria": {
+          "id": "aria",
+          "description": "ARIA",
+          "count": 33,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > A:first-child + A + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child > NAV:first-child > OL:first-child > LI:first-child + LI + LI",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV#abas-enquetes",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV#abas-enquetes > A#ultima-semana-tab",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV#abas-enquetes > A#ultimo-mes-tab",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV#abas-enquetes > A#ultimos-meses-tab",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultima-semana",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimo-mes",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimos-meses",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE + DIV > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE + DIV > A:first-child + BUTTON"
+          ]
+        },
+        "aria_label": {
+          "id": "aria_label",
+          "description": "ARIA label",
+          "count": 34,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6 > DIV:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > A:first-child + A",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > A:first-child + A + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI + LI > A:first-child + UL",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#buscaportal > FORM:first-child > INPUT#termo-busca-geral",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child > NAV:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV#abas-enquetes",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultima-semana",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimo-mes",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION + SECTION > DIV:first-child > SECTION#enquetes-mais-comentadas > H3:first-child + DIV > DIV:first-child + DIV > SECTION#ultimos-meses",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child > DIV:first-child > DIV:first-child + DIV > DIV:first-child + DIV > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV + DIV > DIV:first-child > UL:first-child"
+          ]
+        },
+        "aria_tabindex": {
+          "id": "aria_tabindex",
+          "description": "ARIA tabindex",
+          "count": 4,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI + LI > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI + LI + LI > BUTTON:first-child"
+          ]
+        },
+        "aria_button": {
+          "id": "aria_button",
+          "description": "ARIA button",
+          "count": 1,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + H1 + A"
+          ]
+        },
+        "aria_hidden": {
+          "id": "aria_hidden",
+          "description": "ARIA hidden",
+          "count": 33,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child + UL > LI:first-child > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child + UL > LI:first-child + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child + UL > LI:first-child > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child + UL > LI:first-child + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + H1 + A > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI + LI > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > UL#share-submenu > LI:first-child + LI + LI + LI > BUTTON:first-child > I:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV + SECTION + SECTION > DIV:first-child > H2:first-child + DIV > DIV:first-child + DIV > H3:first-child + DIV > DIV:first-child + DIV > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child + MAIN + FOOTER > ADDRESS:first-child + DIV > DIV:first-child > UL:first-child > LI:first-child + LI + LI + LI + LI + LI + LI + LI + LI > A:first-child > SPAN:first-child",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE + DIV > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV:first-child + DIV + SCRIPT + SCRIPT + ASIDE + DIV > A:first-child + BUTTON"
+          ]
+        },
+        "aria_expanded": {
+          "id": "aria_expanded",
+          "description": "ARIA expanded",
+          "count": 11,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > A:first-child + A + BUTTON",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child > A#temas",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI > A#institucional",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI > A#deputados",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI > A#atvlegislativa",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI > A#comunicacao",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI + LI > A#transprestcontas",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV > DIV:first-child > DIV:first-child + H1 + A",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > MAIN#main-content > DIV:first-child + DIV + DIV + DIV > ASIDE:first-child > BUTTON:first-child + UL > LI:first-child + LI > BUTTON:first-child"
+          ]
+        },
+        "aria_haspopup": {
+          "id": "aria_haspopup",
+          "description": "ARIA popup",
+          "count": 20,
+          "selectors": [
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL > LI:first-child + LI + LI + LI + LI + LI > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-main-nav > DIV:first-child + UL + DIV + DIV > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-1 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-2 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-3 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-4 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-5 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-navbarportal > BUTTON:first-child + DIV > DIV#mm-6 > DIV:first-child > A:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > UL:first-child + DIV > DIV:first-child > A:first-child + DIV + DIV > UL:first-child + UL + DIV > BUTTON:first-child",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child > A#temas",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI > A#institucional",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI > A#deputados",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI > A#atvlegislativa",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI > A#comunicacao",
+            "HTML > HEAD:first-child + BODY > DIV#mm-0 > HEADER:first-child > NAV#menuglobal > DIV:first-child > DIV#navbarportal > UL#main-nav > LI:first-child + LI + LI + LI + LI + LI > A#transprestcontas"
+          ]
+        }
+      }
+    }
+  }
+}

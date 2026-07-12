@@ -1,6 +1,5 @@
 {% from '_report_macros.html' import termo_barreira, pub_icon, pub_desc, ma_badge_conv_lh_wave, ma_pin_hint_svg, ma_chip_wcag_icon, ma_chip_hash_icon, ma_chip_folder_icon, ma_badge_div_inline, ma_phase_svg, ma_dot_svg %}
 
-{# ═══ BARREIRAS ═══ #}
 <div class="section">
   <div class="sec-row"><h2>Barreiras Automáticas</h2><span class="cbadge">{{ bars|length }}</span></div>
   {% for b in bars %}
@@ -103,7 +102,6 @@
   {% endfor %}
 </div>
 
-{# ═══ DIVERGÊNCIAS ═══ #}
 <div class="section">
   <div class="sec-row"><h2>Divergências Lighthouse ↔ WAVE</h2><span class="cbadge" style="background:var(--purple)">{{ divs|length }}</span></div>
   <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Quando Lighthouse passou mas WAVE registrou barreira, adota-se o cenário mais restritivo.</p>
@@ -124,7 +122,6 @@
   {% endfor %}
 </div>
 
-{# ═══ LH DECOMP ═══ #}
 {% if sb and sb.get('total_weight',0)>0 %}
 <details class="sc section">
   <summary><div class="sec-row"><h2>Decomposição do Score Lighthouse</h2><span class="cbadge" style="background:var(--lh)">técnico</span></div></summary>
@@ -186,4 +183,4 @@
 </details>
 {% endif %}
 
-<div class="footer">Meta-Auditor de Acessibilidade Web{% if report_footer_org %} · {{ report_footer_org }}{% endif %}{% if report_footer_author %} · {{ report_footer_author }}{% endif %} · {{ now_year }}</div>
+<div class="footer">Meta-Auditor de Acessibilidade Web · {{ now_year }}</div>

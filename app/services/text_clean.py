@@ -7,14 +7,14 @@ import re
 
 from markupsafe import Markup, escape
 
-# Tags HTML citadas em texto técnico (não devem virar elementos no relatório).
+# Tags HTML citadas em prosa (não viram elementos no relatório).
 _HTML_TAG_LITERAL_RE = re.compile(
     r"</?(?:main|nav|header|footer|aside|section|article|ul|ol|li|div|span|"
     r"p|a|img|button|input|label|form|h[1-6]|code|pre|br|noscript)\b[^>]*>",
     re.IGNORECASE,
 )
 
-# Blocos Unicode frequentes em saídas de LLM e mensagens de UI (não inclui letras acentuadas LATIN).
+# Blocos Unicode frequentes em saídas de LLM (não inclui LATIN acentuado).
 _EMOJI_RE = re.compile(
     "["
     "\U0001F600-\U0001F64F"  # emoticons
@@ -35,7 +35,7 @@ _EMOJI_RE = re.compile(
 
 
 def strip_emoji(text: str | None) -> str:
-    """Remove pictogramas / emojis; preserva pontuação e texto em português."""
+    """Remove emojis; preserva pontuação e PT."""
     if not text:
         return ""
     t = str(text)
@@ -44,12 +44,27 @@ def strip_emoji(text: str | None) -> str:
     return re.sub(r" {2,}", " ", t).strip()
 
 
-# Travessão (U+2014), meia-ráquia (U+2013), menos matemático (U+2212) em títulos Lighthouse / IA.
+# Travessão / meia-ráquia / menos matemático em títulos LH/IA.
 _RANGE_DASH = re.compile(r"(\d)\s*[\u2013\u2014\u2212]\s*(\d)")
 
-# Correções lexicais frequentes em saídas de IA (inglês/espanhol infiltrado).
+# Lexicais frequentes (EN/ES infiltrado).
 _PT_WORD_FIXES: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"\bConductar\b", re.IGNORECASE), "Realizar"),
+)
+
+# JSON «prioridade» = severidade da barreira, não P1–P3.
+_SEVERIDADE_LEX_FIXES: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\bbarreiras de alta prioridade\b", re.I), "barreiras de severidade alta"),
+    (re.compile(r"\bbarreira de alta prioridade\b", re.I), "barreira de severidade alta"),
+    (re.compile(r"\bbarreiras de média prioridade\b", re.I), "barreiras de severidade média"),
+    (re.compile(r"\bbarreira de média prioridade\b", re.I), "barreira de severidade média"),
+    (re.compile(r"\bbarreiras de baixa prioridade\b", re.I), "barreiras de severidade baixa"),
+    (re.compile(r"\bbarreira de baixa prioridade\b", re.I), "barreira de severidade baixa"),
+    (re.compile(r"\b(\d+)\s+de\s+alta\s+prioridade\b", re.I), r"\1 de severidade alta"),
+    (re.compile(r"\b(\d+)\s+de\s+média\s+prioridade\b", re.I), r"\1 de severidade média"),
+    (re.compile(r"\b(\d+)\s+de\s+baixa\s+prioridade\b", re.I), r"\1 de severidade baixa"),
+    (re.compile(r"\bconsolidada como alta prioridade\b", re.I), "consolidada com severidade alta"),
+    (re.compile(r"\bbarreiras altas\b", re.I), "barreiras de severidade alta"),
 )
 
 
@@ -60,9 +75,21 @@ def _apply_pt_word_fixes(text: str) -> str:
     return t
 
 
+def _apply_severidade_lex_fixes(text: str) -> str:
+    t = text
+    for pattern, replacement in _SEVERIDADE_LEX_FIXES:
+        t = pattern.sub(replacement, t)
+    return t
+
+
 _LABEL_IN_NAME_CORRECAO = (
     "O nome acessível deve conter o texto visível do link, preferencialmente no início, "
     "para que usuários de controle por voz consigam acionar o elemento pelo texto que enxergam na tela."
+)
+
+_LABEL_IN_NAME_CARTAO_CORRECAO = (
+    "O nome acessível deve conter o texto visível do cartão, preferencialmente no início, "
+    "para que usuários de controle por voz consigam acionar o elemento pelo texto exibido na tela."
 )
 
 _IDENTICO_LABEL_IN_NAME_RE = re.compile(
@@ -73,6 +100,39 @@ _WCAG_253_NIVEL_AA_RE = re.compile(
     r"(2\.5\.3\s+Label in Name:\s*)Nível\s+AA",
     re.IGNORECASE,
 )
+_CARTAO_SERVICO_RE = re.compile(
+    r"service-card|carta[_\s-]?de[_\s-]?servi[cç]o|cart[aã]o de servi[cç]o",
+    re.IGNORECASE,
+)
+_REFLETIR_EXATAMENTE_ARIA_RE = re.compile(
+    r"O aria-label deve refletir exatamente o que o usuário lê na tela[^.]*\.",
+    re.IGNORECASE,
+)
+
+
+def _barrier_is_cartao_servico(barrier: dict) -> bool:
+    parts: list[str] = []
+    for k in (
+        "como_corrigir_claro",
+        "explicacao_usuario",
+        "justificativa_gerencial",
+        "acao_gerencial",
+        "versao_dev",
+    ):
+        parts.append(str(barrier.get(k) or ""))
+    for item in barrier.get("locais") or barrier.get("evidencias") or []:
+        if isinstance(item, dict):
+            parts.append(str(item.get("seletor") or ""))
+            parts.append(str(item.get("snippet") or ""))
+        else:
+            parts.append(str(item))
+    for code in barrier.get("evcodes") or []:
+        parts.append(str(code))
+    tk = barrier.get("texto_ticket")
+    if isinstance(tk, dict):
+        for k in ("titulo", "descricao", "criterio_de_pronto"):
+            parts.append(str(tk.get(k) or ""))
+    return bool(_CARTAO_SERVICO_RE.search(" ".join(parts)))
 
 
 def _is_label_in_name_barrier(barrier: dict) -> bool:
@@ -87,24 +147,64 @@ def _is_label_in_name_barrier(barrier: dict) -> bool:
     )
 
 
-def _fix_label_in_name_text(text: str) -> str:
+def _apply_label_in_name_cartao_wording(text: str) -> str:
+    t = text
+    if t == _LABEL_IN_NAME_CORRECAO or re.search(
+        r"nome acessível deve conter o texto visível do link", t, re.I
+    ):
+        t = _LABEL_IN_NAME_CARTAO_CORRECAO
+    t = _REFLETIR_EXATAMENTE_ARIA_RE.sub(_LABEL_IN_NAME_CARTAO_CORRECAO, t)
+    return t
+
+
+def _fix_label_in_name_text(text: str, *, cartao_servico: bool = False) -> str:
     if not text:
         return text
     t = _WCAG_253_NIVEL_AA_RE.sub(r"\1Nível A", text)
+    t = re.sub(
+        r"(2\.5\.3\s+Label in Name)\s*:\s*Nível\s+AA",
+        r"\1: Nível A",
+        t,
+        flags=re.I,
+    )
     if _IDENTICO_LABEL_IN_NAME_RE.search(t):
-        t = _IDENTICO_LABEL_IN_NAME_RE.sub(_LABEL_IN_NAME_CORRECAO, t)
-    elif re.search(r"\bidêntic|\bidentic", t, re.I) and "nome acessível" in t.lower():
-        t = _LABEL_IN_NAME_CORRECAO
+        repl = (
+            _LABEL_IN_NAME_CARTAO_CORRECAO
+            if re.search(r"cart[aã]o", t, re.I)
+            else _LABEL_IN_NAME_CORRECAO
+        )
+        t = _IDENTICO_LABEL_IN_NAME_RE.sub(repl, t)
+    elif re.search(r"\bidêntic|\bidentic", t, re.I):
+        t = (
+            _LABEL_IN_NAME_CARTAO_CORRECAO
+            if re.search(r"cart[aã]o", t, re.I)
+            else _LABEL_IN_NAME_CORRECAO
+        )
+    elif re.search(r"exatamente essa frase|reconhecer exatamente", t, re.I):
+        if re.search(r"nome acessível deve conter", t, re.I):
+            t = re.split(r"\.\s+Quando o usuário lê", t, maxsplit=1, flags=re.I)[0].strip()
+            if t and not t.endswith("."):
+                t += "."
+        elif re.search(r"cart[aã]o", t, re.I):
+            t = _LABEL_IN_NAME_CARTAO_CORRECAO
+        else:
+            t = _LABEL_IN_NAME_CORRECAO
+    if cartao_servico:
+        t = _apply_label_in_name_cartao_wording(t)
+    return t
+
+
+def barrier_exec_text(text: str | None, barrier: dict | None) -> str:
+    """Texto executivo/IA com normalização + Label in Name."""
+    t = normalize_executive_plaintext(text)
+    if isinstance(barrier, dict) and _is_label_in_name_barrier(barrier):
+        cartao = _barrier_is_cartao_servico(barrier)
+        t = _fix_label_in_name_text(t, cartao_servico=cartao)
     return t
 
 
 def normalize_html_breaks(text: str | None) -> str:
-    """
-    Converte fragmentos HTML de quebra de linha em '\\n'.
-
-    Cobre tags com espaços, `</br>`, entidades escapadas uma ou mais vezes
-    (ex.: `&lt;br&gt;`, `&amp;lt;br&amp;gt;`) via `html.unescape` em loop limitado.
-    """
+    """Converte <br> / &lt;br&gt; (e escapes aninhados) em '\\n'."""
     if text is None:
         return ""
     t = str(text).strip()
@@ -124,10 +224,7 @@ def normalize_html_breaks(text: str | None) -> str:
 
 
 def normalize_executive_plaintext(text: str | None) -> str:
-    """
-    Texto executivo / apêndice IA: sem tags <br>; quebras ficam em '\\n'.
-    Usar no backend, no cache e na renderização (filtro Jinja).
-    """
+    """Texto executivo: sem <br>; travessões → ':'; emoji e lexicais."""
     t = normalize_html_breaks(text)
     if not t:
         return ""
@@ -138,16 +235,18 @@ def normalize_executive_plaintext(text: str | None) -> str:
     t = re.sub(r":\s*:", ": ", t)
     t = strip_emoji(t)
     t = _apply_pt_word_fixes(t)
+    t = _apply_severidade_lex_fixes(t)
     return t.strip()
 
 
 def normalize_barrier_ai_texts(barrier: dict) -> None:
-    """Re-normaliza campos de texto da IA (cache legado, JSON da BD). In-place."""
+    """Re-normaliza campos IA in-place (cache legado / BD)."""
     if not isinstance(barrier, dict):
         return
     from app.services.contrast_elements import criterio_pronto_contraste_det, is_contrast_barrier
 
     label_in_name = _is_label_in_name_barrier(barrier)
+    cartao = _barrier_is_cartao_servico(barrier) if label_in_name else False
     for k in (
         "justificativa_gerencial",
         "explicacao_usuario",
@@ -159,7 +258,7 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
         if isinstance(v, str) and v.strip():
             barrier[k] = normalize_executive_plaintext(v)
             if label_in_name:
-                barrier[k] = _fix_label_in_name_text(barrier[k])
+                barrier[k] = _fix_label_in_name_text(barrier[k], cartao_servico=cartao)
     tk = barrier.get("texto_ticket")
     if isinstance(tk, dict):
         for k in ("titulo", "descricao", "criterio_de_pronto"):
@@ -167,22 +266,13 @@ def normalize_barrier_ai_texts(barrier: dict) -> None:
             if isinstance(v, str) and v.strip():
                 tk[k] = normalize_executive_plaintext(v)
                 if label_in_name:
-                    tk[k] = _fix_label_in_name_text(tk[k])
+                    tk[k] = _fix_label_in_name_text(tk[k], cartao_servico=cartao)
         if is_contrast_barrier(barrier):
             tk["criterio_de_pronto"] = criterio_pronto_contraste_det(barrier)
 
 
 def normalize_report_markup_text(text: str | None) -> str:
-    """
-    Normaliza texto técnico para relatório/PDF.
-
-    Resolve casos como:
-    - ``&lt;code&gt;&amp;lt;main&amp;gt;&lt;/code&gt;`` → ``<main>`` (exibido via autoescape do Jinja)
-    - ``<code>&lt;ul&gt;</code>`` → ``<ul>``
-    - ``&#34;campo de texto&#34;`` → ``"campo de texto"``
-
-    Devolve texto simples (não Markup): o template deve renderizar sem ``|safe``.
-    """
+    """Desescapa entidades e remove <code>; devolve texto simples (sem |safe)."""
     if text is None:
         return ""
 
@@ -211,11 +301,7 @@ def normalize_report_markup_text(text: str | None) -> str:
 
 
 def format_html_tag_literals(text: str | None) -> Markup:
-    """
-    Exibe nomes de tags HTML como texto (ex.: <main>) sem o navegador interpretá-los.
-
-    Escapa o restante do conteúdo e envolve cada tag em <code>.
-    """
+    """Exibe tags HTML como <code> escapado (ex.: &lt;main&gt;)."""
     if not text:
         return Markup("")
     s = str(text)
@@ -232,11 +318,36 @@ def format_html_tag_literals(text: str | None) -> Markup:
     return Markup("").join(parts)
 
 
+_TRUNC_TAIL_STOPWORDS = frozenset(
+    {"a", "o", "e", "de", "do", "da", "dos", "das", "ou", "em", "no", "na", "nos", "nas", "um", "uma", "uns", "umas"}
+)
+
+
+def truncate_words(text: str | None, length: int = 320, suffix: str = "...") -> str:
+    """Corta no limite de chars na última palavra completa."""
+    if text is None:
+        return ""
+    t = str(text).strip()
+    if not t or length <= 0:
+        return t
+    if len(t) <= length:
+        return t
+    cut = t[:length]
+    if len(t) > length and t[length : length + 1].strip():
+        if " " in cut:
+            cut = cut.rsplit(" ", 1)[0]
+    elif " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    while cut and " " in cut:
+        tail = cut.rsplit(" ", 1)[-1].lower().rstrip(".,;:")
+        if len(tail) > 2 and tail not in _TRUNC_TAIL_STOPWORDS:
+            break
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip(".,;:") + suffix
+
+
 def normalize_report_dashes(text: str | None) -> str:
-    """
-    Suaviza travessões para leitura em relatório: intervalos numéricos viram hífen ASCII;
-    travessões tipográficos em frases viram dois-pontos, sem destruir «30–40%».
-    """
+    """Intervalos numéricos → hífen; travessões em prosa → ': '."""
     if not text:
         return ""
     t = str(text)
