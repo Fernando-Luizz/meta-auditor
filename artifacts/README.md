@@ -42,3 +42,13 @@ Primary identifiers, collection dates and internal audit identifiers
 were removed. Visual and semantic evidence produced by the
 Meta-Auditor was preserved, following the evaluation protocol, and
 may contain fragments of the original portal content.
+
+## TAM mapping
+
+The `TAM mapping/` directory contains the coding of open-ended
+responses from the Technology Acceptance Model (TAM) questionnaire
+applied to participants who reviewed reports AP01–AP05.
+
+The spreadsheet maps each open-ended answer to thematic categories
+used in the acceptance evaluation analysis. See also
+`TAM mapping/README_TAM_mapping.md`.

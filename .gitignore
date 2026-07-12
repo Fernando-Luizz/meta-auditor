@@ -51,7 +51,6 @@ data/exports/*
 
 # Material privado
 private/
-artifacts/TAM mapping/
 
 # Script privado que associa APs às instituições
 scripts/export_anon_acceptance_reports.py
