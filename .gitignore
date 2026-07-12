@@ -1,29 +1,64 @@
-# Ambiente e segredos
-.venv/
+# Segredos e configurações locais
 .env
-.env.local
-.env.*.local
-*.pyc
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+service-account*.json
+
+# Python
+.venv/
+venv/
+env/
 __pycache__/
+*.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
 *.egg-info/
-dist/
 build/
+dist/
 
-# ZIP de entrega gerado por scripts/package_entrega.ps1 (não versionar)
-meta-auditor-entrega-*.zip
-
-# IDE / SO
+# IDE e sistema
+.cursor/
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Dados gerados em runtime — não versionar
+# Banco e arquivos gerados em execução
 data/meta_auditor.db
-data/raw/*.json
-data/evidence/*.png
+data/meta_auditor.db-*
+data/*.db
+data/*.sqlite
+data/*.sqlite3
 
-# Manter a estrutura dos diretórios no git
+data/raw/*
+data/evidence/*
+data/exports/*
+
 !data/raw/.gitkeep
 !data/evidence/.gitkeep
+!data/exports/.gitkeep
+
+# Material privado
+private/
+artifacts/TAM mapping/
+
+# Script privado que associa APs às instituições
+scripts/export_anon_acceptance_reports.py
+
+# Temporários e pacotes locais
+*.log
+*.tmp
+*.bak
+*.swp
+/*.zip
