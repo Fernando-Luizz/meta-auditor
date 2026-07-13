@@ -1,14 +1,8 @@
-# Normalization Mapping
+# Normalization mapping
 
-This directory contains the specification of the 80 deterministic
-normalization mappings implemented by the Meta-Auditor:
+Specification of the 80 deterministic mapping rules Meta-Auditor uses to normalize tool-specific findings into a common vocabulary: 42 from Lighthouse, 38 from WAVE, resolving to 71 distinct normalized barrier types.
 
-- 42 Lighthouse mappings;
-- 38 WAVE mappings;
-- 71 distinct normalized barrier types.
-
-Files:
-
-- `80_mapeamentos_normalizacao.pdf` — document intended for reading;
-- `80_mapeamentos_normalizacao.docx` — editable version of the same
-  specification.
+| File | Purpose |
+|---|---|
+| `80_mapeamentos_normalizacao.pdf` | Reading copy |
+| `80_mapeamentos_normalizacao.docx` | Editable source |

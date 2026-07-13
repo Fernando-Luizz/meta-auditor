@@ -1,72 +1,67 @@
-# Pacote de entrega final (ZIP limpo)
+# Submission package
 
-O núcleo do Meta-Auditor está preparado para avaliação; o que costuma falhar na **entrega** é incluir lixo de desenvolvimento ou segredos no arquivo ZIP. Este guia define o que **não** vai no pacote e como gerar um ZIP **reprodutível**.
+The Meta-Auditor codebase is ready for review. What usually goes wrong at submission time is shipping development clutter or secrets inside the ZIP. This document defines what stays out of the package and how to generate a clean, reproducible one.
 
-## O que **não** incluir no ZIP institucional
+## Excluded from the package
 
-| Item | Motivo |
-|------|--------|
-| `.venv/` | Ambiente por SO/arquitetura; não é portátil (ex.: Windows vs Linux). Quem recebe cria o seu com `python -m venv` + `pip install -r requirements.txt`. |
-| `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/` | Cache de ferramentas; irrelevante para execução. |
-| `__pycache__/` e `*.pyc` | Bytecode regenerável. |
-| `.env` | Pode conter chaves PSI/WAVE; usar só `.env.example` como modelo. |
-| `data/meta_auditor.db` | Base local de desenvolvimento; é criada ao executar a aplicação. |
-| `data/raw/*.json` | JSON brutos por auditoria; pesados e desnecessários para instalar o sistema. |
-| `data/evidence/*.png` | Evidências geradas em runtime. |
-| `.git/` | Opcional: incluir só se a instituição pedir histórico Git; aumenta o tamanho. |
+| Item | Why |
+|---|---|
+| `.venv/` | Tied to a specific OS and architecture; recipients recreate it with `python -m venv` and `pip install -r requirements.txt`. |
+| `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/` | Tool caches, irrelevant to running the project. |
+| `__pycache__/`, `*.pyc` | Regenerable bytecode. |
+| `.env` | May contain PSI/WAVE keys; `.env.example` ships instead, as a template. |
+| `data/meta_auditor.db` | Local development database, created automatically on first run. |
+| `data/raw/*.json` | Raw per-audit JSON, large and unnecessary to run the system. |
+| `data/evidence/*.png` | Evidence images generated at runtime. |
+| `.git/` | Optional; include only if reviewers specifically need commit history. |
 
-## O que **sim** deve ir no ZIP
+## Included in the package
 
-Código-fonte (`app/`, `tests/`), `requirements.txt`, `pytest.ini`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example`, `.gitignore`, `README.md`, `LICENSE`, `ENTREGA.md`, `.github/workflows/` (CI), e `data/raw/.gitkeep` + `data/evidence/.gitkeep` para manter pastas vazias.
+Source code (`app/`, `tests/`), `requirements.txt`, `pytest.ini`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example`, `.gitignore`, `README.md`, `LICENSE`, `ENTREGA.md`, `.github/workflows/`, and `data/raw/.gitkeep` plus `data/evidence/.gitkeep` to keep the empty folders in version control.
 
 ## Supplementary artifacts
 
-The `artifacts/` directory must be included in the review package.
-
-It contains:
+`artifacts/` must be included in the review package. It contains:
 
 - the specification of the 80 normalization mappings;
-- the complete technical evaluation material for CP01–CP09;
-- the acceptance-evaluation reports for AP01–AP05;
+- the complete technical-evaluation material for CP01-CP09;
+- the acceptance-evaluation reports for AP01-AP05;
 - the pseudonymized TAM qualitative mapping;
-- the figures associated with the article.
+- the figures used in the paper.
 
-The exclusion of runtime-generated files under `data/` does not apply to
-the frozen evaluation material stored under `artifacts/`.
+The exclusions above apply to `data/`, which holds runtime-generated files. They do not apply to `artifacts/`, which is frozen evaluation material.
 
-## Gerar o ZIP automaticamente (Windows)
+## Generating the ZIP (Windows)
 
-Na raiz do repositório:
+From the repository root:
 
 ```powershell
 .\scripts\package_entrega.ps1
 ```
 
-É criado um arquivo `meta-auditor-entrega-YYYYMMDD-HHmm.zip` na
-raiz do projeto, sem os arquivos e dados listados na seção
-“O que não incluir no ZIP institucional”.
+This creates `meta-auditor-entrega-YYYYMMDD-HHmm.zip` at the project root, excluding everything listed above.
 
-## Teste de fumo (portabilidade)
+## Smoke test (portability)
 
-Em uma pasta **nova** (ou máquina virtual / outro usuário):
+In a fresh folder, VM, or user account:
 
-1. Descompactar o ZIP limpo (ou `git clone` sem `.venv`).
-2. `python -m venv .venv` e ativar o venv.
+1. Unzip the clean package (or `git clone` without `.venv`).
+2. `python -m venv .venv` and activate it.
 3. `pip install -r requirements.txt`
-4. `copy .env.example .env` e preencher pelo menos `PSI_API_KEY` (e `WAVE_API_KEY` se quiser WAVE).
+4. `copy .env.example .env` and fill in at least `PSI_API_KEY` (add `WAVE_API_KEY` to test WAVE too).
 5. `uvicorn app.main:app --reload --host 127.0.0.1 --port 8000`
-6. Verificar `GET /health`, depois `POST /audit` com uma URL pública e abrir o relatório HTML.
+6. Check `GET /health`, then `POST /audit` with a public URL and open the HTML report.
 
-**Docker (recomendado para validar entrega):**
+Docker is the recommended way to validate a submission package:
 
 ```bash
 cp .env.example .env
-# Editar .env com chaves
+# edit .env with your keys
 docker compose up --build
 ```
 
-Acesse `http://127.0.0.1:8010` (mapeamento no `docker-compose.yml`) e repita `/health` + uma auditoria.
+Open `http://127.0.0.1:8010` (mapped in `docker-compose.yml`) and repeat the `/health` check and an audit.
 
-## Nota sobre `GET /audits/{id}/export.zip`
+## About `GET /audits/{id}/export.zip`
 
-Esse endpoint exporta **uma auditoria** (JSON/HTML da corrida), não o projeto completo, e **não** inclui `.env`.
+This endpoint exports a single audit (its JSON and HTML), not the whole project, and never includes `.env`.

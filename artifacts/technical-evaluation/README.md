@@ -1,83 +1,34 @@
-# Technical Evaluation Artifacts
+# Technical evaluation artifacts
 
-This directory contains the artifacts produced during the technical
-evaluation of the Meta-Auditor. The evaluation includes nine cases,
-identified as CP01–CP09.
+Artifacts from the nine technical-evaluation cases (CP01-CP09) referenced in the paper.
 
-## Artifact processing sequence
+## What's in each case folder
 
-For each evaluated case, the Meta-Auditor receives two independent
-inputs:
+| File | Contents |
+|---|---|
+| `lighthouse_raw.json` | Raw response from the PageSpeed Insights API |
+| `wave_raw.json` | Raw response from the WAVE API |
+| `CPxx_..._meta_auditor_consolidado.json` | Consolidated result produced by Meta-Auditor |
+| `CPxx_....html` | Generated HTML report |
+| `CPxx_....pdf` | Generated PDF report |
 
-1. the raw JSON response returned by the Lighthouse audit through the
-   PageSpeed Insights API;
-2. the raw JSON response returned by the WAVE API.
+## From raw output to report
 
-These raw files are preserved before any transformation to maintain
-traceability to the original outputs of both tools.
-
-From these inputs, the Meta-Auditor executes its deterministic
-processing pipeline:
-
-- normalization of tool-specific identifiers;
-- consolidation of equivalent findings;
-- classification of finding origin;
-- identification of convergences and divergences;
-- assignment of severity;
-- calculation of the aggregated Risk Score;
-- assignment of correction priorities P1, P2, or P3.
-
-The result of this processing is a consolidated JSON file containing
-the structured audit data produced by the Meta-Auditor.
-
-The consolidated result is also stored as part of the audit record in
-SQLite and is used to generate the HTML report. The PDF report is then
-produced by rendering the corresponding HTML report.
-
-Therefore, the artifact sequence for each case is:
+Both raw JSON files are preserved exactly as returned by the two APIs, before any transformation, so every number in the paper can be traced back to its source. From there, Meta-Auditor's deterministic pipeline runs end to end:
 
 ```text
-Raw Lighthouse JSON
-        +
-Raw WAVE JSON
-        ↓
-Meta-Auditor normalization, consolidation, severity classification,
-Risk Score calculation, and correction prioritization
-        ↓
-Consolidated Meta-Auditor JSON
-        ↓
-HTML report
-        ↓
-PDF report
+lighthouse_raw.json + wave_raw.json
+  -> normalization, consolidation, severity, Risk Score, priority
+  -> *_meta_auditor_consolidado.json
+  -> HTML report
+  -> PDF report
 ```
 
-## Files available for each case
+The consolidated JSON is also the source used to render the HTML report; the PDF is a print of that same HTML.
 
-Each CP01–CP09 directory contains:
+## Related material
 
-- the raw Lighthouse JSON response;
-- the raw WAVE JSON response;
-- the consolidated Meta-Auditor JSON;
-- the generated HTML report;
-- the generated PDF report.
+- Normalization mapping specification: [`../normalization/`](../normalization/README.md)
+- Acceptance-evaluation reports (AP01-AP05): [`../acceptance-evaluation/`](../acceptance-evaluation/README.md)
+- Full artifact index: [`../README.md`](../README.md)
 
-This organization enables the results presented in the article to be
-traced from the original API responses to the final reports generated
-by the Meta-Auditor.
-
-## Additional artifacts
-
-The normalization specification is available in the
-`../normalization/` directory. It documents the 80 deterministic
-mappings implemented by the Meta-Auditor:
-
-- 42 Lighthouse mappings;
-- 38 WAVE mappings;
-- 71 distinct normalized barrier types.
-
-The acceptance-evaluation materials are available separately in the
-`../acceptance-evaluation/` directory. These materials contain the
-pseudonymized reports evaluated by participants AP01–AP05.
-
-The pseudonymized mapping of selected open-ended TAM responses is
-available in the `../TAM mapping/` directory.

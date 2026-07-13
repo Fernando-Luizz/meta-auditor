@@ -1,15 +1,10 @@
-# TAM Open-Ended Response Mapping
+# TAM open-ended response mapping
 
-This directory contains the spreadsheet used to trace the qualitative
-analysis of the open-ended responses collected during the acceptance
-evaluation.
+Spreadsheet tracing the qualitative analysis of open-ended responses collected during the acceptance evaluation. Participants are identified only by their codes (AP01-AP05).
 
-The spreadsheet includes:
+It maps:
 
-- evidence supporting the discussion about Lighthouse scores and the
-  Meta-Auditor Risk Score;
-- mapping of positive aspects reported by participants;
-- mapping of difficulties and improvement opportunities;
-- verification of the improvement categories reported in the article.
-
-Participants are identified only by the codes AP01–AP05.
+- evidence behind the discussion of Lighthouse scores versus the Meta-Auditor Risk Score;
+- positive aspects reported by participants;
+- difficulties and improvement opportunities;
+- the improvement categories reported in the paper.
