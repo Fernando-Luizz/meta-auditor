@@ -199,10 +199,6 @@ pytest -v
 pytest tests/test_consolidation.py
 ```
 
-## Preparing a submission package
-
-`ENTREGA.md` documents what goes into a clean delivery ZIP and how to generate one with `scripts/package_entrega.ps1`.
-
 ## License
 
 See [LICENSE](LICENSE).

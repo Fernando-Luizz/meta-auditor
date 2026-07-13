@@ -53,6 +53,7 @@ data/exports/*
 
 # Material privado
 private/
+ENTREGA.md
 scripts/export_anon_acceptance_reports.py
 
 # Arquivos temporários

@@ -41,6 +41,9 @@ Get-ChildItem $Stage -Directory -Recurse -Filter "__pycache__" -ErrorAction Sile
 
 Get-ChildItem $Stage -Filter "*.pyc" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
 
+# Material interno de empacotamento — não vai para revisores
+Remove-Item (Join-Path $Stage "ENTREGA.md") -Force -ErrorAction SilentlyContinue
+
 # Evitar incluir ZIPs de entregas anteriores se estiverem na árvore copiada
 Get-ChildItem $Stage -Filter "meta-auditor-entrega*.zip" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
 
@@ -57,5 +60,5 @@ Write-Host ""
 Write-Host "Pacote de entrega criado:"
 Write-Host "  $zipPath"
 Write-Host ""
-Write-Host "Validação sugerida: ver ENTREGA.md (teste de fumo + Docker)."
+Write-Host "Validação sugerida: smoke test + Docker (README)."
 Write-Host ""
