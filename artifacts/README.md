@@ -32,6 +32,24 @@ Lighthouse raw JSON + WAVE raw JSON
 → HTML report
 → PDF report
 
+## Artifact traceability
+
+For each technical-evaluation case, the repository preserves the
+complete sequence from the original tool outputs to the final report:
+
+```text
+Raw Lighthouse JSON + Raw WAVE JSON
+→ Consolidated Meta-Auditor JSON
+→ HTML report
+→ PDF report
+```
+
+The consolidated JSON contains the structured result produced after
+normalization, consolidation, severity classification, Risk Score
+calculation, and correction prioritization. This organization supports
+traceability from the original API responses to the results reported
+in the article.
+
 ## Acceptance evaluation
 
 The `acceptance-evaluation/` directory contains the public,

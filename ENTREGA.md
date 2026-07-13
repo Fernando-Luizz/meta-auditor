@@ -42,7 +42,9 @@ Na raiz do repositório:
 .\scripts\package_entrega.ps1
 ```
 
-É criado um arquivo `meta-auditor-entrega-YYYYMMDD-HHmm.zip` na raiz do projeto, sem os artefatos acima.
+É criado um arquivo `meta-auditor-entrega-YYYYMMDD-HHmm.zip` na
+raiz do projeto, sem os arquivos e dados listados na seção
+“O que não incluir no ZIP institucional”.
 
 ## Teste de fumo (portabilidade)
 
