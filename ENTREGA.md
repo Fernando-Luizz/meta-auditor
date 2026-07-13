@@ -19,6 +19,21 @@ O núcleo do Meta-Auditor está preparado para avaliação; o que costuma falhar
 
 Código-fonte (`app/`, `tests/`), `requirements.txt`, `pytest.ini`, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example`, `.gitignore`, `README.md`, `LICENSE`, `ENTREGA.md`, `.github/workflows/` (CI), e `data/raw/.gitkeep` + `data/evidence/.gitkeep` para manter pastas vazias.
 
+## Supplementary artifacts
+
+The `artifacts/` directory must be included in the review package.
+
+It contains:
+
+- the specification of the 80 normalization mappings;
+- the complete technical evaluation material for CP01–CP09;
+- the acceptance-evaluation reports for AP01–AP05;
+- the pseudonymized TAM qualitative mapping;
+- the figures associated with the article.
+
+The exclusion of runtime-generated files under `data/` does not apply to
+the frozen evaluation material stored under `artifacts/`.
+
 ## Gerar o ZIP automaticamente (Windows)
 
 Na raiz do repositório:

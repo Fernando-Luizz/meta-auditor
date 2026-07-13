@@ -1311,7 +1311,7 @@ def _raise_400(google_message: str = ""):
             status_code=422,
             detail=(
                 "O Lighthouse não conseguiu carregar a página a tempo (timeout). "
-                "A URL pode estar lenta, indisponível ou bloqueando o servidor do Google. "
+                "A URL pode estar lenta, indisponível ou impedindo o servidor do Google. "
                 "Tente outra URL (ex.: https://example.com) ou teste de novo mais tarde."
             ),
         )
