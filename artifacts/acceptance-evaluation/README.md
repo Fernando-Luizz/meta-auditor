@@ -13,4 +13,7 @@ was preserved to maintain the integrity of the reports evaluated by
 the participants. Consequently, some evidence may contain fragments
 of the original portal content.
 
-Individual questionnaire responses are not included.
+Selected pseudonymized excerpts from the open-ended questionnaire
+responses are available in the `TAM mapping` directory to support
+traceability of the qualitative analysis. Closed-question raw data
+and personally identifying information are not included.

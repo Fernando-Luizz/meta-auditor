@@ -1,4 +1,4 @@
-# Segredos e configurações locais
+# Segredos
 .env
 .env.*
 !.env.example
@@ -21,6 +21,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
 htmlcov/
 *.egg-info/
 build/
@@ -34,10 +35,11 @@ dist/
 Thumbs.db
 desktop.ini
 
-# Banco e arquivos gerados em execução
+# Banco e dados gerados em execução
 data/meta_auditor.db
 data/meta_auditor.db-*
 data/*.db
+data/*.db-*
 data/*.sqlite
 data/*.sqlite3
 
@@ -51,11 +53,9 @@ data/exports/*
 
 # Material privado
 private/
-
-# Script privado que associa APs às instituições
 scripts/export_anon_acceptance_reports.py
 
-# Temporários e pacotes locais
+# Arquivos temporários
 *.log
 *.tmp
 *.bak

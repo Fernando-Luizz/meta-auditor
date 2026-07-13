@@ -43,12 +43,16 @@ were removed. Visual and semantic evidence produced by the
 Meta-Auditor was preserved, following the evaluation protocol, and
 may contain fragments of the original portal content.
 
-## TAM mapping
+## Article figures
 
-The `TAM mapping/` directory contains the coding of open-ended
-responses from the Technology Acceptance Model (TAM) questionnaire
-applied to participants who reviewed reports AP01–AP05.
+The `Article images/` directory contains the figures used to illustrate
+the architecture, normalization, consolidation, reports and evaluation
+results presented in the associated article.
 
-The spreadsheet maps each open-ended answer to thematic categories
-used in the acceptance evaluation analysis. See also
-`TAM mapping/README_TAM_mapping.md`.
+## TAM qualitative mapping
+
+The `TAM mapping/` directory contains the pseudonymized mapping of
+selected open-ended responses used to support the qualitative analysis
+reported in the article.
+
+Participants are identified only by the codes AP01–AP05.

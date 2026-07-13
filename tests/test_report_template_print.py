@@ -66,7 +66,10 @@ def test_report_body_uses_clean_report_text_not_format_html_tags():
     body = REPORT_BODY_B.read_text(encoding="utf-8")
     assert "clean_report_text" in body
     assert "format_html_tags" not in body
-    assert "|safe" not in body.split("correcao_detalhada")[1][:2000]
+    # Call sites only (skip the Jinja import that also mentions the macro name).
+    for part in body.split("correcao_detalhada(")[1:]:
+        assert "|safe" not in part[:200]
+        assert "clean_report_text" in part[:200]
 
 
 def test_print_css_a1_tickets_keep_sub_cards_intact_in_pdf():
