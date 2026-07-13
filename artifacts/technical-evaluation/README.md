@@ -12,19 +12,39 @@ Artifacts from the nine technical-evaluation cases (CP01-CP09) referenced in the
 | `CPxx_....html` | Generated HTML report |
 | `CPxx_....pdf` | Generated PDF report |
 
-## From raw output to report
+## From raw API responses to generated reports
 
-Both raw JSON files are preserved exactly as returned by the two APIs, before any transformation, so every number in the paper can be traced back to its source. From there, Meta-Auditor's deterministic pipeline runs end to end:
+For each evaluated case, Meta-Auditor receives two independent inputs:
+the Lighthouse response obtained through the PageSpeed Insights API and
+the response returned by the WAVE API.
+
+These responses are preserved as JSON files before Meta-Auditor performs
+any normalization, consolidation, severity classification, Risk Score
+calculation, or correction prioritization. The JSON files use standardized
+formatting, while preserving the data returned by the APIs.
+
+Meta-Auditor then executes its deterministic processing pipeline:
 
 ```text
 lighthouse_raw.json + wave_raw.json
-  -> normalization, consolidation, severity, Risk Score, priority
+  -> normalization of tool-specific findings
+  -> consolidation of equivalent findings
+  -> origin classification and divergence identification
+  -> severity classification
+  -> Risk Score calculation
+  -> P1, P2, or P3 correction prioritization
   -> *_meta_auditor_consolidado.json
   -> HTML report
   -> PDF report
 ```
 
-The consolidated JSON is also the source used to render the HTML report; the PDF is a print of that same HTML.
+The structured result produced by this pipeline is stored in the SQLite
+audit record and exported as the consolidated Meta-Auditor JSON available
+in each case directory. The same structured audit data is passed to the
+HTML report template. The PDF report is produced by rendering that HTML.
+
+This organization enables traceability from the preserved API responses
+to the structured results and final reports discussed in the paper.
 
 ## Related material
 
