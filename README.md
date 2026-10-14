@@ -9,9 +9,9 @@ Web accessibility auditing tool that runs Google Lighthouse and WAVE against a p
 ![Python](https://img.shields.io/badge/python-3.11%2B-1A6B3C?style=flat-square)
 ![Lighthouse](https://img.shields.io/badge/lighthouse-PageSpeed%20API-1464C8?style=flat-square)
 ![WAVE](https://img.shields.io/badge/WAVE-WebAIM%20API-0A6B60?style=flat-square)
-![License](https://img.shields.io/badge/license-academic%20use-6b7280?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/license-MIT-1A6B3C?style=flat-square)](LICENSE)
 
-This repository is the supplementary material for *Meta-Auditor: A Meta-Auditing Approach for Web Accessibility Quality Assessment*, submitted under double-anonymous review. Evaluation data (raw tool outputs, consolidated results, generated reports) lives under [`artifacts/`](artifacts/README.md).
+This repository is the supplementary material for *Meta-Auditor: A Meta-Auditing Approach for Web Accessibility Quality Assessment*, by Fernando Luiz da Silva Freire, Tayana Conte, and Márcia S. Lima. Evaluation data (raw tool outputs, consolidated results, generated reports) lives under [`artifacts/`](artifacts/README.md).
 
 ## Overview
 
@@ -201,4 +201,4 @@ pytest tests/test_consolidation.py
 
 ## License
 
-See [LICENSE](LICENSE).
+Released under the [MIT License](LICENSE).
