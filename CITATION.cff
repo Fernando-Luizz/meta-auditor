@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "Meta-Auditor"
+abstract: "Web accessibility auditing tool that runs Google Lighthouse and WAVE against a public URL and consolidates both outputs into a single, prioritized report."
+type: software
+version: 1.0.0
+date-released: 2026-10-14
+license: MIT
+repository-code: "https://github.com/Fernando-Luizz/meta-auditor"
+authors:
+  - given-names: "Fernando Luiz"
+    family-names: "da Silva Freire"
+  - given-names: "Tayana"
+    family-names: "Conte"
+  - given-names: "Márcia S."
+    family-names: "Lima"
+keywords:
+  - web accessibility
+  - accessibility auditing
+  - Lighthouse
+  - WAVE
+  - WCAG
+preferred-citation:
+  type: conference-paper
+  title: "Meta-Auditor: A Meta-Auditing Approach for Web Accessibility Quality Assessment"
+  authors:
+    - given-names: "Fernando Luiz"
+      family-names: "da Silva Freire"
+    - given-names: "Tayana"
+      family-names: "Conte"
+    - given-names: "Márcia S."
+      family-names: "Lima"
+  collection-title: "Proceedings of the Brazilian Symposium on Software Quality (SBQS 2026)"
+  conference:
+    name: "Brazilian Symposium on Software Quality (SBQS 2026)"
+  year: 2026
